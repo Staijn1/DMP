@@ -1,23 +1,17 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import { setupCounter } from './counter'
+import ArcGISMap from "@arcgis/core/Map";
+import MapView from "@arcgis/core/views/MapView";
+import './style.css';
+const map = new ArcGISMap({
+  basemap: "streets-vector"
+});
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+const view = new MapView({
+  map: map,
+  container: "viewDiv",
+  center: [-118.244, 34.052],
+  zoom: 12
+});
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+view.when(() => {
+  console.log("Map is loaded");
+})
