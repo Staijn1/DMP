@@ -1,7 +1,6 @@
 import ArcGISMap from '@arcgis/core/Map';
 import MapView from '@arcgis/core/views/MapView';
 import Track from '@arcgis/core/widgets/Track';
-import Graphic from '@arcgis/core/Graphic';
 
 const map = new ArcGISMap({
   basemap: 'streets-vector'
