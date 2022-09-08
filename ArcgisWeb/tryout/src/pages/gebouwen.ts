@@ -6,6 +6,10 @@ import SceneLayer from '@arcgis/core/layers/SceneLayer';
 import esriConfig from '@arcgis/core/config.js';
 import {apiKey} from '../vite-env';
 
+// Notes:
+// WMS Layer and integrate it with 3DBAG
+// Convert 3DBAG to 3D Scene Layer? GLTF? https://github.com/Amsterdam/Netherlands3D/blob/main/PackageUserManual/Dutch/DataKlaarzetten.md
+
 esriConfig.apiKey = apiKey;
 
 const map = new WebScene({
@@ -109,6 +113,9 @@ view.map.add(graphicsLayer);
 const treeBtn = document.getElementById('tree');
 const busBtn = document.getElementById('bus');
 
+
+
+
 view
   .when(function () {
     // This sample uses the SketchViewModel to add points to a
@@ -117,22 +124,21 @@ view
       layer: graphicsLayer,
       view: view
     });
-
+    sketchVM.pointSymbol = {
+      type: "point-3d",
+      symbolLayers: [
+        {
+          type: "object",
+          resource: {
+            href: "https://developers.arcgis.com/javascript/latest/sample-code/import-gltf/live/tent.glb"
+          }
+        }
+      ]
+    } as any;
     treeBtn?.addEventListener('click', function () {
       // reference the relative path to the glTF model
       // in the resource of an ObjectSymbol3DLayer
-      sketchVM.pointSymbol = {
-        type: 'point-3d',
-        symbolLayers: [
-          {
-            type: 'object',
-            resource: {
-              href:
-                'https://static.arcgis.com/arcgis/styleItems/RealisticTrees/web/resource/AcerPlatanoides.json'
-            }
-          }
-        ]
-      } as any;
+
       sketchVM.create('point');
       this.classList.add('esri-button--secondary');
     });
