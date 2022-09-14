@@ -5,6 +5,9 @@ import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 import SceneLayer from '@arcgis/core/layers/SceneLayer';
 import esriConfig from '@arcgis/core/config.js';
 import {apiKey} from '../vite-env';
+import WebTileLayer from '@arcgis/core/layers/WebTileLayer';
+import Basemap from '@arcgis/core/Basemap';
+import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
 
 // Notes:
 // WMS Layer and integrate it with 3DBAG
@@ -12,9 +15,13 @@ import {apiKey} from '../vite-env';
 
 esriConfig.apiKey = apiKey;
 
+const vtlLayer = new VectorTileLayer({
+  url: "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Topo_RD/VectorTileServer/"
+});
+
 const map = new WebScene({
-  basemap: 'arcgis-flat',
   ground: 'world-elevation',
+  layers: [vtlLayer],
   spatialReference: {
     wkid: 28992
   }
@@ -42,59 +49,6 @@ const view = new SceneView({
   }
 });
 
-/********************************************************************
- * Add layer containing street furniture features: benches, street lamps
- ********************************************************************/
-
-// convenience function to retrieve the WebStyleSymbols based on their name
-function getStreetSymbol(name: string) {
-  return {
-    type: 'web-style', // autocasts as new WebStyleSymbol()
-    name: name,
-    styleName: 'EsriRealisticStreetSceneStyle'
-  };
-}
-
-// use a UniqueValueRenderer to symbolize the different feature types (street lamps, trash bin)
-const streetFurnitureRenderer = {
-  type: 'unique-value', // autocasts as new UniqueValueRenderer()
-  field: 'CATEGORY',
-  defaultSymbol: getStreetSymbol('Light_On_Post_-_Light_on'),
-  uniqueValueInfos: [
-    {
-      value: 'Overhanging street',
-      symbol: getStreetSymbol('Overhanging_Street_-_Light_on')
-    },
-    {
-      value: 'Overhanging street and sidewalk',
-      symbol: getStreetSymbol('Light_On_Post_-_Light_on')
-    },
-    {
-      value: 'Trash bin',
-      symbol: getStreetSymbol('Trash_Bin_1')
-    },
-    {
-      value: 'Newspaper',
-      symbol: getStreetSymbol('Newspaper_Vending_Machine')
-    },
-    {
-      value: 'Park bench 1',
-      symbol: getStreetSymbol('Park_Bench_2')
-    }
-  ],
-  visualVariables: [
-    {
-      type: 'rotation',
-      field: 'ROTATION'
-    },
-    {
-      type: 'size',
-      field: 'SIZE',
-      axis: 'height'
-    }
-  ]
-};
-
 
 const buildings = new SceneLayer({
   url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Basisbestand_Gebouwen/SceneServer',
@@ -109,21 +63,12 @@ const buildings = new SceneLayer({
 
 map.add(buildings);
 
-const graphicsLayer = new GraphicsLayer({
-  elevationInfo: {mode: 'on-the-ground'}
-});
-view.map.add(graphicsLayer);
-
-const treeBtn = document.getElementById('tree');
-const busBtn = document.getElementById('bus');
-
 
 view
   .when(function () {
     // This sample uses the SketchViewModel to add points to a
     // GraphicsLayer. The points have 3D glTF models as symbols.
     const sketchVM = new SketchViewModel({
-      layer: graphicsLayer,
       view: view
     });
     sketchVM.pointSymbol = {
@@ -137,32 +82,6 @@ view
         }
       ]
     } as any;
-    treeBtn?.addEventListener('click', function () {
-      // reference the relative path to the glTF model
-      // in the resource of an ObjectSymbol3DLayer
-
-      sketchVM.create('point');
-      this.classList.add('esri-button--secondary');
-    });
-
-    busBtn?.addEventListener('click', function () {
-      // reference the relative path to the glTF model
-      // in the resource of an ObjectSymbol3DLayer
-      sketchVM.pointSymbol = {
-        type: 'point-3d',
-        symbolLayers: [
-          {
-            type: 'object',
-            resource: {
-              href:
-                'https://static.arcgis.com/arcgis/styleItems/RealisticTransportation/web/resource/Bus.json'
-            }
-          }
-        ]
-      } as any;
-      sketchVM.create('point');
-      this.classList.add('esri-button--secondary');
-    });
 
     sketchVM.on('create', function (event) {
       if (event.state === 'complete') {
