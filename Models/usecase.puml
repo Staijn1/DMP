@@ -1,0 +1,11 @@
+@startuml
+left to right direction
+
+actor Ambtenaar as a
+
+package  {
+  usecase "Overzien openbare ruimte" as UC1
+}
+
+a --> UC1
+@enduml
