@@ -13,9 +13,12 @@ import {apiKey} from '../vite-env';
 esriConfig.apiKey = apiKey;
 
 const map = new WebScene({
-  basemap: 'arcgis-imagery',
-  ground: 'world-elevation'
-});
+  basemap: 'arcgis-flat',
+  ground: 'world-elevation',
+  spatialReference: {
+    wkid: 28992
+  }
+} as any);
 
 // Create the view
 const view = new SceneView({
@@ -94,7 +97,10 @@ const streetFurnitureRenderer = {
 
 
 const buildings = new SceneLayer({
-  url: 'https://tiles.arcgis.com/tiles/z2tnIkrLQ2BRzr6P/arcgis/rest/services/philadelphia_Bldgs_text_untex/SceneServer',
+  url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Basisbestand_Gebouwen/SceneServer',
+  spatialReference: {
+    wkid: 28992
+  },
   elevationInfo: {
     mode: 'absolute-height',
     offset: -6
@@ -103,8 +109,6 @@ const buildings = new SceneLayer({
 
 map.add(buildings);
 
-view.ui.add('extra', 'bottom-right');
-
 const graphicsLayer = new GraphicsLayer({
   elevationInfo: {mode: 'on-the-ground'}
 });
@@ -112,8 +116,6 @@ view.map.add(graphicsLayer);
 
 const treeBtn = document.getElementById('tree');
 const busBtn = document.getElementById('bus');
-
-
 
 
 view
@@ -125,12 +127,12 @@ view
       view: view
     });
     sketchVM.pointSymbol = {
-      type: "point-3d",
+      type: 'point-3d',
       symbolLayers: [
         {
-          type: "object",
+          type: 'object',
           resource: {
-            href: "https://developers.arcgis.com/javascript/latest/sample-code/import-gltf/live/tent.glb"
+            href: 'https://developers.arcgis.com/javascript/latest/sample-code/import-gltf/live/tent.glb'
           }
         }
       ]
