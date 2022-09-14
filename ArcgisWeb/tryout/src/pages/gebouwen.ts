@@ -8,20 +8,34 @@ import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
 
 esriConfig.apiKey = apiKey;
 
+
+/*************************************************
+ *                  Layers
+ ************************************************/
 const elevation = new ElevationLayer(
   {url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Elevation_3D_WGS/ImageServer'}
 )
 
 const buildings = new SceneLayer({
   url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/BAG_3D_WGS/SceneServer',
+  renderer: {
+    type: 'simple',
+    symbol: {
+      type: 'mesh-3d',  // autocasts as new MeshSymbol3D()
+      symbolLayers: [{
+        type: 'fill',  // autocasts as new FillSymbol3DLayer()
+        material: {color: '#2d4ea0'}
+      }]
+    }
+  } as any
 })
 
 const trees = new SceneLayer({
-  url: "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Bomen_WGS/SceneServer",
+  url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Bomen_WGS/SceneServer',
 })
 
 const windTurbines = new SceneLayer({
-    url: "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Windturbines_WGS/SceneServer/",
+  url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Windturbines_WGS/SceneServer/',
 })
 
 const map = new WebScene({
@@ -32,50 +46,43 @@ const map = new WebScene({
 map.ground.layers.add(elevation);
 
 
+/*************************************************
+ *                  View
+ ************************************************/
 // Create the view
 const view = new SceneView({
   container: 'viewDiv',
   map: map,
-  camera: {
-    position: {
-      latitude: 51.9851,
-      longitude: 5.8987,
-      z: 5000
-    },
-    tilt: 0,
-    heading: 0
-  },
   environment: {
     lighting: {
       date: new Date(),
       directShadowsEnabled: true
     },
     atmosphere: {
-      quality: "low"
+      quality: 'low'
     }
   }
 });
 
 
-
 view
   .when(function () {
+
+    view.goTo({
+      position: {
+        latitude: 51.957265,
+        longitude: 5.910011,
+        z: 2500
+      },
+      tilt: 30,
+      heading: 0
+    }).then(() => console.log('Camera is set'));
+
     // This sample uses the SketchViewModel to add points to a
     // GraphicsLayer. The points have 3D glTF models as symbols.
     const sketchVM = new SketchViewModel({
       view: view
     });
-    sketchVM.pointSymbol = {
-      type: 'point-3d',
-      symbolLayers: [
-        {
-          type: 'object',
-          resource: {
-            href: 'https://developers.arcgis.com/javascript/latest/sample-code/import-gltf/live/tent.glb'
-          }
-        }
-      ]
-    } as any;
 
     sketchVM.on('create', function (event) {
       if (event.state === 'complete') {
