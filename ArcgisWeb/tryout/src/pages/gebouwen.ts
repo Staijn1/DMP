@@ -1,37 +1,34 @@
 import WebScene from '@arcgis/core/WebScene';
 import SceneView from '@arcgis/core/views/SceneView';
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 import SceneLayer from '@arcgis/core/layers/SceneLayer';
 import esriConfig from '@arcgis/core/config.js';
 import {apiKey} from '../vite-env';
-import WebTileLayer from '@arcgis/core/layers/WebTileLayer';
-import Basemap from '@arcgis/core/Basemap';
 import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
-
-// Notes:
-// WMS Layer and integrate it with 3DBAG
-// Convert 3DBAG to 3D Scene Layer? GLTF? https://github.com/Amsterdam/Netherlands3D/blob/main/PackageUserManual/Dutch/DataKlaarzetten.md
+import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
 
 esriConfig.apiKey = apiKey;
 
-const vtlLayer = new VectorTileLayer({
-  url: "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Topo_RD/VectorTileServer/"
+const basemap = new VectorTileLayer({
+  url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Topo_RD/VectorTileServer/'
 });
 
+const elevation = new ElevationLayer(
+  {url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Elevation_3D_RD/ImageServer'}
+)
+
 const map = new WebScene({
-  ground: 'world-elevation',
-  layers: [vtlLayer],
-  spatialReference: {
-    wkid: 28992
-  }
+  layers: [basemap],
 } as any);
+
+map.ground.layers.add(elevation);
+
 
 // Create the view
 const view = new SceneView({
   container: 'viewDiv',
   map: map,
-  camera: {
+ /* camera: {
     position: {
       latitude: 52.377956,
       longitude: 4.897070,
@@ -39,7 +36,7 @@ const view = new SceneView({
     },
     tilt: 0,
     heading: 0
-  },
+  },*/
   environment: {
     lighting: {
       date: new Date('June 15, 2015 16:00:00 CET'),
@@ -52,9 +49,6 @@ const view = new SceneView({
 
 const buildings = new SceneLayer({
   url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Basisbestand_Gebouwen/SceneServer',
-  spatialReference: {
-    wkid: 28992
-  },
   elevationInfo: {
     mode: 'absolute-height',
     offset: -6
