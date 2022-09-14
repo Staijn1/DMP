@@ -9,16 +9,20 @@ import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
 
 esriConfig.apiKey = apiKey;
 
-const basemap = new VectorTileLayer({
-  url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Topo_RD/VectorTileServer/'
-});
-
 const elevation = new ElevationLayer(
-  {url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Elevation_3D_RD/ImageServer'}
+  {url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Elevation_3D_WGS/ImageServer'}
 )
 
+const buildings = new SceneLayer({
+  url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/BAG_3D_WGS/SceneServer',
+  elevationInfo: {
+    mode: 'absolute-height',
+    offset: -6
+  }
+})
+
 const map = new WebScene({
-  layers: [basemap],
+  basemap: 'satellite',
 } as any);
 
 map.ground.layers.add(elevation);
@@ -28,7 +32,7 @@ map.ground.layers.add(elevation);
 const view = new SceneView({
   container: 'viewDiv',
   map: map,
- /* camera: {
+  camera: {
     position: {
       latitude: 52.377956,
       longitude: 4.897070,
@@ -36,7 +40,7 @@ const view = new SceneView({
     },
     tilt: 0,
     heading: 0
-  },*/
+  },
   environment: {
     lighting: {
       date: new Date('June 15, 2015 16:00:00 CET'),
@@ -45,15 +49,6 @@ const view = new SceneView({
     }
   }
 });
-
-
-const buildings = new SceneLayer({
-  url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Basisbestand_Gebouwen/SceneServer',
-  elevationInfo: {
-    mode: 'absolute-height',
-    offset: -6
-  }
-})
 
 map.add(buildings);
 
