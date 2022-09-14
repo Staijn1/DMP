@@ -1,9 +1,22 @@
 @startuml
 left to right direction
 
+skinparam usecase {
+  BackgroundColor FloralWhite
+  BorderColor Black
+  ArrowColor Black
+}
+
+
+skinparam actor {
+  BackgroundColor FloralWhite
+  BorderColor Black
+  ArrowColor Black
+}
+
 actor Ambtenaar as a
 
-package  {
+rectangle  {
   usecase "Overzien openbare ruimte" as UC1
 }
 
