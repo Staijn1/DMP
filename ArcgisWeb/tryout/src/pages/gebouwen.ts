@@ -5,6 +5,8 @@ import SceneLayer from '@arcgis/core/layers/SceneLayer';
 import esriConfig from '@arcgis/core/config.js';
 import {apiKey} from '../vite-env';
 import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
+import LayerList from '@arcgis/core/widgets/LayerList';
+import Daylight from '@arcgis/core/widgets/Daylight';
 
 esriConfig.apiKey = apiKey;
 
@@ -13,28 +15,34 @@ esriConfig.apiKey = apiKey;
  *                  Layers
  ************************************************/
 const elevation = new ElevationLayer(
-  {url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Elevation_3D_WGS/ImageServer'}
+  {
+    url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Elevation_3D_WGS/ImageServer',
+    id: 'elevation'
+  }
 )
 
 const buildings = new SceneLayer({
   url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/BAG_3D_WGS/SceneServer',
+  id: 'buildings',
   renderer: {
     type: 'simple',
     symbol: {
       type: 'mesh-3d',  // autocasts as new MeshSymbol3D()
       symbolLayers: [{
         type: 'fill',  // autocasts as new FillSymbol3DLayer()
-        material: {color: '#2d4ea0'}
+        material: {color: '#afbcf8'}
       }]
     }
   } as any
 })
 
 const trees = new SceneLayer({
+  id: 'trees',
   url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Bomen_WGS/SceneServer',
 })
 
 const windTurbines = new SceneLayer({
+  id: 'windTurbines',
   url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Windturbines_WGS/SceneServer/',
 })
 
@@ -70,16 +78,14 @@ view
 
     view.goTo({
       position: {
-        latitude: 51.957265,
+        latitude: 51.964370,
         longitude: 5.910011,
         z: 2500
       },
       tilt: 30,
       heading: 0
-    }).then(() => console.log('Camera is set'));
+    }).then();
 
-    // This sample uses the SketchViewModel to add points to a
-    // GraphicsLayer. The points have 3D glTF models as symbols.
     const sketchVM = new SketchViewModel({
       view: view
     });
@@ -91,3 +97,16 @@ view
     });
   })
   .catch(console.error);
+
+/*************************************************
+ *                 UI
+ ************************************************/
+
+const layerList = new LayerList({
+  view: view
+})
+
+view.ui.add(layerList, {
+  position: 'top-right'
+});
+
