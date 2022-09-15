@@ -12,6 +12,7 @@ import ElevationProfile from '@arcgis/core/widgets/ElevationProfile';
 import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
 import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol';
 import RendererProperties = __esri.RendererProperties;
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 
 esriConfig.apiKey = apiKey;
 
@@ -58,6 +59,29 @@ const speeltoestellen = new GeoJSONLayer({
   title: 'Speeltoestellen',
 })
 
+const trafficSigns = new FeatureLayer({
+  id: 'trafficSigns',
+  url: 'https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Verkeersborden_NDW/FeatureServer/0',
+});
+
+const water = new FeatureLayer({
+  id: 'water',
+  url: 'https://basisregistraties.arcgisonline.nl/arcgis/rest/services/BRT/BRT_TOP10NL/FeatureServer/120/',
+  renderer: {
+    type: "simple",
+    symbol: {
+      type: "polygon-3d",
+      symbolLayers: [{
+        type: "water",
+        waveDirection: 180,
+        color: "#5975a3",
+        waveStrength: "moderate",
+        waterbodySize: "medium"
+      }]
+    }
+  } as RendererProperties
+})
+
 const banken = new GeoJSONLayer({
   url: 'https://geo.arnhem.nl/arcgis/rest/services/OpenData/Banken/MapServer/0/query?outFields=*&where=1%3D1&f=geojson',
   title: 'Banken',
@@ -77,8 +101,8 @@ const trolleymasten = new GeoJSONLayer({
     type: 'simple',
     symbol: new WebStyleSymbol({
       // Todo make this a proper trolley pole
-      name: "Overhanging_Street_and_Sidewalk_-_Light_on",
-      styleName: "EsriRealisticStreetSceneStyle"
+      name: 'Overhanging_Street_and_Sidewalk_-_Light_on',
+      styleName: 'EsriRealisticStreetSceneStyle'
     })
   } as RendererProperties
 })
@@ -98,7 +122,7 @@ const afvalbakken = new GeoJSONLayer({
 
 const map = new WebScene({
   basemap: 'hybrid',
-  layers: [buildings, trees, windTurbines, banken, afvalbakken, speeltoestellen, trolleymasten]
+  layers: [buildings, trees, windTurbines, banken, afvalbakken, speeltoestellen, trolleymasten, trafficSigns, water]
 } as any);
 
 map.ground.layers.add(elevation);

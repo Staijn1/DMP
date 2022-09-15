@@ -3,3 +3,4 @@
 [Services 3DBag ](https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/)<br>
 [3D webstyle resources Arcgis](https://developers.arcgis.com/javascript/latest/visualization/symbols-color-ramps/esri-web-style-symbols-3d/)<br>
 [Symbol playground](https://developers.arcgis.com/javascript/latest/sample-code/playground/live/index.html)<br>
+[Nog meer kaarten](https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/)
