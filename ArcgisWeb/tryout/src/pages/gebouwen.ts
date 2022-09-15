@@ -8,6 +8,8 @@ import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
 import LayerList from '@arcgis/core/widgets/LayerList';
 import Daylight from '@arcgis/core/widgets/Daylight';
 import Search from '@arcgis/core/widgets/Search';
+import Expand from '@arcgis/core/widgets/Expand';
+import ElevationProfile from '@arcgis/core/widgets/ElevationProfile';
 
 esriConfig.apiKey = apiKey;
 
@@ -104,17 +106,43 @@ view
  ************************************************/
 
 const searchWidget = new Search({
-  view: view
+  view: view,
+  container: document.createElement('div'),
 });
-view.ui.add(searchWidget, {
-  position: "top-right"
-});
+
 
 const layerList = new LayerList({
   view: view
 })
 
-view.ui.add(layerList, {
-  position: 'top-right'
+const layerlistExpand = new Expand({
+  view: view,
+  content: layerList,
+})
+const elevationProfile = new ElevationProfile({
+  view: view,
+  profiles: [{
+    type: 'ground' // first profile line samples the ground elevation
+  }, {
+    type: 'view' // second profile line samples the view and shows building profiles
+  }],
+  // hide the select button
+  // this button can be displayed when there are polylines in the
+  // scene to select and display the elevation profile for
+  visibleElements: {
+    selectButton: false
+  }
+});
+const elevationProfileExpand = new Expand({
+  view: view,
+  content: elevationProfile
 });
 
+view.ui.add(elevationProfileExpand, 'top-left');
+view.ui.add(layerlistExpand, {
+  position: 'top-left'
+});
+
+view.ui.add(searchWidget, {
+  position: 'top-right'
+});
