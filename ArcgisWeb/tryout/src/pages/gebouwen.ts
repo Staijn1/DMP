@@ -6,10 +6,12 @@ import esriConfig from '@arcgis/core/config.js';
 import {apiKey} from '../vite-env';
 import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
 import LayerList from '@arcgis/core/widgets/LayerList';
-import Daylight from '@arcgis/core/widgets/Daylight';
 import Search from '@arcgis/core/widgets/Search';
 import Expand from '@arcgis/core/widgets/Expand';
 import ElevationProfile from '@arcgis/core/widgets/ElevationProfile';
+import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
+import WebStyleSymbol from '@arcgis/core/symbols/WebStyleSymbol';
+import RendererProperties = __esri.RendererProperties;
 
 esriConfig.apiKey = apiKey;
 
@@ -42,6 +44,7 @@ const buildings = new SceneLayer({
 const trees = new SceneLayer({
   id: 'trees',
   url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Bomen_WGS/SceneServer',
+  featureReduction: {type: 'selection'},
 })
 
 const windTurbines = new SceneLayer({
@@ -49,9 +52,53 @@ const windTurbines = new SceneLayer({
   url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Windturbines_WGS/SceneServer/',
 })
 
+const speeltoestellen = new GeoJSONLayer({
+  id: 'speeltoestellen',
+  url: 'https://geo.arnhem.nl/arcgis/rest/services/OpenData/Spelenkaart/MapServer/1/query?outFields=*&where=1%3D1&f=geojson',
+  title: 'Speeltoestellen',
+})
+
+const banken = new GeoJSONLayer({
+  url: 'https://geo.arnhem.nl/arcgis/rest/services/OpenData/Banken/MapServer/0/query?outFields=*&where=1%3D1&f=geojson',
+  title: 'Banken',
+  renderer: {
+    type: 'simple',
+    symbol: new WebStyleSymbol({
+      name: 'Park_Bench_2',
+      styleName: 'EsriRealisticStreetSceneStyle'
+    })
+  } as RendererProperties
+})
+
+const trolleymasten = new GeoJSONLayer({
+  url: 'https://geo.arnhem.nl/arcgis/rest/services/OpenData/Trolleymasten/MapServer/0/query?outFields=*&where=1%3D1&f=geojson',
+  title: 'Trolleymasten',
+  renderer: {
+    type: 'simple',
+    symbol: new WebStyleSymbol({
+      // Todo make this a proper trolley pole
+      name: "Overhanging_Street_and_Sidewalk_-_Light_on",
+      styleName: "EsriRealisticStreetSceneStyle"
+    })
+  } as RendererProperties
+})
+
+const afvalbakken = new GeoJSONLayer({
+  url: 'https://geo.arnhem.nl/arcgis/rest/services/OpenData/Afvalbakken/MapServer/0/query?outFields=*&where=1%3D1&f=geojson',
+  id: 'afvalbakken',
+  title: 'Afvalbakken',
+  renderer: {
+    type: 'simple',
+    symbol: new WebStyleSymbol({
+      name: 'Trash_Bin_2',
+      styleName: 'EsriRealisticStreetSceneStyle'
+    })
+  } as RendererProperties
+})
+
 const map = new WebScene({
   basemap: 'hybrid',
-  layers: [buildings, trees, windTurbines],
+  layers: [buildings, trees, windTurbines, banken, afvalbakken, speeltoestellen, trolleymasten]
 } as any);
 
 map.ground.layers.add(elevation);
