@@ -7,6 +7,7 @@ import {apiKey} from '../vite-env';
 import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
 import LayerList from '@arcgis/core/widgets/LayerList';
 import Daylight from '@arcgis/core/widgets/Daylight';
+import Search from '@arcgis/core/widgets/Search';
 
 esriConfig.apiKey = apiKey;
 
@@ -101,6 +102,13 @@ view
 /*************************************************
  *                 UI
  ************************************************/
+
+const searchWidget = new Search({
+  view: view
+});
+view.ui.add(searchWidget, {
+  position: "top-right"
+});
 
 const layerList = new LayerList({
   view: view
