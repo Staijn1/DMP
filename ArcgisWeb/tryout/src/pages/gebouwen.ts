@@ -30,6 +30,7 @@ const elevation = new ElevationLayer(
 const buildings = new SceneLayer({
   url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/BAG_3D_WGS/SceneServer',
   id: 'buildings',
+  featureReduction: {type: 'selection'},
   renderer: {
     type: 'simple',
     symbol: {
@@ -39,11 +40,12 @@ const buildings = new SceneLayer({
         material: {color: '#afbcf8'}
       }]
     }
-  } as any
+  } as RendererProperties
 })
 
 const trees = new SceneLayer({
   id: 'trees',
+  screenSizePerspectiveEnabled: true,
   url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Bomen_WGS/SceneServer',
   featureReduction: {type: 'selection'},
 })
@@ -57,30 +59,50 @@ const speeltoestellen = new GeoJSONLayer({
   id: 'speeltoestellen',
   url: 'https://geo.arnhem.nl/arcgis/rest/services/OpenData/Spelenkaart/MapServer/1/query?outFields=*&where=1%3D1&f=geojson',
   title: 'Speeltoestellen',
+  renderer: {
+    type: 'unique-value', // autocasts as new UniqueValueRenderer()
+    field: 'TYPE_SPEELTOESTEL',
+    uniqueValueInfos: [
+      {
+        value: 'Schommel (st)',
+        symbol: new WebStyleSymbol({
+          name: 'Swing',
+          styleName: 'EsriRecreationStyle'
+        })
+      },
+      {
+        value: 'Speeltoestel derden (st)',
+        symbol: new WebStyleSymbol({
+          name: 'Slide',
+          styleName: 'EsriRecreationStyle'
+        })
+      },
+      {
+        value: 'Wip (st)',
+        symbol: new WebStyleSymbol({
+          name: 'Teeter_Totter',
+          styleName: 'EsriRecreationStyle'
+        })
+      },
+      {
+        value: 'Klimrek (st)',
+        symbol: new WebStyleSymbol({
+          name: 'Climbing_Frame',
+          styleName: 'EsriRecreationStyle'
+        })
+      }
+    ]
+  } as RendererProperties
 })
 
 const trafficSigns = new FeatureLayer({
   id: 'trafficSigns',
   url: 'https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Verkeersborden_NDW/FeatureServer/0',
+  screenSizePerspectiveEnabled: true,
+  featureReduction: {
+    type: 'selection'
+  }
 });
-
-const water = new FeatureLayer({
-  id: 'water',
-  url: 'https://basisregistraties.arcgisonline.nl/arcgis/rest/services/BRT/BRT_TOP10NL/FeatureServer/120/',
-  renderer: {
-    type: "simple",
-    symbol: {
-      type: "polygon-3d",
-      symbolLayers: [{
-        type: "water",
-        waveDirection: 180,
-        color: "#5975a3",
-        waveStrength: "moderate",
-        waterbodySize: "medium"
-      }]
-    }
-  } as RendererProperties
-})
 
 const banken = new GeoJSONLayer({
   url: 'https://geo.arnhem.nl/arcgis/rest/services/OpenData/Banken/MapServer/0/query?outFields=*&where=1%3D1&f=geojson',
@@ -122,7 +144,7 @@ const afvalbakken = new GeoJSONLayer({
 
 const map = new WebScene({
   basemap: 'hybrid',
-  layers: [buildings, trees, windTurbines, banken, afvalbakken, speeltoestellen, trolleymasten, trafficSigns, water]
+  layers: [buildings, trees, windTurbines, banken, afvalbakken, trolleymasten, trafficSigns, speeltoestellen]
 } as any);
 
 map.ground.layers.add(elevation);
@@ -181,7 +203,6 @@ const searchWidget = new Search({
   container: document.createElement('div'),
 });
 
-
 const layerList = new LayerList({
   view: view
 })
@@ -216,4 +237,12 @@ view.ui.add(layerlistExpand, {
 
 view.ui.add(searchWidget, {
   position: 'top-right'
+});
+
+
+fetch('https://geo.arnhem.nl/arcgis/rest/services/OpenData/Spelenkaart/MapServer/1/query?outFields=*&where=1%3D1&f=geojson').then(res => {
+  return res.json();
+}).then(data => {
+  const types = data.features.map((feature: { properties: { TYPE_SPEELTOESTEL: any; }; }) => feature.properties.TYPE_SPEELTOESTEL)
+  console.log([...new Set(types)]);
 });
