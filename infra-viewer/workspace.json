@@ -3,6 +3,7 @@
   "version": 2,
   "projects": {
     "api": "apps/api",
+    "interfaces": "libs/interfaces",
     "website": "apps/website"
   }
 }
