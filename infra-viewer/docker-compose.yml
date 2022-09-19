@@ -13,12 +13,12 @@ services:
     build:
       context: ./
       cache_from:
-        - staijn/spotifymanager:nx-base
+        - staijn/infraviewer:nx-base
       dockerfile: ./apps/api/Dockerfile
       args:
         NODE_ENV: "development"
         BUILD_FLAG: ""
-    image: staijn/spotifymanager:api
+    image: staijn/infraviewer:api
     ports:
       - 4939:3333
     environment:
@@ -38,7 +38,7 @@ services:
       args:
         NODE_ENV: "development"
         BUILD_FLAG: ""
-    image: staijn/spotifymanager:website
+    image: staijn/infraviewer:website
     ports:
       - 4900:80
     environment:
@@ -46,4 +46,4 @@ services:
       PORT: 4900
     networks:
       - corp
-#    restart: on-failure
+    restart: on-failure

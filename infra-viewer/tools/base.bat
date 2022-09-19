@@ -3,9 +3,9 @@
 
 echo "Building base image"
 
-docker build . -t staijn/spotifymanager:nx-base
+docker build . -t staijn/infraviewer:nx-base
 
 echo "Uploading base image"
-docker push staijn/spotifymanager:nx-base
+docker push staijn/infraviewer:nx-base
 echo "Done!"
 pause
