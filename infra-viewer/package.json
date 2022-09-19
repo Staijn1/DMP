@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "nx serve",
-    "build": "nx build",
+    "start:api": "nx run website:serve:development",
+    "start:website": "npx nx serve website",
+    "build:api": "nx build api",
+    "build:website": "nx build website",
     "test": "nx test",
     "postinstall": "ngcc --properties es2020 browser module main"
   },
@@ -55,6 +57,7 @@
     "@angular/platform-browser": "~14.2.0",
     "@angular/platform-browser-dynamic": "~14.2.0",
     "@angular/router": "~14.2.0",
+    "@arcgis/core": "^4.24.7",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
