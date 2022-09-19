@@ -17,7 +17,7 @@ skinparam actor {
 actor Ambtenaar as a
 
 rectangle  {
-  usecase "Overzien openbare ruimte" as UC1
+  usecase "Impact inschatten onderhoud" as UC1
 }
 
 a --> UC1
