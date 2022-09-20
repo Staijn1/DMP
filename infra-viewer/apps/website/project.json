@@ -1,7 +1,7 @@
 {
   "projectType": "application",
   "sourceRoot": "apps/website/src",
-  "prefix": "infra-viewer",
+  "prefix": "app",
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",

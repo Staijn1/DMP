@@ -1,1 +1,2 @@
-export * from './lib/interfaces';
+export * from './lib/CustomError';
+export * from './lib/SystemConfiguration';

@@ -1,10 +1,16 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
+import {ConfigurationService} from '../services/configuration/configuration.service';
 
 @Component({
-  selector: 'infra-viewer-root',
+  selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'website';
+
+  constructor(private readonly configurationService: ConfigurationService) {
+    this.configurationService.getConfiguration().then((configuration) => {
+      console.log(configuration);
+    });
+  }
 }
