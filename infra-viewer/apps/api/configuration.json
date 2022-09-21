@@ -1,0 +1,52 @@
+{
+  "scenelayers": [
+    {
+      "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/BAG_3D_WGS/SceneServer",
+      "id": "buildings",
+      "featureReduction": {
+        "type": "selection"
+      },
+      "renderer": {
+        "type": "simple",
+        "symbol": {
+          "type": "mesh-3d",
+          "symbolLayers": [
+            {
+              "type": "fill",
+              "material": {
+                "color": "#afbcf8"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "trees",
+      "screenSizePerspectiveEnabled": true,
+      "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Bomen_WGS/SceneServer",
+      "featureReduction": {
+        "type": "selection"
+      }
+    },
+    {
+      "id": "windTurbines",
+      "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Windturbines_WGS/SceneServer/"
+    }
+  ],
+  "featurelayers": [
+    {
+      "id": "trafficSigns",
+      "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Verkeersborden_NDW/FeatureServer/0",
+      "screenSizePerspectiveEnabled": true,
+      "featureReduction": {
+        "type": "selection"
+      }
+    }
+  ],
+  "elevationLayer": {
+    "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Elevation_3D_WGS/ImageServer",
+    "id": "elevation"
+  },
+  "basemap": "hybrid"
+}
