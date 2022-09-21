@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import {SystemModule} from './System/system.module';
+import { SystemModule } from './System/system.module';
 
 @Module({
   imports: [SystemModule],

@@ -1,7 +1,7 @@
 # set "DOCKER_BUILDKIT=0" & docker-compose build
 # docker run --rm -it id sh
 # set "DOCKER_BUILDKIT=0" & docker build . -t spotifymanager:nx-base
-version: "3.8"
+version: '3.8'
 
 networks:
   corp:
@@ -16,13 +16,13 @@ services:
         - staijn/infraviewer:nx-base
       dockerfile: ./apps/api/Dockerfile
       args:
-        NODE_ENV: "development"
-        BUILD_FLAG: ""
+        NODE_ENV: 'development'
+        BUILD_FLAG: ''
     image: staijn/infraviewer:api
     ports:
       - 4939:3333
     environment:
-      NODE_ENV: "development"
+      NODE_ENV: 'development'
       PORT: 3333
     networks:
       - corp
@@ -36,13 +36,13 @@ services:
         - nginx:1.19.2
       dockerfile: ./apps/website/Dockerfile
       args:
-        NODE_ENV: "development"
-        BUILD_FLAG: ""
+        NODE_ENV: 'development'
+        BUILD_FLAG: ''
     image: staijn/infraviewer:website
     ports:
       - 4900:80
     environment:
-      NODE_ENV: "development"
+      NODE_ENV: 'development'
       PORT: 4900
     networks:
       - corp

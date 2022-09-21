@@ -1,5 +1,5 @@
-import {Component} from '@angular/core';
-import {ConfigurationService} from '../services/configuration/configuration.service';
+import { Component } from '@angular/core';
+import { ConfigurationService } from '../services/configuration/configuration.service';
 
 @Component({
   selector: 'app-root',
@@ -7,7 +7,6 @@ import {ConfigurationService} from '../services/configuration/configuration.serv
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-
   constructor(private readonly configurationService: ConfigurationService) {
     this.configurationService.getConfiguration().then((configuration) => {
       console.log(configuration);

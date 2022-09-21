@@ -5,15 +5,15 @@
 
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app/app.module';
-import {json, urlencoded} from 'express';
+import { json, urlencoded } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
-  app.enableCors()
+  app.enableCors();
 
   // read the version from package.json
   const config = new DocumentBuilder()
@@ -31,9 +31,7 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3333;
   await app.listen(port);
-  Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/api`
-  );
+  Logger.log(`🚀 Application is running on: http://localhost:${port}/api`);
 }
 
 bootstrap();

@@ -1,5 +1,5 @@
-import {Injectable} from '@nestjs/common';
-import {SystemConfiguration} from '@infra-viewer/interfaces';
+import { Injectable } from '@nestjs/common';
+import { SystemConfiguration } from '@infra-viewer/interfaces';
 
 @Injectable()
 export class SystemService {

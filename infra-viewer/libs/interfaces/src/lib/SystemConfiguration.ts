@@ -5,4 +5,4 @@ export type SystemConfiguration = {
   featurelayers: any[];
   elevationLayer: { url: string } & any;
   basemap: string;
-}
+};

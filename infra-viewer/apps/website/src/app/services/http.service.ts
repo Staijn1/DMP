@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {CustomError} from '@infra-viewer/interfaces';
+import { Injectable } from '@angular/core';
+import { CustomError } from '@infra-viewer/interfaces';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HTTPService {
   /**
@@ -12,7 +12,7 @@ export class HTTPService {
    * @private
    */
   private handleError(err: any): CustomError {
-    console.warn("Handle error not implemented")
+    console.warn('Handle error not implemented');
 
     return err;
   }
