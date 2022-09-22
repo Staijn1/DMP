@@ -5,6 +5,6 @@ import { SystemConfiguration } from '@infra-viewer/interfaces';
 export class SystemService {
   async getConfiguration(): Promise<SystemConfiguration> {
     // Read contents of configuration.json from root of project
-    return await import('../../../configuration.json');
+    return await import('../../../SystemConfiguration.json');
   }
 }
