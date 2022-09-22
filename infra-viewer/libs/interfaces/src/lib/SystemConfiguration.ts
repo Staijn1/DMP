@@ -6,6 +6,4 @@ export type SystemConfiguration = {
   elevationLayer: { url: string } & any;
   geoJSONLayers: any[];
   basemap: string;
-
-  
 };
