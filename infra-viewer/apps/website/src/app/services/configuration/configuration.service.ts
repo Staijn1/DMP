@@ -11,7 +11,7 @@ export class ConfigurationService extends HTTPService {
     if (sessionStorage.getItem('configuration'))
       return JSON.parse(sessionStorage.getItem('configuration') as string);
 
-    const body = this.request(`${environment.api}/System/Configuration`, {});
+    const body = await this.request(`${environment.api}/System/Configuration`, {});
     sessionStorage.setItem('configuration', JSON.stringify(body));
 
     return body;

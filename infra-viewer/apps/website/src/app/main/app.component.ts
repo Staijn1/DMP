@@ -8,8 +8,6 @@ import { ConfigurationService } from '../services/configuration/configuration.se
 })
 export class AppComponent {
   constructor(private readonly configurationService: ConfigurationService) {
-    this.configurationService.getConfiguration().then((configuration) => {
-      console.log(configuration);
-    });
+    this.configurationService.getConfiguration().then();
   }
 }
