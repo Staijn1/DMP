@@ -35,16 +35,17 @@ export class ArcgisMapComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.createMap();
-    this.createView();
-    this.applyConfig().then();
-    this.createUI();
-    this.registerEvents();
+    this.createMap().then(() => {
+      this.createView();
+      this.applyConfig().then();
+      this.createUI();
+      this.registerEvents();
+    });
   }
 
-  private createMap(): void {
+  private async createMap(): Promise<void> {
     this.map = new WebScene({
-      basemap: 'hybrid',
+      basemap: (await this.configService.getConfiguration()).basemap,
       layers: [],
     });
   }
