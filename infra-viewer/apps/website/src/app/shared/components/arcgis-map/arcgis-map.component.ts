@@ -11,14 +11,7 @@ import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
 import SceneLayer from '@arcgis/core/layers/SceneLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
-import Circle from '@arcgis/core/geometry/Circle';
-import Graphic from '@arcgis/core/Graphic';
-import Query from '@arcgis/core/rest/support/Query';
-import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
-import FeatureLayerView from '@arcgis/core/views/layers/FeatureLayerView';
-import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
-import FeatureEffect from '@arcgis/core/layers/support/FeatureEffect';
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import {getMB} from '@infra-viewer/interfaces';
 import ViewClickEvent = __esri.ViewClickEvent;
 
 @Component({
@@ -29,6 +22,7 @@ import ViewClickEvent = __esri.ViewClickEvent;
 export class ArcgisMapComponent implements OnInit {
   private map!: WebScene;
   private view!: SceneView;
+  private readonly showPerformanceInfo = false;
 
 
   constructor(private readonly configService: ConfigurationService) {
@@ -102,7 +96,7 @@ export class ArcgisMapComponent implements OnInit {
     const layerList = new LayerList({
       view: this.view,
     });
-    layerList.on('trigger-action', (event) => this.onLayerlistTriggerAction(event, layerList));
+
     const layerlistExpand = new Expand({
       view: this.view,
       content: layerList,
@@ -132,7 +126,8 @@ export class ArcgisMapComponent implements OnInit {
     });
 
     this.view.ui.add('performanceInfo', 'bottom-left');
-    this.updatePerformanceInfo();
+    if (this.showPerformanceInfo)
+      this.updatePerformanceInfo();
 
     this.view.ui.add(elevationProfileExpand, 'top-left');
     this.view.ui.add(layerlistExpand, 'top-left');
@@ -153,13 +148,6 @@ export class ArcgisMapComponent implements OnInit {
     for (const featureLayerConfig of config.featurelayers) {
       const featureLayer = new FeatureLayer(featureLayerConfig);
       this.map.add(featureLayer);
-      this.view.whenLayerView(featureLayer).then((layerView: FeatureLayerView) => {
-        layerView.featureEffect = new FeatureEffect({
-          excludedEffect: 'opacity(25%)',
-          includedEffect: 'opacity(100%)'
-        });
-        console.log('FeatureLayerView', layerView);
-      });
     }
 
     for (const geoJSONLayerConfig of config.geoJSONLayers) {
@@ -172,70 +160,62 @@ export class ArcgisMapComponent implements OnInit {
     this.view.on('immediate-click' as any, (event: ViewClickEvent) => this.onViewClick(event));
   }
 
-
-  private onLayerlistTriggerAction(event: __esri.LayerListTriggerActionEvent, layerList: __esri.LayerList | __esri.LayerList) {
-    console.log(event)
-  }
-
   private onViewClick(event: __esri.ViewClickEvent) {
     this.filterFeaturesByDistance(event.mapPoint);
   }
 
   private filterFeaturesByDistance(mapPoint: __esri.Point) {
-    const circleSymbol = {
-      type: 'point-3d',
-      symbolLayers: [
-        {
-          type: 'icon',
-          outline: {color: [0, 0, 0, 1]},
-          material: {color: [255, 255, 255, 0]}
-        },
-        {type: 'object', material: {color: [255, 255, 255, 1]}}
-      ]
-    };
-    const circle = new Circle({
-      center: mapPoint,
-      geodesic: true,
-      radius: 100,
-      radiusUnit: 'meters'
-    });
-//Clear graphics
-    this.view.graphics.removeAll();
-    const graphic = new Graphic({
-      symbol: circleSymbol,
-      geometry: circle
-    } as any);
-    this.view.graphics.add(graphic);
-
-    const query = new Query({returnGeometry: true, geometry: circle.extent});
-
-    this.map.layers.forEach(layer => {
-      if (layer.type === 'scene') {
-        const sceneLayer = layer as any;
-        sceneLayer.queryFeatures(query).then((results: FeatureSet) => {
-          sceneLayer.featureEffect = new FeatureFilter({
-            objectIds: results.features.map(feature => feature.attributes.OBJECTID)
-          });
+    // Todo: implement
+    /*    const circleSymbol = {
+          type: 'point-3d',
+          symbolLayers: [
+            {
+              type: 'icon',
+              outline: {color: [0, 0, 0, 1]},
+              material: {color: [255, 255, 255, 0]}
+            },
+            {type: 'object', material: {color: [255, 255, 255, 1]}}
+          ]
+        };
+        const circle = new Circle({
+          center: mapPoint,
+          geodesic: true,
+          radius: 100,
+          radiusUnit: 'meters'
         });
-      }
+        //Clear graphics
+        this.view.graphics.removeAll();
+        const graphic = new Graphic({
+          symbol: circleSymbol,
+          geometry: circle
+        } as any);
+        this.view.graphics.add(graphic);
 
-      if (['geojson', 'feature'].includes(layer.type)) {
-        layer.visible = false;
-        (layer as FeatureLayer).queryFeatures(query).then((featureSet: FeatureSet) => {
-          if (featureSet.features.length > 0) {
-            const graphicsLayer = new GraphicsLayer({
-              title: 'Search results',
+        const query = new Query({returnGeometry: true, geometry: circle.extent});
+
+        this.map.layers.forEach(layer => {
+          if (layer.type === 'scene') {
+            const sceneLayer = layer as any;
+            sceneLayer.queryFeatures(query).then((results: FeatureSet) => {
+              sceneLayer.featureEffect = new FeatureFilter({
+                objectIds: results.features.map(feature => feature.attributes.OBJECTID)
+              });
             });
-            this.view.graphics.addMany(featureSet.features);
-            this.map.add(graphicsLayer);
           }
-        })
-      }
-    });
-  }
 
-  selectInBuffer(response: FeatureSet): void {
-    console.log(response)
+          if (['geojson', 'feature'].includes(layer.type)) {
+            layer.visible = false;
+            (layer as FeatureLayer).queryFeatures(query).then((featureSet: FeatureSet) => {
+              if (featureSet.features.length > 0) {
+                const graphicsLayer = new GraphicsLayer({
+                  title: 'Search results',
+                });
+                this.view.graphics.addMany(featureSet.features);
+                this.map.add(graphicsLayer);
+              }
+            })
+          }
+        });*/
   }
 
   private updatePerformanceInfo() {
@@ -247,7 +227,7 @@ export class ArcgisMapComponent implements OnInit {
 
   private updateMemoryTitle(usedMemory: number, totalMemory: number, quality: number) {
     const title = document.getElementById('title') as HTMLElement;
-    title.innerHTML = `Memory: ${this.getMB(usedMemory)}MB/${this.getMB(totalMemory)}MB  -  Quality: ${Math.round(100 * quality)} %`;
+    title.innerHTML = `Memory: ${getMB(usedMemory)}MB/${getMB(totalMemory)}MB  -  Quality: ${Math.round(100 * quality)} %`;
   }
 
   private updateTables(stats: __esri.SceneViewPerformanceInfo) {
@@ -260,7 +240,7 @@ export class ArcgisMapComponent implements OnInit {
 
     for (const layerInfo of stats.layerPerformanceInfos) {
       const row = document.createElement('tr');
-      row.innerHTML = `<td>${layerInfo.layer.title}</td><td class="center">${this.getMB(layerInfo.memory)}</td>`;
+      row.innerHTML = `<td>${layerInfo.layer.title}</td><td class="center">${getMB(layerInfo.memory)}</td>`;
       tableMemoryContainer.appendChild(row);
     }
 
@@ -283,11 +263,5 @@ export class ArcgisMapComponent implements OnInit {
         tableCountContainer.appendChild(row);
       }
     }
-  }
-
-  private getMB(bytes: number) {
-    const kilobyte = 1024;
-    const megabyte = kilobyte * 1024;
-    return Math.round(bytes / megabyte);
   }
 }

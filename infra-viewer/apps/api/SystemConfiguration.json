@@ -56,6 +56,10 @@
         "title": "{TYPE_SPEELTOESTEL}",
         "content": "{BUURTNAAM}, {WIJKNAAM}\n{LEEFTIJDSGROEP} jaar.\nBeheerder: {BEHEERDER}, eigenaar: {EIGENAAR}"
       }
+    },
+    {
+      "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Wegbeheer/MapServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=geojson",
+      "title": "Wegbeheer"
     }
   ],
   "geoJSONLayers": [
