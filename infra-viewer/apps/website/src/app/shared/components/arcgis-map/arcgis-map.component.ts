@@ -12,7 +12,9 @@ import SceneLayer from '@arcgis/core/layers/SceneLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
 import {getMB} from '@infra-viewer/interfaces';
+import PopupTemplate from '@arcgis/core/PopupTemplate';
 import ViewClickEvent = __esri.ViewClickEvent;
+import TextContent from '@arcgis/core/popup/content/TextContent';
 
 @Component({
   selector: 'app-arcgis-map',
@@ -136,6 +138,14 @@ export class ArcgisMapComponent implements OnInit {
 
   private async applyConfig(): Promise<void> {
     const config = await this.configService.getConfiguration();
+    const createPopupTemplate = (layer: GeoJSONLayer | FeatureLayer): PopupTemplate => {
+      if (!layer.fields) return new PopupTemplate();
+      return new PopupTemplate({
+        title: layer.title,
+        // Create content for the popup for each field
+        content: layer.fields.map((field: any) => `${field.name}: {${field.name}}`).join('<br>')
+      })
+    };
 
     const elevationLayer = new ElevationLayer(config.elevationLayer);
     this.map.ground.layers.add(elevationLayer);
@@ -147,16 +157,28 @@ export class ArcgisMapComponent implements OnInit {
 
     for (const featureLayerConfig of config.featurelayers) {
       const featureLayer = new FeatureLayer(featureLayerConfig);
+      featureLayer.when(() => {
+        featureLayer.popupTemplate = createPopupTemplate(featureLayer);
+      });
       this.map.add(featureLayer);
     }
 
     for (const geoJSONLayerConfig of config.geoJSONLayers) {
       const geoJSONLayer = new GeoJSONLayer(geoJSONLayerConfig);
+      geoJSONLayer.popupTemplate = createPopupTemplate(geoJSONLayer);
+      geoJSONLayer.when(() => {
+        geoJSONLayer.popupTemplate = createPopupTemplate(geoJSONLayer);
+      });
       this.map.add(geoJSONLayer);
     }
+
+    this.map.ground.navigationConstraint = {
+      type: 'none',
+    };
+    this.map.ground.opacity = 0.4;
   }
 
-  private registerEvents() {
+  registerEvents() {
     this.view.on('immediate-click' as any, (event: ViewClickEvent) => this.onViewClick(event));
   }
 
@@ -166,56 +188,56 @@ export class ArcgisMapComponent implements OnInit {
 
   private filterFeaturesByDistance(mapPoint: __esri.Point) {
     // Todo: implement
-    /*    const circleSymbol = {
-          type: 'point-3d',
-          symbolLayers: [
-            {
-              type: 'icon',
-              outline: {color: [0, 0, 0, 1]},
-              material: {color: [255, 255, 255, 0]}
-            },
-            {type: 'object', material: {color: [255, 255, 255, 1]}}
-          ]
-        };
-        const circle = new Circle({
-          center: mapPoint,
-          geodesic: true,
-          radius: 100,
-          radiusUnit: 'meters'
+    /*const circleSymbol = {
+      type: 'point-3d',
+      symbolLayers: [
+        {
+          type: 'icon',
+          outline: {color: [0, 0, 0, 1]},
+          material: {color: [255, 255, 255, 0]}
+        },
+        {type: 'object', material: {color: [255, 255, 255, 1]}}
+      ]
+    };
+    const circle = new Circle({
+      center: mapPoint,
+      geodesic: true,
+      radius: 100,
+      radiusUnit: 'meters'
+    });
+    //Clear graphics
+    this.view.graphics.removeAll();
+    const graphic = new Graphic({
+      symbol: circleSymbol,
+      geometry: circle
+    } as any);
+    this.view.graphics.add(graphic);
+
+    const query = new Query({returnGeometry: true, geometry: circle.extent});
+
+    this.map.layers.forEach(layer => {
+      if (layer.type === 'scene') {
+        const sceneLayer = layer as any;
+        sceneLayer.queryFeatures(query).then((results: FeatureSet) => {
+          sceneLayer.featureEffect = new FeatureFilter({
+            objectIds: results.features.map(feature => feature.attributes.OBJECTID)
+          });
         });
-        //Clear graphics
-        this.view.graphics.removeAll();
-        const graphic = new Graphic({
-          symbol: circleSymbol,
-          geometry: circle
-        } as any);
-        this.view.graphics.add(graphic);
+      }
 
-        const query = new Query({returnGeometry: true, geometry: circle.extent});
-
-        this.map.layers.forEach(layer => {
-          if (layer.type === 'scene') {
-            const sceneLayer = layer as any;
-            sceneLayer.queryFeatures(query).then((results: FeatureSet) => {
-              sceneLayer.featureEffect = new FeatureFilter({
-                objectIds: results.features.map(feature => feature.attributes.OBJECTID)
-              });
+      if (['geojson', 'feature'].includes(layer.type)) {
+        layer.visible = false;
+        (layer as FeatureLayer).queryFeatures(query).then((featureSet: FeatureSet) => {
+          if (featureSet.features.length > 0) {
+            const graphicsLayer = new GraphicsLayer({
+              title: 'Search results',
             });
+            this.view.graphics.addMany(featureSet.features);
+            this.map.add(graphicsLayer);
           }
-
-          if (['geojson', 'feature'].includes(layer.type)) {
-            layer.visible = false;
-            (layer as FeatureLayer).queryFeatures(query).then((featureSet: FeatureSet) => {
-              if (featureSet.features.length > 0) {
-                const graphicsLayer = new GraphicsLayer({
-                  title: 'Search results',
-                });
-                this.view.graphics.addMany(featureSet.features);
-                this.map.add(graphicsLayer);
-              }
-            })
-          }
-        });*/
+        })
+      }
+    });*/
   }
 
   private updatePerformanceInfo() {
@@ -230,7 +252,8 @@ export class ArcgisMapComponent implements OnInit {
     title.innerHTML = `Memory: ${getMB(usedMemory)}MB/${getMB(totalMemory)}MB  -  Quality: ${Math.round(100 * quality)} %`;
   }
 
-  private updateTables(stats: __esri.SceneViewPerformanceInfo) {
+  private updateTables(stats: __esri.SceneViewPerformanceInfo
+  ) {
     const tableMemoryContainer = document.getElementById('memory') as HTMLElement;
     const tableCountContainer = document.getElementById('count') as HTMLElement;
     tableMemoryContainer.innerHTML = `<tr>
