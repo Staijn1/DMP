@@ -14,7 +14,8 @@ import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
 import {getMB} from '@infra-viewer/interfaces';
 import PopupTemplate from '@arcgis/core/PopupTemplate';
 import ViewClickEvent = __esri.ViewClickEvent;
-import TextContent from '@arcgis/core/popup/content/TextContent';
+import {QueryService} from '../../../services/query/query.service';
+import SearchSource from '@arcgis/core/widgets/Search/SearchSource';
 
 @Component({
   selector: 'app-arcgis-map',
@@ -25,16 +26,17 @@ export class ArcgisMapComponent implements OnInit {
   private map!: WebScene;
   private view!: SceneView;
   private readonly showPerformanceInfo = false;
+  private searchWidget!: __esri.widgetsSearch | __esri.widgetsSearch;
 
 
-  constructor(private readonly configService: ConfigurationService) {
+  constructor(private readonly configService: ConfigurationService, private readonly queryService: QueryService) {
   }
 
   ngOnInit(): void {
     this.createMap().then(() => {
       this.createView();
-      this.applyConfig().then();
       this.createUI();
+      this.applyConfig().then();
       this.registerEvents();
     });
   }
@@ -90,7 +92,7 @@ export class ArcgisMapComponent implements OnInit {
   }
 
   private createUI(): void {
-    const searchWidget = new Search({
+    this.searchWidget = new Search({
       view: this.view,
       container: document.createElement('div'),
     });
@@ -133,7 +135,7 @@ export class ArcgisMapComponent implements OnInit {
 
     this.view.ui.add(elevationProfileExpand, 'top-left');
     this.view.ui.add(layerlistExpand, 'top-left');
-    this.view.ui.add(searchWidget, 'top-right');
+    this.view.ui.add(this.searchWidget, 'top-right');
   }
 
   private async applyConfig(): Promise<void> {
@@ -152,6 +154,11 @@ export class ArcgisMapComponent implements OnInit {
 
     for (const sceneLayerConfig of config.scenelayers) {
       const sceneLayer = new SceneLayer(sceneLayerConfig);
+
+      if (sceneLayerConfig.searchConfig) {
+        this.searchWidget.sources.push(new SearchSource({layer: sceneLayer, ...sceneLayerConfig.searchConfig}));
+      }
+
       this.map.add(sceneLayer);
     }
 
@@ -160,15 +167,25 @@ export class ArcgisMapComponent implements OnInit {
       featureLayer.when(() => {
         featureLayer.popupTemplate = createPopupTemplate(featureLayer);
       });
+
+      if (featureLayerConfig.searchConfig) {
+        this.searchWidget.sources.push(new SearchSource({layer: featureLayer, ...featureLayerConfig.searchConfig}));
+      }
+
       this.map.add(featureLayer);
     }
 
     for (const geoJSONLayerConfig of config.geoJSONLayers) {
       const geoJSONLayer = new GeoJSONLayer(geoJSONLayerConfig);
-      geoJSONLayer.popupTemplate = createPopupTemplate(geoJSONLayer);
+
       geoJSONLayer.when(() => {
         geoJSONLayer.popupTemplate = createPopupTemplate(geoJSONLayer);
       });
+
+      if (geoJSONLayerConfig.searchConfig) {
+        this.searchWidget.sources.push(new SearchSource({layer: geoJSONLayer, ...geoJSONLayerConfig.searchConfig}));
+      }
+
       this.map.add(geoJSONLayer);
     }
 
