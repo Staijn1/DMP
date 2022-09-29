@@ -3,6 +3,7 @@
     {
       "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/BAG_3D_WGS/SceneServer",
       "id": "buildings",
+      "title": "3D Gebouwen",
       "mode": "on-the-ground",
       "featureReduction": {
         "type": "selection"
@@ -24,6 +25,7 @@
     },
     {
       "id": "trees",
+      "title": "3D Bomen",
       "screenSizePerspectiveEnabled": true,
       "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Bomen_WGS/SceneServer",
       "featureReduction": {
@@ -31,6 +33,7 @@
       }
     },
     {
+      "title": "3D Windturbines",
       "id": "windTurbines",
       "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Windturbines_WGS/SceneServer/"
     }
@@ -73,11 +76,7 @@
               "type": "path",
               "profile": "circle",
               "material": {
-                "color": [
-                  100,
-                  100,
-                  100
-                ]
+                "color": "#b3b3b3"
               },
               "width": 1,
               "height": 1,
@@ -91,9 +90,7 @@
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Wegbeheer/MapServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=geojson",
       "title": "Wegbeheer"
-    }
-  ],
-  "geoJSONLayers": [
+    },
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Trolleymasten/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
       "title": "Trolleymasten"
@@ -102,8 +99,24 @@
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Afvalbakken/MapServer/0/query?outFields=*&where=1%3D1&f=geojson",
       "id": "afvalbakken",
       "title": "Afvalbakken"
+    },
+    {
+      "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Ziekenhuizen2/FeatureServer/0/",
+      "id": "ziekenhuizen",
+      "title": "Ziekenhuizen"
+    },
+    {
+      "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Politiebureaus/FeatureServer?f=json",
+      "id": "politiebureaus",
+      "title": "Politiebureaus"
+    },
+    {
+      "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Brandweerkazernes/FeatureServer/0",
+      "title": "Brandweerkazernes",
+      "mode": "relative-to-scene"
     }
   ],
+  "geoJSONLayers": [],
   "elevationLayer": {
     "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Elevation_3D_WGS/ImageServer",
     "id": "elevation"
