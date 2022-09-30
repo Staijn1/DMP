@@ -1,5 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
-/* You can add global styles to this file, and also import other style files */
+// 1. Your custom variables and variable overwrites.
+//@import "theme/accordion.scss";
+//@import "theme/alert.scss";
+//@import "theme/align.scss";
+
+// 2. Import default variables and available mixins.
+@import "uikit/src/scss/variables.scss";
+@import "uikit/src/scss/mixins.scss";
+
+// 3. Your custom mixin overwrites.
+//@import "theme/accordion-mixins.scss";
+//@import "theme/alert-mixins.scss";
+//@import "theme/align-mixins.scss";
+
+// 4. Import UIkit
+@import "uikit/src/scss/uikit.scss";
