@@ -5,7 +5,7 @@ import {ConfigPageComponent} from './config-page.component';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [ConfigPageComponent],
   imports: [
     CommonModule,
     RouterModule.forChild([{path: '', component: ConfigPageComponent}]),
