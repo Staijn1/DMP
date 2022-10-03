@@ -16,7 +16,9 @@ import PopupTemplate from '@arcgis/core/PopupTemplate';
 import {QueryService} from '../../../services/query/query.service';
 import SearchSource from '@arcgis/core/widgets/Search/SearchSource';
 import ViewClickEvent = __esri.ViewClickEvent;
-
+import Daylight from '@arcgis/core/widgets/Daylight';
+import Weather from '@arcgis/core/widgets/Weather';
+import ShadowCast from '@arcgis/core/widgets/ShadowCast';
 @Component({
   selector: 'app-arcgis-map',
   templateUrl: './arcgis-map.component.html',
@@ -129,13 +131,39 @@ export class ArcgisMapComponent implements OnInit {
       content: elevationProfile,
     });
 
+    const weatherExpand = new Expand({
+      view: this.view,
+      content: new Weather({
+        view: this.view,
+      }),
+      group: "top-right"
+    });
+
+    const daylightExpand = new Expand({
+      view: this.view,
+      content: new Daylight({
+        view: this.view
+      }),
+      group: "top-right"
+    });
+    const shadowWidget = new Expand({view: this.view, content: new ShadowCast({ view: this.view, }), group: "top-right"});
+
+    shadowWidget.watch("expanded", (expanded) => {
+      console.log(expanded)
+      if (expanded){
+        (shadowWidget.content as ShadowCast).viewModel.start();
+      } else {
+        (shadowWidget.content as ShadowCast).viewModel.stop();
+      }
+    });
+
     this.view.ui.add('performanceInfo', 'bottom-left');
+
     if (this.showPerformanceInfo)
       this.updatePerformanceInfo();
 
-    this.view.ui.add(elevationProfileExpand, 'top-left');
-    this.view.ui.add(layerlistExpand, 'top-left');
-    this.view.ui.add(this.searchWidget, 'top-right');
+    this.view.ui.add([elevationProfileExpand, layerlistExpand], 'top-left');
+    this.view.ui.add([this.searchWidget, weatherExpand, daylightExpand, shadowWidget], "top-right");
     // this.view.ui.add(new QueryBuilderWidget(),"top-right")
   }
 
