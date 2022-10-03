@@ -13,9 +13,9 @@ import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
 import {getMB} from '@infra-viewer/interfaces';
 import PopupTemplate from '@arcgis/core/PopupTemplate';
-import ViewClickEvent = __esri.ViewClickEvent;
 import {QueryService} from '../../../services/query/query.service';
 import SearchSource from '@arcgis/core/widgets/Search/SearchSource';
+import ViewClickEvent = __esri.ViewClickEvent;
 
 @Component({
   selector: 'app-arcgis-map',
@@ -26,7 +26,7 @@ export class ArcgisMapComponent implements OnInit {
   private map!: WebScene;
   private view!: SceneView;
   private readonly showPerformanceInfo = false;
-  private searchWidget!: __esri.widgetsSearch | __esri.widgetsSearch;
+  private searchWidget!: __esri.widgetsSearch;
 
 
   constructor(private readonly configService: ConfigurationService, private readonly queryService: QueryService) {
@@ -136,6 +136,7 @@ export class ArcgisMapComponent implements OnInit {
     this.view.ui.add(elevationProfileExpand, 'top-left');
     this.view.ui.add(layerlistExpand, 'top-left');
     this.view.ui.add(this.searchWidget, 'top-right');
+    // this.view.ui.add(new QueryBuilderWidget(),"top-right")
   }
 
   private async applyConfig(): Promise<void> {
@@ -152,41 +153,37 @@ export class ArcgisMapComponent implements OnInit {
     const elevationLayer = new ElevationLayer(config.elevationLayer);
     this.map.ground.layers.add(elevationLayer);
 
+    const constructedLayers: any[][] = [];
     for (const sceneLayerConfig of config.scenelayers) {
       const sceneLayer = new SceneLayer(sceneLayerConfig);
-
-      if (sceneLayerConfig.searchConfig) {
-        this.searchWidget.sources.push(new SearchSource({layer: sceneLayer, ...sceneLayerConfig.searchConfig}));
-      }
-
-      this.map.add(sceneLayer);
+      constructedLayers.push([sceneLayer, sceneLayerConfig]);
     }
 
     for (const featureLayerConfig of config.featurelayers) {
       const featureLayer = new FeatureLayer(featureLayerConfig);
-      featureLayer.when(() => {
-        featureLayer.popupTemplate = createPopupTemplate(featureLayer);
-      });
-
-      if (featureLayerConfig.searchConfig) {
-        this.searchWidget.sources.push(new SearchSource({layer: featureLayer, ...featureLayerConfig.searchConfig}));
-      }
-
-      this.map.add(featureLayer);
+      constructedLayers.push([featureLayer, featureLayerConfig]);
     }
 
     for (const geoJSONLayerConfig of config.geoJSONLayers) {
       const geoJSONLayer = new GeoJSONLayer(geoJSONLayerConfig);
+      constructedLayers.push([geoJSONLayer, geoJSONLayerConfig]);
+    }
 
-      geoJSONLayer.when(() => {
-        geoJSONLayer.popupTemplate = createPopupTemplate(geoJSONLayer);
-      });
-
-      if (geoJSONLayerConfig.searchConfig) {
-        this.searchWidget.sources.push(new SearchSource({layer: geoJSONLayer, ...geoJSONLayerConfig.searchConfig}));
+    for (const constructedLayer of constructedLayers) {
+      const layer = constructedLayer[0];
+      const layerConfig = constructedLayer[1];
+      // Create a popup template if the layer is not a scene layer
+      if (layer.type !== 'scene') {
+        layer.when(() => {
+          layer.popupTemplate = createPopupTemplate(layer);
+        });
       }
 
-      this.map.add(geoJSONLayer);
+      if (layerConfig.searchConfig) {
+        this.searchWidget.sources.push(new SearchSource({layer: layer, ...layerConfig.searchConfig}));
+      }
+
+      this.map.add(layer);
     }
 
     this.map.ground.navigationConstraint = {
