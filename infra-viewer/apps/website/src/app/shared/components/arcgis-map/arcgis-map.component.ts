@@ -149,7 +149,6 @@ export class ArcgisMapComponent implements OnInit {
     const shadowWidget = new Expand({view: this.view, content: new ShadowCast({ view: this.view, }), group: "top-right"});
 
     shadowWidget.watch("expanded", (expanded) => {
-      console.log(expanded)
       if (expanded){
         (shadowWidget.content as ShadowCast).viewModel.start();
       } else {
