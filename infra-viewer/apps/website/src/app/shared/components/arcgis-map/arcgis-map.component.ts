@@ -19,6 +19,11 @@ import ViewClickEvent = __esri.ViewClickEvent;
 import Daylight from '@arcgis/core/widgets/Daylight';
 import Weather from '@arcgis/core/widgets/Weather';
 import ShadowCast from '@arcgis/core/widgets/ShadowCast';
+import Portal from '@arcgis/core/portal/Portal';
+import OAuthInfo from '@arcgis/core/identity/OAuthInfo';
+import IdentityManager from '@arcgis/core/identity/IdentityManager';
+import Layer from '@arcgis/core/layers/Layer';
+
 @Component({
   selector: 'app-arcgis-map',
   templateUrl: './arcgis-map.component.html',
@@ -35,6 +40,7 @@ export class ArcgisMapComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.authenticate();
     this.createMap().then(() => {
       this.createView();
       this.createUI();
@@ -136,7 +142,7 @@ export class ArcgisMapComponent implements OnInit {
       content: new Weather({
         view: this.view,
       }),
-      group: "top-right"
+      group: 'top-right'
     });
 
     const daylightExpand = new Expand({
@@ -144,12 +150,12 @@ export class ArcgisMapComponent implements OnInit {
       content: new Daylight({
         view: this.view
       }),
-      group: "top-right"
+      group: 'top-right'
     });
-    const shadowWidget = new Expand({view: this.view, content: new ShadowCast({ view: this.view, }), group: "top-right"});
-
-    shadowWidget.watch("expanded", (expanded) => {
-      if (expanded){
+    const shadowWidget = new Expand({view: this.view, content: new ShadowCast({view: this.view}), group: 'top-right'});
+    (shadowWidget.content as ShadowCast).viewModel.stop();
+    shadowWidget.watch('expanded', (expanded) => {
+      if (expanded) {
         (shadowWidget.content as ShadowCast).viewModel.start();
       } else {
         (shadowWidget.content as ShadowCast).viewModel.stop();
@@ -162,7 +168,7 @@ export class ArcgisMapComponent implements OnInit {
       this.updatePerformanceInfo();
 
     this.view.ui.add([elevationProfileExpand, layerlistExpand], 'top-left');
-    this.view.ui.add([this.searchWidget, weatherExpand, daylightExpand, shadowWidget], "top-right");
+    this.view.ui.add([this.searchWidget, weatherExpand, daylightExpand, shadowWidget], 'top-right');
     // this.view.ui.add(new QueryBuilderWidget(),"top-right")
   }
 
@@ -224,6 +230,14 @@ export class ArcgisMapComponent implements OnInit {
   }
 
   private onViewClick(event: __esri.ViewClickEvent) {
+/*    this.queryService.queryOnLocation(event.mapPoint, this.map.layers as Layer[]).then((results) => {
+      if (results.length > 0) {
+        this.view.popup.open({
+          features: results,
+          location: event.mapPoint,
+        });
+      }
+    });*/
     this.filterFeaturesByDistance(event.mapPoint);
   }
 
@@ -327,5 +341,26 @@ export class ArcgisMapComponent implements OnInit {
         tableCountContainer.appendChild(row);
       }
     }
+  }
+
+  private authenticate() {
+    const info = new OAuthInfo({
+      appId: 'YOUR-CLIENT-ID',
+      popup: true // the default
+    });
+    IdentityManager.registerOAuthInfos([info]);
+
+    IdentityManager
+      .checkSignInStatus(info.portalUrl + '/sharing')
+      .then(() => this.handleSignIn())
+      .catch((e) => console.log("Not signed in", e));
+  }
+
+  private handleSignIn(): void {
+    const portal = new Portal();
+    portal.load().then(() => {
+      const results = {name: portal.user.fullName, username: portal.user.username};
+      console.log('Results', results)
+    });
   }
 }
