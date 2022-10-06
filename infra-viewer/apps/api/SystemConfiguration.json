@@ -55,6 +55,11 @@
       }
     },
     {
+      "url": "https://geo.arnhem.nl/arcgis/rest/services/GeoWeb/Arnhem_BOR/MapServer",
+      "title": "BOR",
+      "id": "bor"
+    },
+    {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Banken/MapServer/0",
       "title": "Banken",
       "id": "banken"
