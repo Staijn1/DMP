@@ -5,8 +5,8 @@ echo "Building sub-applications"
 docker-compose build
 
 echo "Uploading website image"
-docker push staijn/spotifymanager:website
+docker push staijn/infraviewer:website
 echo "Uploading API image"
-docker push staijn/spotifymanager:api
+docker push staijn/infraviewer:api
 echo "Done!"
 pause

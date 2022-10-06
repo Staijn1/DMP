@@ -6,7 +6,7 @@ import { CustomError } from '@infra-viewer/interfaces';
 })
 export class HTTPService {
   /**
-   * Handle the error from spotify and map it to an error we can show
+   * Handle the error from the api and map it to an error we can show
    * @param {any} err
    * @returns {CustomError}
    * @private

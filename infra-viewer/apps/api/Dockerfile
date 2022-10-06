@@ -1,4 +1,4 @@
-FROM infraviewer:nx-base AS builder
+FROM staijn/infraviewer:nx-base AS builder
 
 ARG NODE_ENV
 ARG BUILD_FLAG
