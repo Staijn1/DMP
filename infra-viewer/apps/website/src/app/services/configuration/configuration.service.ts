@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HTTPService} from '../http.service';
+import {HTTPService} from '../HTTP/http.service';
 import {environment} from '../../../environments/environment';
 import {SystemConfiguration} from '@infra-viewer/interfaces';
 
