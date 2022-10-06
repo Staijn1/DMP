@@ -1,6 +1,7 @@
 {
   "scenelayers": [
     {
+      "minScale": 65000,
       "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/BAG_3D_WGS/SceneServer",
       "id": "buildings",
       "title": "3D Gebouwen",
@@ -37,7 +38,8 @@
       "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Bomen_WGS/SceneServer",
       "featureReduction": {
         "type": "selection"
-      }
+      },
+      "minScale": 3000
     },
     {
       "title": "3D Windturbines",
@@ -51,7 +53,8 @@
       "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/strengen/FeatureServer/0",
       "featureReduction": {
         "type": "selection"
-      }
+      },
+      "minScale": 3000
     },
     {
       "id": "trafficSigns",
@@ -59,24 +62,29 @@
       "screenSizePerspectiveEnabled": true,
       "featureReduction": {
         "type": "selection"
-      }
+      },
+      "minScale": 3000
     },
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Banken/MapServer/0",
       "title": "Banken",
-      "id": "banken"
+      "id": "banken",
+      "minScale": 3000
     },
     {
       "id": "speeltoestellen",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Spelenkaart/MapServer/1",
-      "title": "Speeltoestellen"
+      "title": "Speeltoestellen",
+      "minScale": 3000
     },
     {
       "id": "kabelsleidingen",
       "url": "https://geoservices.rijkswaterstaat.nl/arcgis2/rest/services/GDR/kabels_en_leidingen_zeeland/FeatureServer ",
       "title": "Kabels en leidingen Zeeland",
-      "offset": -20,
-      "mode": "absolute-height",
+      "elevationInfo": {
+        "mode": "relative-to-ground",
+        "offset": -3
+      },
       "renderer": {
         "type": "simple",
         "symbol": {
@@ -99,16 +107,19 @@
     },
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Wegbeheer/MapServer/0",
-      "title": "Wegbeheer"
+      "title": "Wegbeheer",
+      "minScale": 3000
     },
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Trolleymasten/MapServer/0",
-      "title": "Trolleymasten"
+      "title": "Trolleymasten",
+      "minScale": 3000
     },
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Afvalbakken/MapServer/0",
       "id": "afvalbakken",
-      "title": "Afvalbakken"
+      "title": "Afvalbakken",
+      "minScale": 3000
     },
     {
       "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Ziekenhuizen2/FeatureServer/0",
@@ -116,18 +127,28 @@
       "title": "Ziekenhuizen",
       "searchConfig": {
         "displayField": "loc_straat",
-        "searchFields": ["Organisati", "loc_naam", "loc_straat"],
+        "searchFields": [
+          "Organisati",
+          "loc_naam",
+          "loc_straat"
+        ],
         "exactMatch": false,
         "name": "Ziekenhuizen"
-      }
+      },
+      "minScale": 100000
     },
     {
       "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Politiebureaus/FeatureServer",
       "id": "politiebureaus",
       "title": "Politiebureaus",
+      "minScale": 100000,
       "searchConfig": {
         "displayField": "LOC_STRAAT",
-        "searchFields": ["Organisati", "LOC_NAAM", "LOC_STRAAT"],
+        "searchFields": [
+          "Organisati",
+          "LOC_NAAM",
+          "LOC_STRAAT"
+        ],
         "exactMatch": false,
         "name": "Politiebureaus"
       }
@@ -135,10 +156,15 @@
     {
       "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Brandweerkazernes/FeatureServer/0",
       "title": "Brandweerkazernes",
+      "minScale": 100000,
       "mode": "relative-to-scene",
       "searchConfig": {
         "displayField": "LOC_STRAAT",
-        "searchFields": ["Organisati", "LOC_NAAM", "LOC_STRAAT"],
+        "searchFields": [
+          "Organisati",
+          "LOC_NAAM",
+          "LOC_STRAAT"
+        ],
         "exactMatch": false,
         "name": "Brandweerkazernes"
       }
