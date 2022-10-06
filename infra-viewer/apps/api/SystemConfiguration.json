@@ -47,17 +47,19 @@
   ],
   "featurelayers": [
     {
+      "id": "strengen",
+      "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/strengen/FeatureServer/0",
+      "featureReduction": {
+        "type": "selection"
+      }
+    },
+    {
       "id": "trafficSigns",
       "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Verkeersborden_NDW/FeatureServer/0",
       "screenSizePerspectiveEnabled": true,
       "featureReduction": {
         "type": "selection"
       }
-    },
-    {
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/GeoWeb/Arnhem_BOR/MapServer",
-      "title": "BOR",
-      "id": "bor"
     },
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Banken/MapServer/0",
