@@ -15,14 +15,17 @@ import {getMB} from '@infra-viewer/interfaces';
 import PopupTemplate from '@arcgis/core/PopupTemplate';
 import {QueryService} from '../../../services/query/query.service';
 import SearchSource from '@arcgis/core/widgets/Search/SearchSource';
-import ViewClickEvent = __esri.ViewClickEvent;
 import Daylight from '@arcgis/core/widgets/Daylight';
 import Weather from '@arcgis/core/widgets/Weather';
 import ShadowCast from '@arcgis/core/widgets/ShadowCast';
 import Portal from '@arcgis/core/portal/Portal';
-import OAuthInfo from '@arcgis/core/identity/OAuthInfo';
-import IdentityManager from '@arcgis/core/identity/IdentityManager';
 import Layer from '@arcgis/core/layers/Layer';
+import Collection from '@arcgis/core/core/Collection';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import Color from '@arcgis/core/Color';
+import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
+import ViewClickEvent = __esri.ViewClickEvent;
+import {createTablePopup} from '../../../utils/utils';
 
 @Component({
   selector: 'app-arcgis-map',
@@ -34,9 +37,11 @@ export class ArcgisMapComponent implements OnInit {
   private view!: SceneView;
   private readonly showPerformanceInfo = false;
   private searchWidget!: __esri.widgetsSearch;
+  private queryResultLayer: __esri.GraphicsLayer | null = null;
 
 
   constructor(private readonly configService: ConfigurationService, private readonly queryService: QueryService) {
+    // esriconfig.portalUrl = 'https://geo.arnhem.nl/portal';
   }
 
   ngOnInit(): void {
@@ -61,6 +66,15 @@ export class ArcgisMapComponent implements OnInit {
     this.view = new SceneView({
       container: 'map',
       map: this.map,
+      camera: {
+        position: {
+          latitude: 51.96437,
+          longitude: 5.910011,
+          z: 2500,
+        },
+        tilt: 30,
+        heading: 0,
+      },
       environment: {
         lighting: {
           date: new Date(),
@@ -74,17 +88,6 @@ export class ArcgisMapComponent implements OnInit {
 
     this.view
       .when(() => {
-        this.view
-          .goTo({
-            position: {
-              latitude: 51.96437,
-              longitude: 5.910011,
-              z: 2500,
-            },
-            tilt: 30,
-            heading: 0,
-          })
-          .then();
 
         const sketchVM = new SketchViewModel({
           view: this.view,
@@ -152,6 +155,7 @@ export class ArcgisMapComponent implements OnInit {
       }),
       group: 'top-right'
     });
+
     const shadowWidget = new Expand({view: this.view, content: new ShadowCast({view: this.view}), group: 'top-right'});
     (shadowWidget.content as ShadowCast).viewModel.stop();
     shadowWidget.watch('expanded', (expanded) => {
@@ -174,14 +178,6 @@ export class ArcgisMapComponent implements OnInit {
 
   private async applyConfig(): Promise<void> {
     const config = await this.configService.getConfiguration();
-    const createPopupTemplate = (layer: GeoJSONLayer | FeatureLayer): PopupTemplate => {
-      if (!layer.fields) return new PopupTemplate();
-      return new PopupTemplate({
-        title: layer.title,
-        // Create content for the popup for each field
-        content: layer.fields.map((field: any) => `${field.name}: {${field.name}}`).join('<br>')
-      })
-    };
 
     const elevationLayer = new ElevationLayer(config.elevationLayer);
     this.map.ground.layers.add(elevationLayer);
@@ -208,12 +204,12 @@ export class ArcgisMapComponent implements OnInit {
       // Create a popup template if the layer is not a scene layer
       if (layer.type !== 'scene') {
         layer.when(() => {
-          layer.popupTemplate = createPopupTemplate(layer);
+          layer.popupTemplate = createTablePopup(layer);
         });
       }
 
       if (layerConfig.searchConfig) {
-        this.searchWidget.sources.push(new SearchSource({layer: layer, ...layerConfig.searchConfig}));
+        this.searchWidget.sources.push(new SearchSource({...layerConfig.searchConfig, layer: layer}));
       }
 
       this.map.add(layer);
@@ -230,69 +226,27 @@ export class ArcgisMapComponent implements OnInit {
   }
 
   private onViewClick(event: __esri.ViewClickEvent) {
-/*    this.queryService.queryOnLocation(event.mapPoint, this.map.layers as Layer[]).then((results) => {
-      if (results.length > 0) {
-        this.view.popup.open({
-          features: results,
-          location: event.mapPoint,
+    this.queryService.queryOnLocation(event.mapPoint, this.map.layers as Collection<Layer>).then((results) => {
+      // Disable all the layers
+      this.map.layers.filter(layer => layer.type != 'scene').forEach((layer) => layer.visible = false);
+      if (!this.queryResultLayer) {
+        this.queryResultLayer = new GraphicsLayer({
+          title: 'Query results',
+          listMode: 'show',
+          id: 'queryResults',
         });
       }
-    });*/
-    this.filterFeaturesByDistance(event.mapPoint);
-  }
 
-  private filterFeaturesByDistance(mapPoint: __esri.Point) {
-    // Todo: implement
-    /*const circleSymbol = {
-      type: 'point-3d',
-      symbolLayers: [
-        {
-          type: 'icon',
-          outline: {color: [0, 0, 0, 1]},
-          material: {color: [255, 255, 255, 0]}
-        },
-        {type: 'object', material: {color: [255, 255, 255, 1]}}
-      ]
-    };
-    const circle = new Circle({
-      center: mapPoint,
-      geodesic: true,
-      radius: 100,
-      radiusUnit: 'meters'
+      const graphics = [];
+      for (const result of results) {
+        for (const feature of result.features) {
+          graphics.push(feature);
+        }
+      }
+      this.queryResultLayer.removeAll();
+      this.queryResultLayer.addMany(graphics);
+      this.map.add(this.queryResultLayer);
     });
-    //Clear graphics
-    this.view.graphics.removeAll();
-    const graphic = new Graphic({
-      symbol: circleSymbol,
-      geometry: circle
-    } as any);
-    this.view.graphics.add(graphic);
-
-    const query = new Query({returnGeometry: true, geometry: circle.extent});
-
-    this.map.layers.forEach(layer => {
-      if (layer.type === 'scene') {
-        const sceneLayer = layer as any;
-        sceneLayer.queryFeatures(query).then((results: FeatureSet) => {
-          sceneLayer.featureEffect = new FeatureFilter({
-            objectIds: results.features.map(feature => feature.attributes.OBJECTID)
-          });
-        });
-      }
-
-      if (['geojson', 'feature'].includes(layer.type)) {
-        layer.visible = false;
-        (layer as FeatureLayer).queryFeatures(query).then((featureSet: FeatureSet) => {
-          if (featureSet.features.length > 0) {
-            const graphicsLayer = new GraphicsLayer({
-              title: 'Search results',
-            });
-            this.view.graphics.addMany(featureSet.features);
-            this.map.add(graphicsLayer);
-          }
-        })
-      }
-    });*/
   }
 
   private updatePerformanceInfo() {
@@ -344,16 +298,17 @@ export class ArcgisMapComponent implements OnInit {
   }
 
   private authenticate() {
-    const info = new OAuthInfo({
-      appId: 'YOUR-CLIENT-ID',
-      popup: true // the default
-    });
-    IdentityManager.registerOAuthInfos([info]);
+    /* console.log("OAuth Info",IdentityManager.findOAuthInfo("https://geo.arnhem.nl/portal"))
+     const info = new OAuthInfo({
+       appId: 'YOUR-CLIENT-ID',
+       popup: true // the default
+     });
+     IdentityManager.registerOAuthInfos([info]);
 
-    IdentityManager
-      .checkSignInStatus(info.portalUrl + '/sharing')
-      .then(() => this.handleSignIn())
-      .catch((e) => console.log("Not signed in", e));
+     IdentityManager
+       .checkSignInStatus(info.portalUrl + '/sharing')
+       .then(() => this.handleSignIn())
+       .catch((e) => console.log("Not signed in", e));*/
   }
 
   private handleSignIn(): void {

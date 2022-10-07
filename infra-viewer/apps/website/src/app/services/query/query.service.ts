@@ -24,7 +24,7 @@ export class QueryService {
     return layer.queryFeatures(query);
   }
 
-  queryOnLocation(mapPoint: __esri.Point, layers: __esri.Layer[]): Promise<__esri.FeatureSet[]> {
+  queryOnLocation(mapPoint: __esri.Point, layers: __esri.Collection<__esri.Layer>): Promise<__esri.FeatureSet[]> {
     const query = new Query();
     query.geometry = mapPoint;
     query.distance = 100;
@@ -35,7 +35,7 @@ export class QueryService {
 
     const querySupportedLayers = layers.filter(layer => layer.type === 'feature' || layer.type === 'geojson');
     // Create an array of promises, one for each layer
-    const promises = layers.map(layer => (layer as FeatureLayer).queryFeatures(query));
+    const promises = querySupportedLayers.map(layer => (layer as FeatureLayer).queryFeatures(query));
     // Return a promise that resolves when all promises in the array have resolved
     return Promise.all(promises);
   }
