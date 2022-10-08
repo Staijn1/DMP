@@ -245,6 +245,7 @@ export class ArcgisMapComponent implements OnInit {
       }
       this.queryResultLayer.removeAll();
       this.queryResultLayer.addMany(graphics);
+      this.queryResultLayer.visible = true;
       this.map.add(this.queryResultLayer);
     });
   }

@@ -1,0 +1,7 @@
+.uk-text-capitalize {
+  text-transform: lowercase !important;
+}
+
+.uk-text-capitalize::first-letter {
+  text-transform: uppercase;
+}
