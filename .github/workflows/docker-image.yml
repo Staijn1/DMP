@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build base image
-      run: docker build . --tag staijn/infraviewer:nx-base
+      run: docker build . --tag ${{ secrets.USERNAME }}/infraviewer:nx-base
     - name: Build sub-application images
       run: docker-compose build
     -
@@ -26,8 +26,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.TOKEN }}
     - name: Publish base image
-      run: docker push . staijn/infraviewer:nx-base
+      run: docker push . ${{ secrets.USERNAME }}/infraviewer:nx-base
     - name: Publish api image
-      run: docker push . staijn/infraviewer:api
+      run: docker push . ${{ secrets.USERNAME }}/infraviewer:api
     - name: Publish website image
-      run: docker push . staijn/infraviewer:website
+      run: docker push . ${{ secrets.USERNAME }}/infraviewer:website
