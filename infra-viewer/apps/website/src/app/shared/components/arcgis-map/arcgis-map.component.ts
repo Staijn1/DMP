@@ -11,21 +11,18 @@ import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
 import SceneLayer from '@arcgis/core/layers/SceneLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
-import {getMB} from '@infra-viewer/interfaces';
-import PopupTemplate from '@arcgis/core/PopupTemplate';
 import {QueryService} from '../../../services/query/query.service';
 import SearchSource from '@arcgis/core/widgets/Search/SearchSource';
 import Daylight from '@arcgis/core/widgets/Daylight';
 import Weather from '@arcgis/core/widgets/Weather';
 import ShadowCast from '@arcgis/core/widgets/ShadowCast';
-import Portal from '@arcgis/core/portal/Portal';
 import Layer from '@arcgis/core/layers/Layer';
 import Collection from '@arcgis/core/core/Collection';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import Color from '@arcgis/core/Color';
-import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol';
-import ViewClickEvent = __esri.ViewClickEvent;
 import {createTablePopup} from '../../../utils/utils';
+import ViewClickEvent = __esri.ViewClickEvent;
+import Graphic from '@arcgis/core/Graphic';
+import SymbolProperties = __esri.SymbolProperties;
 
 @Component({
   selector: 'app-arcgis-map',
@@ -35,17 +32,14 @@ import {createTablePopup} from '../../../utils/utils';
 export class ArcgisMapComponent implements OnInit {
   private map!: WebScene;
   private view!: SceneView;
-  private readonly showPerformanceInfo = false;
   private searchWidget!: __esri.widgetsSearch;
   private queryResultLayer: __esri.GraphicsLayer | null = null;
 
 
   constructor(private readonly configService: ConfigurationService, private readonly queryService: QueryService) {
-    // esriconfig.portalUrl = 'https://geo.arnhem.nl/portal';
   }
 
   ngOnInit(): void {
-    this.authenticate();
     this.createMap().then(() => {
       this.createView();
       this.createUI();
@@ -168,9 +162,6 @@ export class ArcgisMapComponent implements OnInit {
 
     this.view.ui.add('performanceInfo', 'bottom-left');
 
-    if (this.showPerformanceInfo)
-      this.updatePerformanceInfo();
-
     this.view.ui.add([elevationProfileExpand, layerlistExpand], 'top-left');
     this.view.ui.add([this.searchWidget, weatherExpand, daylightExpand, shadowWidget], 'top-right');
     // this.view.ui.add(new QueryBuilderWidget(),"top-right")
@@ -226,97 +217,64 @@ export class ArcgisMapComponent implements OnInit {
   }
 
   private onViewClick(event: __esri.ViewClickEvent) {
-    this.queryService.queryOnLocation(event.mapPoint, this.map.layers as Collection<Layer>).then((results) => {
-      // Disable all the layers
-      this.map.layers.filter(layer => layer.type != 'scene').forEach((layer) => layer.visible = false);
-      if (!this.queryResultLayer) {
-        this.queryResultLayer = new GraphicsLayer({
-          title: 'Query results',
-          listMode: 'show',
-          id: 'queryResults',
-        });
+    // Determine if the user clicked on a feature
+    this.view.hitTest(event).then((response) => {
+      if (response.results.length) {
+        console.log('Clicked on a feature');
+      } else {
+        this.queryService.queryOnLocation(event.mapPoint, this.map.layers as Collection<Layer>).then(results => this.onQueryLocationResults(results, event.mapPoint));
       }
+    });
+  }
 
-      const graphics = [];
-      for (const result of results) {
-        for (const feature of result.features) {
-          graphics.push(feature);
+  private onQueryLocationResults(results: __esri.FeatureSet[], locationClicked: __esri.Point) {
+    // Disable all the layers
+    this.map.layers.filter(layer => layer.type != 'scene').forEach((layer) => layer.visible = false);
+    if (!this.queryResultLayer) {
+      this.queryResultLayer = new GraphicsLayer({
+        title: 'Query results',
+        listMode: 'show',
+        id: 'queryResults',
+      });
+    }
+
+    const graphics = [];
+    for (const result of results) {
+      for (const feature of result.features) {
+        graphics.push(feature);
+      }
+    }
+
+    // Add a graphic to the map at the location of the click
+    const graphic = new Graphic({
+      geometry: locationClicked,
+      symbol: {
+        type: "point-3d",
+        symbolLayers: [
+          {
+            type: "icon",
+            anchor: "center",
+            outline: { color: [0, 0, 0, 1], size: 1 },
+            material: { color: [255, 255, 255, 1] }
+          }
+        ],
+        verticalOffset: {
+          screenLength: 40,
+          maxWorldLength: 200,
+          minWorldLength: 35
+        },
+        callout: {
+          type: "line", // autocasts as new LineCallout3D()
+          size: 0.5,
+          color: [0, 0, 0]
         }
-      }
-      this.queryResultLayer.removeAll();
-      this.queryResultLayer.addMany(graphics);
-      this.queryResultLayer.visible = true;
-      this.map.add(this.queryResultLayer);
+      } as SymbolProperties,
     });
-  }
 
-  private updatePerformanceInfo() {
-    const performanceInfo = this.view.performanceInfo;
-    this.updateMemoryTitle(performanceInfo.usedMemory, performanceInfo.totalMemory, performanceInfo.quality);
-    this.updateTables(performanceInfo);
-    setTimeout(() => this.updatePerformanceInfo(), 1000);
-  }
-
-  private updateMemoryTitle(usedMemory: number, totalMemory: number, quality: number) {
-    const title = document.getElementById('title') as HTMLElement;
-    title.innerHTML = `Memory: ${getMB(usedMemory)}MB/${getMB(totalMemory)}MB  -  Quality: ${Math.round(100 * quality)} %`;
-  }
-
-  private updateTables(stats: __esri.SceneViewPerformanceInfo
-  ) {
-    const tableMemoryContainer = document.getElementById('memory') as HTMLElement;
-    const tableCountContainer = document.getElementById('count') as HTMLElement;
-    tableMemoryContainer.innerHTML = `<tr>
-            <th>Resource</th>
-            <th>Memory(MB)</th>
-          </tr>`;
-
-    for (const layerInfo of stats.layerPerformanceInfos) {
-      const row = document.createElement('tr');
-      row.innerHTML = `<td>${layerInfo.layer.title}</td><td class="center">${getMB(layerInfo.memory)}</td>`;
-      tableMemoryContainer.appendChild(row);
-    }
-
-    tableCountContainer.innerHTML = `<tr>
-            <th>Layer - Features</th>
-            <th>Displayed / Max<br>(count)</th>
-            <th>Total<br>(count)</th>
-          </tr>`;
-
-    for (const layerInfo of stats.layerPerformanceInfos) {
-      if (layerInfo.maximumNumberOfFeatures) {
-        const row = document.createElement('tr');
-        row.innerHTML = `<td>${layerInfo.layer.title}`;
-        row.innerHTML += `<td class="center">${
-          layerInfo.displayedNumberOfFeatures ? layerInfo.displayedNumberOfFeatures : '-'
-        } / ${layerInfo.maximumNumberOfFeatures ? layerInfo.maximumNumberOfFeatures : '-'}</td>`;
-        row.innerHTML += `<td class="center">${
-          layerInfo.totalNumberOfFeatures ? layerInfo.totalNumberOfFeatures : '-'
-        }</td>`;
-        tableCountContainer.appendChild(row);
-      }
-    }
-  }
-
-  private authenticate() {
-    /* console.log("OAuth Info",IdentityManager.findOAuthInfo("https://geo.arnhem.nl/portal"))
-     const info = new OAuthInfo({
-       appId: 'YOUR-CLIENT-ID',
-       popup: true // the default
-     });
-     IdentityManager.registerOAuthInfos([info]);
-
-     IdentityManager
-       .checkSignInStatus(info.portalUrl + '/sharing')
-       .then(() => this.handleSignIn())
-       .catch((e) => console.log("Not signed in", e));*/
-  }
-
-  private handleSignIn(): void {
-    const portal = new Portal();
-    portal.load().then(() => {
-      const results = {name: portal.user.fullName, username: portal.user.username};
-      console.log('Results', results)
-    });
+    this.queryResultLayer.removeAll();
+    this.queryResultLayer.add(graphic);
+    this.queryResultLayer.addMany(graphics);
+    this.queryResultLayer.visible = true;
+    this.map.add(this.queryResultLayer);
   }
 }
