@@ -54,7 +54,34 @@
       "featureReduction": {
         "type": "selection"
       },
-      "minScale": 3000
+      "elevationInfo": {
+        "mode": "relative-to-ground",
+        "offset": -3
+      },
+      "renderer": {
+        "type": "simple",
+        "symbol": {
+          "type": "line-3d",
+          "symbolLayers": [
+            {
+              "type": "path",
+              "profile": "circle",
+              "material": {
+                "color": "#c408c1"
+              },
+              "width": 1,
+              "height": 1,
+              "anchor": "bottom",
+              "profileRotation": "heading"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "url": "https://geo.arnhem.nl/arcgis/rest/services/GeoWeb/Arnhem_BOR/MapServer",
+      "title": "BOR",
+      "id": "bor"
     },
     {
       "id": "trafficSigns",
