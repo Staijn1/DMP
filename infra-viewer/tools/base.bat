@@ -2,7 +2,7 @@
 @echo off
 
 echo "Building base image"
-
+cd ../
 docker build . -t staijn/infraviewer:nx-base
 
 echo "Uploading base image"

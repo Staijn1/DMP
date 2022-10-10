@@ -2,8 +2,6 @@ name: Build infra-viewer
 
 on:
   push:
-    branches:
-      - main
   pull_request:
   workflow_dispatch:
   
