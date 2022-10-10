@@ -1,1 +1,16 @@
-<p>config-page works!</p>
+<div class="uk-container">
+  <h1>Configuration</h1>
+  <p>On this page you can quickly configure the infraviewer</p>
+
+  <section class="uk-margin-medium">
+    <form class="uk-form-stacked" #f="ngForm" (ngSubmit)="onConfigurationSubmit(f)">
+      <div>
+        <label class="uk-form-label">Configuration</label>
+        <div class="uk-form-controls">
+          <textarea class="uk-textarea uk-height-viewport" name="configuration" [(ngModel)]="configurationString"></textarea>
+        </div>
+      </div>
+      <button type="submit" class="uk-margin-small-top uk-button uk-button-primary">Submit</button>
+    </form>
+  </section>
+</div>

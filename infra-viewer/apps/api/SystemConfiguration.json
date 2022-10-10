@@ -79,11 +79,6 @@
       }
     },
     {
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/GeoWeb/Arnhem_BOR/MapServer",
-      "title": "BOR",
-      "id": "bor"
-    },
-    {
       "id": "trafficSigns",
       "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Verkeersborden_NDW/FeatureServer/0",
       "screenSizePerspectiveEnabled": true,
@@ -103,34 +98,6 @@
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Spelenkaart/MapServer/1",
       "title": "Speeltoestellen",
       "minScale": 3000
-    },
-    {
-      "id": "kabelsleidingen",
-      "url": "https://geoservices.rijkswaterstaat.nl/arcgis2/rest/services/GDR/kabels_en_leidingen_zeeland/FeatureServer ",
-      "title": "Kabels en leidingen Zeeland",
-      "elevationInfo": {
-        "mode": "relative-to-ground",
-        "offset": -3
-      },
-      "renderer": {
-        "type": "simple",
-        "symbol": {
-          "type": "line-3d",
-          "symbolLayers": [
-            {
-              "type": "path",
-              "profile": "circle",
-              "material": {
-                "color": "#b3b3b3"
-              },
-              "width": 1,
-              "height": 1,
-              "anchor": "bottom",
-              "profileRotation": "heading"
-            }
-          ]
-        }
-      }
     },
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Wegbeheer/MapServer/0",
@@ -162,7 +129,11 @@
         "exactMatch": false,
         "name": "Ziekenhuizen"
       },
-      "minScale": 100000
+      "minScale": 100000,
+      "elevationInfo": {
+        "mode": "relative-to-scene",
+        "offset": 3
+      }
     },
     {
       "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Politiebureaus/FeatureServer",
@@ -178,6 +149,10 @@
         ],
         "exactMatch": false,
         "name": "Politiebureaus"
+      },
+      "elevationInfo": {
+        "mode": "relative-to-scene",
+        "offset": 3
       }
     },
     {
@@ -194,6 +169,10 @@
         ],
         "exactMatch": false,
         "name": "Brandweerkazernes"
+      },
+      "elevationInfo": {
+        "mode": "relative-to-scene",
+        "offset": 3
       }
     }
   ],

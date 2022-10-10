@@ -16,4 +16,14 @@ export class ConfigurationService extends HTTPService {
 
     return body;
   }
+
+  async setConfiguration(configuration: SystemConfiguration | string): Promise<void> {
+    if (typeof configuration === 'object') configuration = JSON.stringify(configuration);
+
+    return this.request(`${environment.api}/System/Configuration`, {
+      method: 'POST',
+      body: configuration,
+      headers: {'Content-Type': 'application/json'}
+    });
+  }
 }
