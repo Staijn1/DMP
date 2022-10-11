@@ -8,27 +8,6 @@
       "mode": "on-the-ground",
       "featureReduction": {
         "type": "selection"
-      },
-      "renderer": {
-        "type": "simple",
-        "symbol": {
-          "type": "mesh-3d",
-          "symbolLayers": [
-            {
-              "type": "fill",
-              "material": {
-                "color": "#afbcf8"
-              }
-            }
-          ]
-        }
-      },
-      "timeInfo": {
-        "startField": "bouwjaar",
-        "interval": {
-          "unit": "years",
-          "value": 1
-        }
       }
     },
     {
@@ -44,10 +23,145 @@
     {
       "title": "3D Windturbines",
       "id": "windTurbines",
-      "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Windturbines_WGS/SceneServer/"
+      "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Windturbines_WGS/SceneServer"
     }
   ],
   "featurelayers": [
+    {
+      "id": "hemelwaterafvoer",
+      "title": "Hemelwaterafvoer",
+      "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/hemelwaterafvoer/FeatureServer/0",
+      "minScale": 3000
+    },
+    {
+      "id": "asbest",
+      "title": "Asbest",
+      "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/asbest/FeatureServer",
+      "minScale": 3000
+    },
+    {
+      "id": "ondergrondse_tanks",
+      "title": "Ondergrondse tanks",
+      "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/ondergrondse_tanks/FeatureServer",
+      "minScale": 3000
+    },
+    {
+      "id": "VRI_kasten",
+      "title": "VRI kasten",
+      "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/VRI_kasten/FeatureServer",
+      "minScale": 3000
+    },
+    {
+      "id": "VRI_masten",
+      "title": "VRI masten",
+      "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/VRI_masten/FeatureServer",
+      "minScale": 3000
+    },
+    {
+      "id": "kabels_laagspanning",
+      "title": "Kabels laagspanning",
+      "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/kabels_laagspanning/FeatureServer",
+      "minScale": 3000,
+      "renderer": {
+        "type": "simple",
+        "symbol": {
+          "type": "line-3d",
+          "symbolLayers": [
+            {
+              "type": "path",
+              "profile": "circle",
+              "material": {
+                "color": "#0818c4"
+              },
+              "width": 1,
+              "height": 1,
+              "anchor": "bottom",
+              "profileRotation": "heading"
+            }
+          ]
+        }
+      },
+      "elevationInfo": {
+        "mode": "relative-to-ground",
+        "offset": -3
+      }
+    },
+    {
+      "id": "mantelbuis",
+      "title": "Mantelbuis",
+      "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/mantelbuis/FeatureServer",
+      "minScale": 3000,
+      "renderer": {
+        "type": "simple",
+        "symbol": {
+          "type": "line-3d",
+          "symbolLayers": [
+            {
+              "type": "path",
+              "profile": "circle",
+              "material": {
+                "color": "#089bc4"
+              },
+              "width": 1,
+              "height": 1,
+              "anchor": "bottom",
+              "profileRotation": "heading"
+            }
+          ]
+        }
+      },
+      "elevationInfo": {
+        "mode": "relative-to-ground",
+        "offset": -3
+      }
+    },
+    {
+      "id": "masten",
+      "title": "Masten",
+      "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/masten/FeatureServer",
+      "minScale": 3000
+    },
+    {
+      "id": "putten",
+      "title": "Putten",
+      "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/Putten/FeatureServer",
+      "minScale": 3000
+    },
+    {
+      "id": "kabels",
+      "title": "Kabels",
+      "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/kabels/FeatureServer",
+      "minScale": 3000,
+      "renderer": {
+        "type": "simple",
+        "symbol": {
+          "type": "line-3d",
+          "symbolLayers": [
+            {
+              "type": "path",
+              "profile": "circle",
+              "material": {
+                "color": "#aec408"
+              },
+              "width": 1,
+              "height": 1,
+              "anchor": "bottom",
+              "profileRotation": "heading"
+            }
+          ]
+        }
+      },
+      "elevationInfo": {
+        "mode": "relative-to-ground",
+        "offset": -3
+      }
+    },
+    {
+      "id": "meldingen_or",
+      "title": "Meldingen OR",
+      "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/Putten/FeatureServer",
+      "minScale": 3000
+    },
     {
       "id": "strengen",
       "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/strengen/FeatureServer/0",
@@ -116,19 +230,15 @@
       "minScale": 3000
     },
     {
+      "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Afvalcontainers/MapServer/0/",
+      "id": "afvalcontainers",
+      "title": "Afvalcontainers",
+      "minScale": 3000
+    },
+    {
       "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Ziekenhuizen2/FeatureServer/0",
       "id": "ziekenhuizen",
       "title": "Ziekenhuizen",
-      "searchConfig": {
-        "displayField": "loc_straat",
-        "searchFields": [
-          "Organisati",
-          "loc_naam",
-          "loc_straat"
-        ],
-        "exactMatch": false,
-        "name": "Ziekenhuizen"
-      },
       "minScale": 100000,
       "elevationInfo": {
         "mode": "relative-to-scene",
@@ -140,16 +250,6 @@
       "id": "politiebureaus",
       "title": "Politiebureaus",
       "minScale": 100000,
-      "searchConfig": {
-        "displayField": "LOC_STRAAT",
-        "searchFields": [
-          "Organisati",
-          "LOC_NAAM",
-          "LOC_STRAAT"
-        ],
-        "exactMatch": false,
-        "name": "Politiebureaus"
-      },
       "elevationInfo": {
         "mode": "relative-to-scene",
         "offset": 3
@@ -160,16 +260,6 @@
       "title": "Brandweerkazernes",
       "minScale": 100000,
       "mode": "relative-to-scene",
-      "searchConfig": {
-        "displayField": "LOC_STRAAT",
-        "searchFields": [
-          "Organisati",
-          "LOC_NAAM",
-          "LOC_STRAAT"
-        ],
-        "exactMatch": false,
-        "name": "Brandweerkazernes"
-      },
       "elevationInfo": {
         "mode": "relative-to-scene",
         "offset": 3
