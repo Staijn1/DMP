@@ -73,8 +73,8 @@
               "material": {
                 "color": "#0818c4"
               },
-              "width": 1,
-              "height": 1,
+              "width": 0.2,
+              "height": 0.2,
               "anchor": "bottom",
               "profileRotation": "heading"
             }
