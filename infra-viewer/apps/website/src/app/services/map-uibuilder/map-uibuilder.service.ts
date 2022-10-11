@@ -6,15 +6,21 @@ import ElevationProfile from '@arcgis/core/widgets/ElevationProfile';
 import Weather from '@arcgis/core/widgets/Weather';
 import Daylight from '@arcgis/core/widgets/Daylight';
 import ShadowCast from '@arcgis/core/widgets/ShadowCast';
+import Legend from '@arcgis/core/widgets/Legend';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MapUIBuilderService {
   private searchWidget!: __esri.widgetsSearch;
+  private legend!: __esri.Legend;
 
 
   buildUI(view: __esri.SceneView): void {
+    this.legend = new Legend({
+      view
+    });
+
     this.searchWidget = new Search({
       view: view,
       container: document.createElement('div'),
@@ -78,13 +84,26 @@ export class MapUIBuilderService {
       }
     });
 
-    view.ui.add('performanceInfo', 'bottom-left');
-
+    view.ui.add(this.legend, 'bottom-right');
     view.ui.add([elevationProfileExpand, layerlistExpand], 'top-left');
     view.ui.add([this.searchWidget, weatherExpand, daylightExpand, shadowWidget], 'top-right');
   }
 
+  /**
+   * Add the ability to search for features in a layer
+   * @param {__esri.SearchSource} source
+   */
   addSearch(source: __esri.SearchSource): void {
     this.searchWidget.sources.add(source);
+  }
+
+  /**
+   * Adds a layer to the legend
+   * @param {__esri.Layer} layer
+   */
+  addLegendLayer(layer: __esri.Layer): void {
+    this.legend.layerInfos.push({
+      layer: layer,
+    });
   }
 }

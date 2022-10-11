@@ -127,6 +127,7 @@ export class ArcgisMapComponent implements OnInit {
       const layerConfig = constructedLayer[1];
       // Create a popup template if the layer is not a scene layer
       if (layer.type !== 'scene') {
+        this.uiBuilder.addLegendLayer(layer);
         layer.when(() => {
           layer.popupTemplate = createTablePopup(layer);
         });
