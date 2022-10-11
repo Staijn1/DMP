@@ -8,27 +8,6 @@
       "mode": "on-the-ground",
       "featureReduction": {
         "type": "selection"
-      },
-      "renderer": {
-        "type": "simple",
-        "symbol": {
-          "type": "mesh-3d",
-          "symbolLayers": [
-            {
-              "type": "fill",
-              "material": {
-                "color": "#afbcf8"
-              }
-            }
-          ]
-        }
-      },
-      "timeInfo": {
-        "startField": "bouwjaar",
-        "interval": {
-          "unit": "years",
-          "value": 1
-        }
       }
     },
     {
@@ -82,13 +61,59 @@
       "id": "kabels_laagspanning",
       "title": "Kabels laagspanning",
       "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/kabels_laagspanning/FeatureServer",
-      "minScale": 3000
+      "minScale": 3000,
+      "renderer": {
+        "type": "simple",
+        "symbol": {
+          "type": "line-3d",
+          "symbolLayers": [
+            {
+              "type": "path",
+              "profile": "circle",
+              "material": {
+                "color": "#0818c4"
+              },
+              "width": 1,
+              "height": 1,
+              "anchor": "bottom",
+              "profileRotation": "heading"
+            }
+          ]
+        }
+      },
+      "elevationInfo": {
+        "mode": "relative-to-ground",
+        "offset": -3
+      }
     },
     {
       "id": "mantelbuis",
       "title": "Mantelbuis",
       "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/mantelbuis/FeatureServer",
-      "minScale": 3000
+      "minScale": 3000,
+      "renderer": {
+        "type": "simple",
+        "symbol": {
+          "type": "line-3d",
+          "symbolLayers": [
+            {
+              "type": "path",
+              "profile": "circle",
+              "material": {
+                "color": "#089bc4"
+              },
+              "width": 1,
+              "height": 1,
+              "anchor": "bottom",
+              "profileRotation": "heading"
+            }
+          ]
+        }
+      },
+      "elevationInfo": {
+        "mode": "relative-to-ground",
+        "offset": -3
+      }
     },
     {
       "id": "masten",
@@ -106,7 +131,30 @@
       "id": "kabels",
       "title": "Kabels",
       "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/kabels/FeatureServer",
-      "minScale": 3000
+      "minScale": 3000,
+      "renderer": {
+        "type": "simple",
+        "symbol": {
+          "type": "line-3d",
+          "symbolLayers": [
+            {
+              "type": "path",
+              "profile": "circle",
+              "material": {
+                "color": "#aec408"
+              },
+              "width": 1,
+              "height": 1,
+              "anchor": "bottom",
+              "profileRotation": "heading"
+            }
+          ]
+        }
+      },
+      "elevationInfo": {
+        "mode": "relative-to-ground",
+        "offset": -3
+      }
     },
     {
       "id": "meldingen_or",
