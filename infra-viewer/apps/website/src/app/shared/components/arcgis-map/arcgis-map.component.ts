@@ -20,8 +20,9 @@ import Layer from '@arcgis/core/layers/Layer';
 import Collection from '@arcgis/core/core/Collection';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import {createTablePopup} from '../../../utils/utils';
-import ViewClickEvent = __esri.ViewClickEvent;
 import Graphic from '@arcgis/core/Graphic';
+import {MapUIBuilderService} from '../../../services/map-uibuilder/map-uibuilder.service';
+import ViewClickEvent = __esri.ViewClickEvent;
 import SymbolProperties = __esri.SymbolProperties;
 
 @Component({
@@ -32,17 +33,20 @@ import SymbolProperties = __esri.SymbolProperties;
 export class ArcgisMapComponent implements OnInit {
   private map!: WebScene;
   private view!: SceneView;
-  private searchWidget!: __esri.widgetsSearch;
+
   private queryResultLayer: __esri.GraphicsLayer | null = null;
 
 
-  constructor(private readonly configService: ConfigurationService, private readonly queryService: QueryService) {
+  constructor(
+    private readonly configService: ConfigurationService,
+    private readonly queryService: QueryService,
+    private readonly uiBuilder: MapUIBuilderService) {
   }
 
   ngOnInit(): void {
     this.createMap().then(() => {
       this.createView();
-      this.createUI();
+      this.uiBuilder.buildUI(this.view);
       this.applyConfig().then();
       this.registerEvents();
     });
@@ -96,77 +100,6 @@ export class ArcgisMapComponent implements OnInit {
       .catch(console.error);
   }
 
-  private createUI(): void {
-    this.searchWidget = new Search({
-      view: this.view,
-      container: document.createElement('div'),
-    });
-
-    const layerList = new LayerList({
-      view: this.view,
-    });
-
-    const layerlistExpand = new Expand({
-      view: this.view,
-      content: layerList,
-    });
-
-    const elevationProfile = new ElevationProfile({
-      view: this.view,
-      profiles: [
-        {
-          type: 'ground', // first profile line samples the ground elevation
-        },
-        {
-          type: 'view', // second profile line samples the view and shows building profiles
-        },
-      ],
-      // hide the select button
-      // this button can be displayed when there are polylines in the
-      // scene to select and display the elevation profile for
-      visibleElements: {
-        selectButton: false,
-      },
-    });
-
-    const elevationProfileExpand = new Expand({
-      view: this.view,
-      content: elevationProfile,
-    });
-
-    const weatherExpand = new Expand({
-      view: this.view,
-      content: new Weather({
-        view: this.view,
-      }),
-      group: 'top-right'
-    });
-
-    const daylightExpand = new Expand({
-      view: this.view,
-      content: new Daylight({
-        view: this.view
-      }),
-      group: 'top-right'
-    });
-
-    const shadowWidget = new Expand({view: this.view, content: new ShadowCast({view: this.view}), group: 'top-right'});
-    (shadowWidget.content as ShadowCast).viewModel.stop();
-    shadowWidget.watch('expanded', (expanded) => {
-      if (expanded) {
-        (shadowWidget.content as ShadowCast).viewModel.start();
-      } else {
-        (shadowWidget.content as ShadowCast).viewModel.stop();
-      }
-    });
-
-    this.view.ui.add('performanceInfo', 'bottom-left');
-
-    this.view.ui.add([elevationProfileExpand, layerlistExpand], 'top-left');
-    this.view.ui.add([this.searchWidget, weatherExpand, daylightExpand, shadowWidget], 'top-right');
-    // this.view.ui.add(new QueryBuilderWidget(),"top-right")
-  }
-
   private async applyConfig(): Promise<void> {
     const config = await this.configService.getConfiguration();
 
@@ -200,7 +133,7 @@ export class ArcgisMapComponent implements OnInit {
       }
 
       if (layerConfig.searchConfig) {
-        this.searchWidget.sources.push(new SearchSource({...layerConfig.searchConfig, layer: layer}));
+        this.uiBuilder.addSearch(new SearchSource({...layerConfig.searchConfig, layer: layer}));
       }
 
       this.map.add(layer);
@@ -217,12 +150,14 @@ export class ArcgisMapComponent implements OnInit {
   }
 
   private onViewClick(event: __esri.ViewClickEvent) {
+    // Check if the ctrl button is pressed, if not do nothing
+    if (!event.native.ctrlKey) return;
+
     // Determine if the user clicked on a feature
     this.view.hitTest(event).then((response) => {
-      if (response.results.length) {
-        console.log('Clicked on a feature');
-      } else {
-        this.queryService.queryOnLocation(event.mapPoint, this.map.layers as Collection<Layer>).then(results => this.onQueryLocationResults(results, event.mapPoint));
+      if (!response.results.length) {
+        this.queryService.queryOnLocation(event.mapPoint, this.map.layers as Collection<Layer>)
+          .then(results => this.onQueryLocationResults(results, event.mapPoint));
       }
     });
   }
@@ -249,13 +184,13 @@ export class ArcgisMapComponent implements OnInit {
     const graphic = new Graphic({
       geometry: locationClicked,
       symbol: {
-        type: "point-3d",
+        type: 'point-3d',
         symbolLayers: [
           {
-            type: "icon",
-            anchor: "center",
-            outline: { color: [0, 0, 0, 1], size: 1 },
-            material: { color: [255, 255, 255, 1] }
+            type: 'icon',
+            anchor: 'center',
+            outline: {color: [0, 0, 0, 1], size: 1},
+            material: {color: [255, 255, 255, 1]}
           }
         ],
         verticalOffset: {
@@ -264,7 +199,7 @@ export class ArcgisMapComponent implements OnInit {
           minWorldLength: 35
         },
         callout: {
-          type: "line", // autocasts as new LineCallout3D()
+          type: 'line', // autocasts as new LineCallout3D()
           size: 0.5,
           color: [0, 0, 0]
         }
