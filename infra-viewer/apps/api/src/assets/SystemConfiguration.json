@@ -172,6 +172,7 @@
         "mode": "relative-to-ground",
         "offset": -5
       },
+      "minScale": 3000,
       "renderer": {
         "visualVariables": [
           {
