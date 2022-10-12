@@ -170,7 +170,7 @@
       },
       "elevationInfo": {
         "mode": "relative-to-ground",
-        "offset": -5
+        "offset": -1
       },
       "minScale": 3000,
       "renderer": {
@@ -179,7 +179,7 @@
             "type": "size",
             "field": "DIAMETER",
             "axis": "height",
-            "valueUnit": "centimeters",
+            "valueUnit": "millimeters",
             "valueRepresentation": "diameter"
           }
         ],
