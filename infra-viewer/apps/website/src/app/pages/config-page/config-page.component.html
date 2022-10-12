@@ -1,16 +1,79 @@
 <div class="uk-container">
-  <h1>Configuration</h1>
+  <h1 class="uk-heading-medium uk-heading-bullet">Configuration</h1>
   <p>On this page you can quickly configure the infraviewer</p>
 
-  <section class="uk-margin-medium">
-    <form class="uk-form-stacked" #f="ngForm" (ngSubmit)="onConfigurationSubmit(f)">
-      <div>
-        <label class="uk-form-label">Configuration</label>
-        <div class="uk-form-controls">
-          <textarea class="uk-textarea uk-height-viewport" name="configuration" [(ngModel)]="configurationString"></textarea>
+
+  <ul uk-accordion *ngIf="configuration">
+    <li class="uk-open">
+      <h2 class="uk-accordion-title">Configuration</h2>
+      <div class="uk-accordion-content">
+        <section class="layers">
+          <h3 class="uk-heading-divider">Layers</h3>
+          <ul class="uk-list uk-list-disc uk-list-primary uk-list-divider">
+            <li *ngFor="let scene of configuration.scenelayers">
+              <ng-template *ngTemplateOutlet="layer; context: {layer: scene, type: 'scene'} "></ng-template>
+            </li>
+            <li *ngFor="let feature of configuration.featurelayers">
+              <ng-template *ngTemplateOutlet="layer; context: {layer: feature, type: 'feature'} "></ng-template>
+            </li>
+            <li *ngFor="let geojson of configuration.geoJSONLayers">
+              <ng-template *ngTemplateOutlet="layer; context: {layer: geojson, type: 'geojson'} "></ng-template>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </li>
+    <li>
+      <h2 class="uk-accordion-title">Advanced Config</h2>
+      <section class="uk-accordion-content">
+        <form class="uk-form-stacked" #f="ngForm" (ngSubmit)="onConfigurationSubmit(f)">
+          <div>
+            <label class="uk-form-label">Configuration JSON</label>
+            <div class="uk-form-controls">
+          <textarea class="uk-textarea uk-height-viewport" name="configuration"
+                    [value]="configurationString"></textarea>
+            </div>
+          </div>
+          <button type="submit" class="uk-margin-small-top uk-button uk-button-primary">Submit</button>
+        </form>
+      </section>
+    </li>
+  </ul>
+</div>
+
+<ng-template #layer let-layer="layer" let-type="type">
+  <div uk-toggle="target: #details-pane" (click)="selectLayer(layer)">
+    <ng-container [ngSwitch]="type">
+      <span *ngSwitchCase="'scene'" uk-icon="icon: world"></span>
+      <span *ngSwitchCase="'geojson'" uk-icon="icon: code"></span>
+      <span *ngSwitchCase="'feature'" uk-icon="icon: location"></span>
+      <span *ngSwitchDefault uk-icon="icon: question"></span>
+    </ng-container>
+    <span class="uk-margin-left" [class.uk-text-warning]="!layer.title">{{layer.title || "Unknown Title"}}</span>
+  </div>
+</ng-template>
+
+<!-- This is the modal -->
+<div id="details-pane" class="uk-modal-container" uk-modal="esc-close:false;bg-close:false;">
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close (click)="cancelEdit()"></button>
+    <div class="uk-modal-header">
+      <h2 class="uk-modal-title">Layer Details</h2>
+      <p>Configure a (new) layer here.</p>
+    </div>
+    <form #layerConfig="ngForm" (ngSubmit)="onLayerConfigSave()" *ngIf="selectedLayer">
+      <div class="uk-modal-body">
+        <div class="uk-margin">
+          <label class="uk-form-label" for="url">URL</label>
+          <div class="uk-form-controls">
+            <input class="uk-input" id="url" name="url" type="text" [(ngModel)]="selectedLayer.url" required>
+          </div>
         </div>
       </div>
-      <button type="submit" class="uk-margin-small-top uk-button uk-button-primary">Submit</button>
+      <div class="uk-modal-footer uk-text-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button" (click)="cancelEdit()">Cancel</button>
+        <button class="uk-button uk-button-primary" type="submit">Save</button>
+      </div>
     </form>
-  </section>
+  </div>
 </div>

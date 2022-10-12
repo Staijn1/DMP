@@ -11,7 +11,7 @@ export class HTTPService {
    * @returns {CustomError}
    * @private
    */
-  private handleError(err: any): CustomError {
+  private handleError(err: string | any): CustomError {
     console.warn('Handle error not implemented');
 
     return err;
@@ -24,10 +24,17 @@ export class HTTPService {
    */
   protected async request(input: string, init: RequestInit): Promise<any> {
     const response = await fetch(input, init);
-    const body = await response.json();
-    if (!response.ok) {
-      throw this.handleError(body);
+    const text = await response.text();
+    // If the text is valid json, parse it
+    let data: any;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      data = text;
     }
-    return body;
+    if (!response.ok) {
+      throw this.handleError(data);
+    }
+    return data;
   }
 }
