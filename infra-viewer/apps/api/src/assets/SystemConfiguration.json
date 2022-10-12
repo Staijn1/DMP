@@ -102,8 +102,8 @@
               "material": {
                 "color": "#089bc4"
               },
-              "width": 1,
-              "height": 1,
+              "width": 0.2,
+              "height": 0.2,
               "anchor": "bottom",
               "profileRotation": "heading"
             }
@@ -143,8 +143,8 @@
               "material": {
                 "color": "#aec408"
               },
-              "width": 1,
-              "height": 1,
+              "width": 0.2,
+              "height": 0.2,
               "anchor": "bottom",
               "profileRotation": "heading"
             }
@@ -164,6 +164,7 @@
     },
     {
       "id": "strengen",
+      "title": "Strengen",
       "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/strengen/FeatureServer/0",
       "featureReduction": {
         "type": "selection"
@@ -183,8 +184,8 @@
               "material": {
                 "color": "#c408c1"
               },
-              "width": 1,
-              "height": 1,
+              "width": 0.2,
+              "height": 0.2,
               "anchor": "bottom",
               "profileRotation": "heading"
             }
