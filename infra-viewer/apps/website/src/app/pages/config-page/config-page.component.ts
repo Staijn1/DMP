@@ -1,9 +1,11 @@
-import {Component} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {ConfigurationService} from '../../services/configuration/configuration.service';
 import {NgForm} from '@angular/forms';
-import {SystemConfiguration} from '@infra-viewer/interfaces';
+import {SystemConfiguration, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
 import Layer from '@arcgis/core/layers/Layer';
+import UIkit from 'uikit';
 import FeatureLayerProperties = __esri.FeatureLayerProperties;
+import LayerProperties = __esri.LayerProperties;
 
 @Component({
   selector: 'app-config-page',
@@ -11,6 +13,7 @@ import FeatureLayerProperties = __esri.FeatureLayerProperties;
   styleUrls: ['./config-page.component.scss'],
 })
 export class ConfigPageComponent {
+  @ViewChild('modal') modalRef!: ElementRef;
   selectedLayer: FeatureLayerProperties | undefined;
   configuration!: SystemConfiguration;
   private configurationBackup!: SystemConfiguration;
@@ -46,6 +49,7 @@ export class ConfigPageComponent {
    */
   onLayerConfigSave() {
     this.onConfigurationSubmit(this.configuration);
+    UIkit.modal(this.modalRef.nativeElement).hide();
   }
 
   selectLayer(layer: Layer) {
@@ -60,5 +64,26 @@ export class ConfigPageComponent {
    */
   cancelEdit() {
     this.configuration = this.configurationBackup;
+  }
+
+  addElevationInfo() {
+    if (!this.selectedLayer) return;
+    this.selectedLayer.elevationInfo = {
+      mode: 'on-the-ground',
+      unit: 'meters',
+      offset: 0,
+    };
+  }
+
+  deleteLayer(layer: FeatureLayerProperties, type: SystemConfigurationLayerTypes) {
+    // Create a UIKit dialog to confirm the deletion
+    UIkit.modal.confirm('Are you sure you want to delete this layer?').then(() => {
+      // Remove the layer from the configuration
+      this.configuration[type] = this.configuration[type].filter((l: LayerProperties) => l.id !== layer.id);
+      // Save the configuration
+      this.onConfigurationSubmit(this.configuration);
+    }, () => {
+      // Do nothing if the user cancels
+    });
   }
 }
