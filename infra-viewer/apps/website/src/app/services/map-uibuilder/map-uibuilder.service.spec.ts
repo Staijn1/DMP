@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { MapUIBuilderService } from './map-uibuilder.service';
+import {MapUIBuilderService} from './map-uibuilder.service';
 
 describe('MapUIBuilderService', () => {
   let service: MapUIBuilderService;

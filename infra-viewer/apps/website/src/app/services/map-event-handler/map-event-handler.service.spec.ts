@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { MapEventHandlerService } from './map-event-handler.service';
+import {MapEventHandlerService} from './map-event-handler.service';
 
 describe('MapEventHandlerService', () => {
   let service: MapEventHandlerService;

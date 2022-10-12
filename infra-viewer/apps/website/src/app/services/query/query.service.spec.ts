@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { QueryService } from './query.service';
+import {QueryService} from './query.service';
 
 describe('QueryService', () => {
   let service: QueryService;
