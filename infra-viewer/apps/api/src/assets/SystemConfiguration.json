@@ -5,7 +5,6 @@
       "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/BAG_3D_WGS/SceneServer",
       "id": "buildings",
       "title": "3D Gebouwen",
-      "mode": "on-the-ground",
       "featureReduction": {
         "type": "selection"
       }
