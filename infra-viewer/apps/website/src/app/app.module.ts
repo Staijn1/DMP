@@ -1,12 +1,9 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
 
-import { AppComponent } from './main/app.component';
-import { RouterModule } from '@angular/router';
-import { ArcgisMapComponent } from './shared/components/arcgis-map/arcgis-map.component';
-import { SharedModule } from './shared/shared.module';
-import { MapPageComponent } from './pages/map-page/map-page.component';
-import { ConfigPageComponent } from './pages/config-page/config-page.component';
+import {AppComponent} from './main/app.component';
+import {RouterModule} from '@angular/router';
+import {SharedModule} from './shared/shared.module';
 
 @NgModule({
   declarations: [AppComponent],

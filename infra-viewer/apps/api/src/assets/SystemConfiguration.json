@@ -5,7 +5,6 @@
       "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/BAG_3D_WGS/SceneServer",
       "id": "buildings",
       "title": "3D Gebouwen",
-      "mode": "on-the-ground",
       "featureReduction": {
         "type": "selection"
       }
@@ -69,12 +68,12 @@
           "symbolLayers": [
             {
               "type": "path",
-              "profile": "circle",
+              "profile": "quad",
               "material": {
                 "color": "#0818c4"
               },
               "width": 0.2,
-              "height": 0.2,
+              "height": 0.1,
               "anchor": "bottom",
               "profileRotation": "heading"
             }
@@ -102,8 +101,8 @@
               "material": {
                 "color": "#089bc4"
               },
-              "width": 1,
-              "height": 1,
+              "width": 0.2,
+              "height": 0.2,
               "anchor": "bottom",
               "profileRotation": "heading"
             }
@@ -143,8 +142,8 @@
               "material": {
                 "color": "#aec408"
               },
-              "width": 1,
-              "height": 1,
+              "width": 0.2,
+              "height": 0.2,
               "anchor": "bottom",
               "profileRotation": "heading"
             }
@@ -164,15 +163,26 @@
     },
     {
       "id": "strengen",
+      "title": "Strengen",
       "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/strengen/FeatureServer/0",
       "featureReduction": {
         "type": "selection"
       },
       "elevationInfo": {
         "mode": "relative-to-ground",
-        "offset": -3
+        "offset": -1
       },
+      "minScale": 3000,
       "renderer": {
+        "visualVariables": [
+          {
+            "type": "size",
+            "field": "DIAMETER",
+            "axis": "height",
+            "valueUnit": "millimeters",
+            "valueRepresentation": "diameter"
+          }
+        ],
         "type": "simple",
         "symbol": {
           "type": "line-3d",
@@ -181,10 +191,8 @@
               "type": "path",
               "profile": "circle",
               "material": {
-                "color": "#c408c1"
+                "color": "#808080"
               },
-              "width": 1,
-              "height": 1,
               "anchor": "bottom",
               "profileRotation": "heading"
             }
@@ -216,7 +224,8 @@
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Wegbeheer/MapServer/0",
       "title": "Wegbeheer",
-      "minScale": 3000
+      "minScale": 3000,
+      "visible": false
     },
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Trolleymasten/MapServer/0",

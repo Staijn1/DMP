@@ -2,7 +2,6 @@ import Widget from '@arcgis/core/widgets/Widget';
 import {property, subclass} from '@arcgis/core/core/accessorSupport/decorators';
 import WebMap from '@arcgis/core/WebMap';
 import MapView from '@arcgis/core/views/MapView';
-import {tsx} from '@arcgis/core/widgets/support/widget';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 
 @subclass('esri.widgets.QueryBuilderWidget')

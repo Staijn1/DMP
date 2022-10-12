@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { CustomError } from '@infra-viewer/interfaces';
+import {Injectable} from '@angular/core';
+import {CustomError} from '@infra-viewer/interfaces';
 
 @Injectable({
   providedIn: 'root',
