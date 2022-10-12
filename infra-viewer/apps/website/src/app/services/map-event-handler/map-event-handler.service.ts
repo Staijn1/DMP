@@ -27,8 +27,8 @@ export class MapEventHandlerService {
         } else {
           // If not, then we want to clear the query results
           // Enable all the layers and remove the query results layer
-          view.map.layers.filter(layer => layer.type != 'scene').forEach((layer) => layer.visible = true);
           if (this.queryResultLayer) {
+            view.map.layers.filter(layer => layer.type != 'scene').forEach((layer) => layer.visible = true);
             view.map.remove(this.queryResultLayer);
           }
         }
