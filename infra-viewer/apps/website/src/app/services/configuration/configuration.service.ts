@@ -7,14 +7,12 @@ import {SystemConfiguration} from '@infra-viewer/interfaces';
   providedIn: 'root',
 })
 export class ConfigurationService extends HTTPService {
+  private configuration: SystemConfiguration | null = null;
+
   async getConfiguration(): Promise<SystemConfiguration> {
-    if (sessionStorage.getItem('configuration') && environment.production)
-      return JSON.parse(sessionStorage.getItem('configuration') as string);
+    if (this.configuration) return this.configuration;
 
-    const body = await this.request(`${environment.api}/System/Configuration`, {});
-    sessionStorage.setItem('configuration', JSON.stringify(body));
-
-    return body;
+    return this.request(`${environment.api}/System/Configuration`, {});
   }
 
   async setConfiguration(configuration: SystemConfiguration | string): Promise<void> {
