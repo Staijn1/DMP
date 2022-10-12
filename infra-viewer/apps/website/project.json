@@ -46,6 +46,14 @@
           "extractLicenses": false,
           "sourceMap": true,
           "namedChunks": true
+        },
+        "hmr": {
+          "fileReplacements": [
+            {
+              "replace": "src/environments/environment.ts",
+              "with": "src/environments/environment.hmr.ts"
+            }
+          ]
         }
       },
       "defaultConfiguration": "production"
@@ -58,6 +66,10 @@
         },
         "development": {
           "browserTarget": "website:build:development"
+        },
+        "hmr": {
+          "hmr": true,
+          "browserTarget": "angular-hmr-app:build:hmr"
         }
       },
       "defaultConfiguration": "development",

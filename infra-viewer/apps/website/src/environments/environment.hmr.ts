@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  api: 'https://api.infraviewer.steinjonker.nl/api',
+  api: 'http://localhost:3333/api',
   redirectUri: 'http://localhost:4200/welcome',
-  hmr: false,
+  hmr: true,
 };
