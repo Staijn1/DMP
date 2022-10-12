@@ -69,12 +69,12 @@
           "symbolLayers": [
             {
               "type": "path",
-              "profile": "circle",
+              "profile": "quad",
               "material": {
                 "color": "#0818c4"
               },
               "width": 0.2,
-              "height": 0.2,
+              "height": 0.1,
               "anchor": "bottom",
               "profileRotation": "heading"
             }
@@ -171,9 +171,18 @@
       },
       "elevationInfo": {
         "mode": "relative-to-ground",
-        "offset": -3
+        "offset": -5
       },
       "renderer": {
+        "visualVariables": [
+          {
+            "type": "size",
+            "field": "DIAMETER",
+            "axis": "height",
+            "valueUnit": "centimeters",
+            "valueRepresentation": "diameter"
+          }
+        ],
         "type": "simple",
         "symbol": {
           "type": "line-3d",
@@ -182,10 +191,8 @@
               "type": "path",
               "profile": "circle",
               "material": {
-                "color": "#c408c1"
+                "color": "#808080"
               },
-              "width": 0.2,
-              "height": 0.2,
               "anchor": "bottom",
               "profileRotation": "heading"
             }
@@ -217,7 +224,8 @@
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Wegbeheer/MapServer/0",
       "title": "Wegbeheer",
-      "minScale": 3000
+      "minScale": 3000,
+      "visible": false
     },
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Trolleymasten/MapServer/0",
