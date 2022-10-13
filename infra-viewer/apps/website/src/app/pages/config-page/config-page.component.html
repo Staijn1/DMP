@@ -11,13 +11,13 @@
           <h3 class="uk-heading-divider">Layers</h3>
           <ul class="uk-list uk-list-disc uk-list-primary uk-list-divider">
             <li *ngFor="let scene of configuration.scenelayers">
-              <ng-template *ngTemplateOutlet="layer; context: {layer: scene, type: 'scene'} "></ng-template>
+              <ng-template *ngTemplateOutlet="layer; context: {layer: scene, type: 'scenelayers'} "></ng-template>
             </li>
             <li *ngFor="let feature of configuration.featurelayers">
-              <ng-template *ngTemplateOutlet="layer; context: {layer: feature, type: 'feature'} "></ng-template>
+              <ng-template *ngTemplateOutlet="layer; context: {layer: feature, type: 'featurelayers'} "></ng-template>
             </li>
             <li *ngFor="let geojson of configuration.geoJSONLayers">
-              <ng-template *ngTemplateOutlet="layer; context: {layer: geojson, type: 'geojson'} "></ng-template>
+              <ng-template *ngTemplateOutlet="layer; context: {layer: geojson, type: 'geoJSONLayers'} "></ng-template>
             </li>
           </ul>
         </section>
@@ -42,19 +42,30 @@
 </div>
 
 <ng-template #layer let-layer="layer" let-type="type">
-  <div uk-toggle="target: #details-pane" (click)="selectLayer(layer)">
-    <ng-container [ngSwitch]="type">
-      <span *ngSwitchCase="'scene'" uk-icon="icon: world"></span>
-      <span *ngSwitchCase="'geojson'" uk-icon="icon: code"></span>
-      <span *ngSwitchCase="'feature'" uk-icon="icon: location"></span>
-      <span *ngSwitchDefault uk-icon="icon: question"></span>
-    </ng-container>
-    <span class="uk-margin-left" [class.uk-text-warning]="!layer.title">{{layer.title || "Unknown Title"}}</span>
+  <div class="uk-flex uk-flex-between">
+    <div uk-toggle="target: #details-pane" class="uk-width-1-1" (click)="selectLayer(layer)">
+      <ng-container [ngSwitch]="type">
+        <span *ngSwitchCase="'scenelayers'" uk-icon="icon: world"></span>
+        <span *ngSwitchCase="'geoJSONLayers'" uk-icon="icon: code"></span>
+        <span *ngSwitchCase="'featurelayers'" uk-icon="icon: location"></span>
+        <span *ngSwitchDefault uk-icon="icon: question"></span>
+      </ng-container>
+      <span class="uk-margin-small-left"
+            [class.uk-text-warning]="!layer.title">{{layer.title || "Unknown Title"}}</span>
+    </div>
+    <div class="uk-flex">
+      <button class="uk-button uk-button-default uk-button-small" (click)="toggleVisibility(layer, type)">
+        <span uk-icon="icon: check" *ngIf="layer.visible === undefined || layer.visible === true"></span>
+        <span uk-icon="icon: close" *ngIf="layer.visible === false"></span>
+      </button>
+      <button class="uk-button uk-button-danger uk-button-small" (click)="deleteLayer(layer, type)">
+        <span uk-icon="icon: trash"></span>
+      </button>
+    </div>
   </div>
 </ng-template>
 
-<!-- This is the modal -->
-<div id="details-pane" class="uk-modal-container" uk-modal="esc-close:false;bg-close:false;">
+<div id="details-pane" #modal class="uk-modal-container" uk-modal="esc-close:false;bg-close:false;">
   <div class="uk-modal-dialog">
     <button class="uk-modal-close-default" type="button" uk-close (click)="cancelEdit()"></button>
     <div class="uk-modal-header">
@@ -64,9 +75,58 @@
     <form #layerConfig="ngForm" (ngSubmit)="onLayerConfigSave()" *ngIf="selectedLayer">
       <div class="uk-modal-body">
         <div class="uk-margin">
+          <label class="uk-form-label">Title</label>
+          <div class="uk-form-controls">
+            <input class="uk-input" type="text" name="title" [(ngModel)]="selectedLayer.title" required>
+          </div>
+        </div>
+        <div class="uk-margin">
           <label class="uk-form-label" for="url">URL</label>
           <div class="uk-form-controls">
             <input class="uk-input" id="url" name="url" type="text" [(ngModel)]="selectedLayer.url" required>
+          </div>
+        </div>
+        <div class="uk-margin">
+          <label class="uk-form-label" for="minScale">Min Scale</label>
+          <div class="uk-form-controls">
+            <input class="uk-input" id="minScale" name="minScale" type="number" step="100"
+                   [(ngModel)]="selectedLayer.minScale">
+          </div>
+        </div>
+        <div class="uk-margin uk-grid uk-child-width-expand" *ngIf="selectedLayer.elevationInfo;else noElevationInfo">
+          <div>
+            <label class="uk-form-label" for="elevationMode">Elevation Mode</label>
+            <div class="uk-form-controls">
+              <select class="uk-select" id="elevationMode" name="elevationMode"
+                      [(ngModel)]="selectedLayer.elevationInfo.mode">
+                <option value="on-the-ground">On the ground</option>
+                <option value="relative-to-ground">Relative to ground</option>
+                <option value="relative-to-scene">Relative to scene</option>
+                <option value="absolute-height">Absolute height</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="uk-form-label" for="units">Units</label>
+            <div class="uk-form-controls">
+              <select class="uk-select" id="units" name="units"
+                      [(ngModel)]="selectedLayer.elevationInfo.unit">
+                <option value="centimeters">Centimeters</option>
+                <option value="meters">Meters</option>
+                <option value="kilometers">Kilometers</option>
+                <option value="us-feet">US Feet</option>
+                <option value="feet">Feet</option>
+                <option value="miles">Miles</option>
+                <option value="yards">Yards</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="uk-form-label" for="offset">Offset</label>
+            <div class="uk-form-controls">
+              <input class="uk-input" id="offset" name="offset" type="number" step="0.1"
+                     [(ngModel)]="selectedLayer.elevationInfo.offset">
+            </div>
           </div>
         </div>
       </div>
@@ -77,3 +137,9 @@
     </form>
   </div>
 </div>
+
+<ng-template #noElevationInfo>
+  <div>
+    <button class="uk-button uk-button-default" (click)="addElevationInfo()">Add elevation info</button>
+  </div>
+</ng-template>

@@ -7,3 +7,8 @@ export type SystemConfiguration = {
   geoJSONLayers: any[];
   basemap: string;
 };
+
+export type SystemConfigurationLayerTypes =
+  'scenelayers'
+  | 'featurelayers'
+  | 'geoJSONLayers'

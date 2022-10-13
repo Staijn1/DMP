@@ -13,6 +13,8 @@ import {createTablePopup} from '../../../utils/utils';
 import {MapUIBuilderService} from '../../../services/map-uibuilder/map-uibuilder.service';
 import {MapEventHandlerService} from '../../../services/map-event-handler/map-event-handler.service';
 import ViewClickEvent = __esri.ViewClickEvent;
+import * as projection from '@arcgis/core/geometry/projection';
+import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 
 @Component({
   selector: 'app-arcgis-map',
@@ -20,11 +22,9 @@ import ViewClickEvent = __esri.ViewClickEvent;
   styleUrls: ['./arcgis-map.component.scss'],
 })
 export class ArcgisMapComponent implements OnInit {
+  private readonly targetWKID = 4326;
   private map!: WebScene;
   private view!: SceneView;
-
-  private queryResultLayer: __esri.GraphicsLayer | null = null;
-
 
   constructor(
     private readonly configService: ConfigurationService,
@@ -49,34 +49,40 @@ export class ArcgisMapComponent implements OnInit {
     });
   }
 
+
   private createView(): void {
+    const extent = {
+      // autocasts as new Extent()
+      xmax: 6.041874,
+      xmin: 5.784768,
+      ymax: 52.096953,
+      ymin: 51.927599,
+      spatialReference: {
+        // autocasts as new SpatialReference()
+        wkid: this.targetWKID
+      }
+    };
+
     // Create the view
     this.view = new SceneView({
+      qualityProfile: 'low',
+      clippingArea: extent,
       container: 'map',
+      viewingMode: 'local',
       map: this.map,
       camera: {
         position: {
-          latitude: 51.96437,
-          longitude: 5.910011,
+          latitude: 51.972075,
+          longitude: 5.907671,
           z: 2500,
         },
         tilt: 30,
         heading: 0,
-      },
-      environment: {
-        lighting: {
-          date: new Date(),
-          directShadowsEnabled: true,
-        },
-        atmosphere: {
-          quality: 'low',
-        },
-      },
+      }
     });
 
     this.view
       .when(() => {
-
         const sketchVM = new SketchViewModel({
           view: this.view,
         });
