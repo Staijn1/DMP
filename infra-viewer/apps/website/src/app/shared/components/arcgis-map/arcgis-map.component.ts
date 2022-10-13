@@ -12,8 +12,14 @@ import SearchSource from '@arcgis/core/widgets/Search/SearchSource';
 import {createTablePopup} from '../../../utils/utils';
 import {MapUIBuilderService} from '../../../services/map-uibuilder/map-uibuilder.service';
 import {MapEventHandlerService} from '../../../services/map-event-handler/map-event-handler.service';
-import ViewClickEvent = __esri.ViewClickEvent;
 import * as projection from '@arcgis/core/geometry/projection';
+import SpatialReference from '@arcgis/core/geometry/SpatialReference';
+import Geometry from '@arcgis/core/geometry/Geometry';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import Graphic from '@arcgis/core/Graphic';
+import Symbol3D from '@arcgis/core/symbols/Symbol3D';
+import ViewClickEvent = __esri.ViewClickEvent;
+import SymbolProperties = __esri.SymbolProperties;
 
 @Component({
   selector: 'app-arcgis-map',
@@ -64,9 +70,10 @@ export class ArcgisMapComponent implements OnInit {
 
     // Create the view
     this.view = new SceneView({
+      qualityProfile: 'low',
       clippingArea: extent,
       container: 'map',
-      viewingMode: "local",
+      viewingMode: 'local',
       map: this.map,
       camera: {
         position: {
@@ -76,16 +83,7 @@ export class ArcgisMapComponent implements OnInit {
         },
         tilt: 30,
         heading: 0,
-      },
-      environment: {
-        lighting: {
-          date: new Date(),
-          directShadowsEnabled: true,
-        },
-        atmosphere: {
-          quality: 'low',
-        },
-      },
+      }
     });
 
     this.view
@@ -125,20 +123,36 @@ export class ArcgisMapComponent implements OnInit {
       constructedLayers.push([geoJSONLayer, geoJSONLayerConfig]);
     }
 
-    const layersToProject = [];
-    for (const [layer, layerConfig] of constructedLayers) {
-      if (layer.spatialReference?.wkid !== this.targetWKID) {
-        layersToProject.push(layer);
-      }
-    }
-    /*  projection.load().then(() => {
-        // Find all layers that need to be projected
+    /*projection.load().then(() => {
+      // Find the layer with the title "3D Gebouwen"
+      const layer = constructedLayers.find(([layer, layerConfig]) => layerConfig.title === '3D Gebouwen')
+      if (!layer) return
+      const index = constructedLayers.indexOf(layer);
+      // project an array of geometries to the specified output spatial reference
+      // wkid of WGS84 Web Mercator (Auxiliary Sphere) is 3857
+      const projectedGeometries = projection.project(layer[0], new SpatialReference({wkid: this.targetWKID})) as unknown as SceneLayer;
 
-        // project an array of geometries to the specified output spatial reference
-        // wkid of WGS84 Web Mercator (Auxiliary Sphere) is 3857
-        const projectedGeometries = projection.project(, 3857);
-      });*/
-
+      const graphicsLayer = new GraphicsLayer();
+      const graphic = new Graphic({
+        geometry: projectedGeometries,
+        symbol: {
+          type: 'mesh-3d',
+          symbolLayers: [{
+            type: 'fill',
+            material: {
+              color: 'red'
+            },
+            edges: {
+              type: 'solid',
+              color: 'white',
+              size: 1
+            }
+          }]
+        } as SymbolProperties
+      });
+      graphicsLayer.add(graphic)
+      this.map.add(projectedGeometries);
+    });*/
     for (const constructedLayer of constructedLayers) {
       const layer = constructedLayer[0];
       const layerConfig = constructedLayer[1];
