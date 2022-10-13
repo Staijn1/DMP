@@ -13,6 +13,7 @@ import {createTablePopup} from '../../../utils/utils';
 import {MapUIBuilderService} from '../../../services/map-uibuilder/map-uibuilder.service';
 import {MapEventHandlerService} from '../../../services/map-event-handler/map-event-handler.service';
 import ViewClickEvent = __esri.ViewClickEvent;
+import * as projection from '@arcgis/core/geometry/projection';
 
 @Component({
   selector: 'app-arcgis-map',
@@ -20,11 +21,9 @@ import ViewClickEvent = __esri.ViewClickEvent;
   styleUrls: ['./arcgis-map.component.scss'],
 })
 export class ArcgisMapComponent implements OnInit {
+  private readonly targetWKID = 4326;
   private map!: WebScene;
   private view!: SceneView;
-
-  private queryResultLayer: __esri.GraphicsLayer | null = null;
-
 
   constructor(
     private readonly configService: ConfigurationService,
@@ -49,10 +48,25 @@ export class ArcgisMapComponent implements OnInit {
     });
   }
 
+
   private createView(): void {
+    const extent = {
+      // autocasts as new Extent()
+      xmax: 6.041874,
+      xmin: 5.784768,
+      ymax: 52.096953,
+      ymin: 51.927599,
+      spatialReference: {
+        // autocasts as new SpatialReference()
+        wkid: this.targetWKID
+      }
+    };
+
     // Create the view
     this.view = new SceneView({
+      clippingArea: extent,
       container: 'map',
+      viewingMode: "local",
       map: this.map,
       camera: {
         position: {
@@ -76,7 +90,6 @@ export class ArcgisMapComponent implements OnInit {
 
     this.view
       .when(() => {
-
         const sketchVM = new SketchViewModel({
           view: this.view,
         });
@@ -111,6 +124,20 @@ export class ArcgisMapComponent implements OnInit {
       const geoJSONLayer = new GeoJSONLayer(geoJSONLayerConfig);
       constructedLayers.push([geoJSONLayer, geoJSONLayerConfig]);
     }
+
+    const layersToProject = [];
+    for (const [layer, layerConfig] of constructedLayers) {
+      if (layer.spatialReference?.wkid !== this.targetWKID) {
+        layersToProject.push(layer);
+      }
+    }
+    /*  projection.load().then(() => {
+        // Find all layers that need to be projected
+
+        // project an array of geometries to the specified output spatial reference
+        // wkid of WGS84 Web Mercator (Auxiliary Sphere) is 3857
+        const projectedGeometries = projection.project(, 3857);
+      });*/
 
     for (const constructedLayer of constructedLayers) {
       const layer = constructedLayer[0];
