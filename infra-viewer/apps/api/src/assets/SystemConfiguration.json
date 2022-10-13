@@ -183,7 +183,7 @@
     {
       "id": "meldingen_or",
       "title": "Meldingen OR",
-      "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/Putten/FeatureServer",
+      "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/meldingenOR/FeatureServer",
       "minScale": 3000
     },
     {
