@@ -7,6 +7,31 @@
       "title": "3D Gebouwen",
       "featureReduction": {
         "type": "selection"
+      },
+      "renderer": {
+        "type": "simple",
+        "symbol": {
+          "type": "mesh-3d",
+          "symbolLayers": [
+            {
+              "type": "fill",
+              "material": {
+                "color": "#ffffff",
+                "colorMixMode": "replace"
+              },
+              "edges": {
+                "type": "solid",
+                "color": [
+                  0,
+                  0,
+                  0,
+                  0.6
+                ],
+                "size": 1.5
+              }
+            }
+          ]
+        }
       }
     },
     {
