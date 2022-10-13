@@ -17,6 +17,7 @@ export class ConfigPageComponent {
   selectedLayer: FeatureLayerProperties | undefined;
   configuration!: SystemConfiguration;
   private configurationBackup!: SystemConfiguration;
+  private saveTimeout: NodeJS.Timeout | undefined;
 
   get configurationString() {
     return JSON.stringify(this.configuration, null, 2);
@@ -85,5 +86,18 @@ export class ConfigPageComponent {
     }, () => {
       // Do nothing if the user cancels
     });
+  }
+
+  toggleVisibility(layer: FeatureLayerProperties, type: SystemConfigurationLayerTypes) {
+    layer.visible = !layer.visible;
+    // Save the configuration after 500 ms, so we don't spam the server
+    // If the user clicks again, we cancel the previous timeout and start a new one
+    if (this.saveTimeout) {
+      clearTimeout(this.saveTimeout);
+    }
+    
+    this.saveTimeout = setTimeout(() => {
+      this.onLayerConfigSave()
+    }, 500);
   }
 }
