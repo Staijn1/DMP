@@ -13,8 +13,8 @@ import {createTablePopup} from '../../../utils/utils';
 import {MapUIBuilderService} from '../../../services/map-uibuilder/map-uibuilder.service';
 import {MapEventHandlerService} from '../../../services/map-event-handler/map-event-handler.service';
 import ViewClickEvent = __esri.ViewClickEvent;
-import * as projection from '@arcgis/core/geometry/projection';
-import SpatialReference from '@arcgis/core/geometry/SpatialReference';
+import Basemap from '@arcgis/core/Basemap';
+import TileLayer from '@arcgis/core/layers/TileLayer';
 
 @Component({
   selector: 'app-arcgis-map',
@@ -44,7 +44,13 @@ export class ArcgisMapComponent implements OnInit {
 
   private async createMap(): Promise<void> {
     this.map = new WebScene({
-      basemap: (await this.configService.getConfiguration()).basemap,
+      basemap: new Basemap({
+        baseLayers: [
+          new TileLayer({
+            url: 'https://services.arcgisonline.nl/ArcGIS/rest/services/Basiskaarten/Topo/MapServer',
+          }),
+        ],
+      }),
       layers: [],
     });
   }
@@ -58,19 +64,19 @@ export class ArcgisMapComponent implements OnInit {
       ymax: 52.096953,
       ymin: 51.927599,
       spatialReference: {
-        // autocasts as new SpatialReference()
-        wkid: this.targetWKID
+        wkid: 4326
       }
     };
 
     // Create the view
     this.view = new SceneView({
+      spatialReference: {wkid: 28992},
       qualityProfile: 'low',
       clippingArea: extent,
       container: 'map',
       viewingMode: 'local',
       map: this.map,
-      camera: {
+      /*camera: {
         position: {
           latitude: 51.972075,
           longitude: 5.907671,
@@ -78,7 +84,7 @@ export class ArcgisMapComponent implements OnInit {
         },
         tilt: 30,
         heading: 0,
-      }
+      }*/
     });
 
     this.view

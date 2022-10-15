@@ -2,7 +2,7 @@
   "scenelayers": [
     {
       "minScale": 65000,
-      "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/BAG_3D_WGS/SceneServer",
+      "url": "https://tiles.arcgis.com/tiles/wL8901MkZuOYDkG2/arcgis/rest/services/3D_Gebouwen_LOD_twee/SceneServer",
       "id": "buildings",
       "title": "3D Gebouwen",
       "featureReduction": {
@@ -33,13 +33,13 @@
           ]
         }
       },
-      "visible": false
+      "visible": true
     },
     {
       "id": "trees",
       "title": "3D Bomen",
       "screenSizePerspectiveEnabled": true,
-      "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Bomen_WGS/SceneServer",
+      "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Bomen/SceneServer",
       "featureReduction": {
         "type": "selection"
       },
@@ -49,7 +49,7 @@
     {
       "title": "3D Windturbines",
       "id": "windTurbines",
-      "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Windturbines_WGS/SceneServer",
+      "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Windturbines/SceneServer",
       "visible": false
     }
   ],
@@ -428,8 +428,12 @@
   ],
   "geoJSONLayers": [],
   "elevationLayer": {
-    "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Elevation_3D_WGS/ImageServer",
+    "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Elevation_3D_RD/ImageServer",
     "id": "elevation"
   },
-  "basemap": "hybrid"
+  "basemap": {
+    "portalItem": {
+      "id": "1d1d425122e74d4d87695e163f3f10ce"
+    }
+  }
 }
