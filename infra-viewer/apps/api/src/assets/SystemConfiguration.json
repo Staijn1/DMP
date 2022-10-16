@@ -161,7 +161,27 @@
       "title": "Putten",
       "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/Putten/FeatureServer",
       "minScale": 3000,
-      "visible": false
+      "visible": true,
+      "renderer": {
+        "type": "simple",
+        "symbol": {
+          "type": "point-3d",
+          "symbolLayers": [
+            {
+              "type": "object",
+              "width": 2,
+              "height": 0,
+              "depth": 2,
+              "resource": {
+                "primitive": "cylinder"
+              },
+              "material": {
+                "color": "red"
+              }
+            }
+          ]
+        }
+      }
     },
     {
       "id": "kabels",
