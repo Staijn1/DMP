@@ -11,6 +11,7 @@ import SceneView from '@arcgis/core/views/SceneView';
 import Point from '@arcgis/core/geometry/Point';
 import PointSymbol3D from '@arcgis/core/symbols/PointSymbol3D';
 import ViewClickEvent = __esri.ViewClickEvent;
+import {MapUIBuilderService} from '../map-uibuilder/map-uibuilder.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,9 @@ import ViewClickEvent = __esri.ViewClickEvent;
 export class MapEventHandlerService {
   private queryResultGroupLayer!: GroupLayer;
 
-  constructor(private readonly queryService: QueryService) {
+  constructor(
+    private readonly queryService: QueryService,
+    private readonly uiBuilder: MapUIBuilderService) {
   }
 
   /**
@@ -27,7 +30,7 @@ export class MapEventHandlerService {
    * @private
    */
   private get isQueryActive(): boolean {
-    return this.queryResultGroupLayer && this.queryResultGroupLayer.visible;
+     return this.queryResultGroupLayer && this.queryResultGroupLayer.visible;
   }
 
   onViewClick(event: __esri.ViewClickEvent, view: __esri.SceneView) {
@@ -53,6 +56,7 @@ export class MapEventHandlerService {
           // If not, then we want to clear the query results
           // Enable all the layers and remove the query results layer
           if (this.isQueryActive) {
+            this.queryResultGroupLayer.visible = false;
             view.map.layers.filter(layer => layer.type != 'scene').forEach((layer) => layer.visible = true);
             view.map.remove(this.queryResultGroupLayer);
           }
@@ -129,10 +133,12 @@ export class MapEventHandlerService {
           elevationInfo: result.layer.elevationInfo,
         }
       );
-
       this.queryResultGroupLayer.add(featureLayer);
     }
 
+    // Add the query results to the legend
+    // Remove it if it already exists
+    this.uiBuilder.legend.layerInfos.push({layer: this.queryResultGroupLayer, title: 'Query results'});
     view.map.add(this.queryResultGroupLayer);
   }
 
