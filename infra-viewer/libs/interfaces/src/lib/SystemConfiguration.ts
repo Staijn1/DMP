@@ -5,7 +5,6 @@ export type SystemConfiguration = {
   featurelayers: any[];
   elevationLayer: { url: string } & any;
   geoJSONLayers: any[];
-  basemap: string;
 };
 
 export type SystemConfigurationLayerTypes =

@@ -698,10 +698,5 @@
   "elevationLayer": {
     "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Elevation_3D_RD/ImageServer",
     "id": "elevation"
-  },
-  "basemap": {
-    "portalItem": {
-      "id": "1d1d425122e74d4d87695e163f3f10ce"
-    }
   }
 }
