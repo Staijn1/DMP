@@ -120,6 +120,7 @@ export class MapEventHandlerService {
       // Create a feature layer with the returned features
       const featureLayer = new FeatureLayer(
         {
+          popupTemplate: result.layer.popupTemplate,
           source: result.featureSet.features,
           title: result.layer.title,
           renderer: result.layer.renderer,
