@@ -10,6 +10,7 @@ import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
 import SceneView from '@arcgis/core/views/SceneView';
 import Point from '@arcgis/core/geometry/Point';
 import PointSymbol3D from '@arcgis/core/symbols/PointSymbol3D';
+import ViewClickEvent = __esri.ViewClickEvent;
 
 @Injectable({
   providedIn: 'root'
@@ -132,5 +133,9 @@ export class MapEventHandlerService {
     }
 
     view.map.add(this.queryResultGroupLayer);
+  }
+
+  registerEvents(view: __esri.SceneView) {
+    view.on('immediate-click' as any, (event: ViewClickEvent) => this.onViewClick(event, view));
   }
 }
