@@ -4,8 +4,12 @@ import {NgForm} from '@angular/forms';
 import {SystemConfiguration, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
 import Layer from '@arcgis/core/layers/Layer';
 import UIkit from 'uikit';
+import UniqueValueRenderer from '@arcgis/core/renderers/UniqueValueRenderer';
+import UniqueValueInfo from '@arcgis/core/renderers/support/UniqueValueInfo';
 import FeatureLayerProperties = __esri.FeatureLayerProperties;
+import PointSymbol3D from '@arcgis/core/symbols/PointSymbol3D';
 import LayerProperties = __esri.LayerProperties;
+
 
 @Component({
   selector: 'app-config-page',
@@ -17,7 +21,7 @@ export class ConfigPageComponent {
   selectedLayer: FeatureLayerProperties | undefined;
   configuration!: SystemConfiguration;
   private configurationBackup!: SystemConfiguration;
-  private saveTimeout: NodeJS.Timeout | undefined;
+  UniqueValueRenderer = UniqueValueRenderer;
 
   get configurationString() {
     return JSON.stringify(this.configuration, null, 2);
@@ -89,15 +93,40 @@ export class ConfigPageComponent {
   }
 
   toggleVisibility(layer: FeatureLayerProperties, type: SystemConfigurationLayerTypes) {
+    layer.visible = layer.visible === undefined ? true : layer.visible;
     layer.visible = !layer.visible;
-    // Save the configuration after 500 ms, so we don't spam the server
-    // If the user clicks again, we cancel the previous timeout and start a new one
-    if (this.saveTimeout) {
-      clearTimeout(this.saveTimeout);
-    }
-    
-    this.saveTimeout = setTimeout(() => {
-      this.onLayerConfigSave()
-    }, 500);
+    this.onLayerConfigSave()
+  }
+
+  createRenderer() {
+    if (!this.selectedLayer) return;
+    this.selectedLayer.renderer = new UniqueValueRenderer();
+  }
+
+  addUniqueValue() {
+    if (!this.selectedLayer) return;
+    if (!this.selectedLayer.renderer) return;
+    (this.selectedLayer.renderer as UniqueValueRenderer).uniqueValueInfos.push(new UniqueValueInfo({
+      value: '',
+      symbol: new PointSymbol3D({
+        verticalOffset: {
+          screenLength: undefined,
+          maxWorldLength: undefined,
+          minWorldLength: undefined
+        },
+        symbolLayers: [
+          {
+            type: 'icon',
+            material: {
+              color: '#ff0000'
+            },
+            outline: {
+              color: '#ff0000',
+              size: 1
+            },
+          }
+        ]
+      })
+    }));
   }
 }

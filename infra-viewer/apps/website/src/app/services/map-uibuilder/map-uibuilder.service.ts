@@ -13,7 +13,7 @@ import Legend from '@arcgis/core/widgets/Legend';
 })
 export class MapUIBuilderService {
   private searchWidget!: __esri.widgetsSearch;
-  private legend!: __esri.Legend;
+  public legend!: __esri.Legend;
 
 
   buildUI(view: __esri.SceneView): void {

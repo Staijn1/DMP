@@ -3,15 +3,17 @@
  * This is only a minimal backend to get started.
  */
 
-import { Logger } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import {Logger} from '@nestjs/common';
+import {NestFactory} from '@nestjs/core';
+import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
 
-import { AppModule } from './app/app.module';
-import { json, urlencoded } from 'express';
+import {AppModule} from './app/app.module';
+import {json, urlencoded} from 'express';
+import {NestExpressApplication} from '@nestjs/platform-express';
+import * as path from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.setGlobalPrefix('api');
   app.enableCors();
 
@@ -26,8 +28,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  app.use(json({ limit: '1mb' }));
-  app.use(urlencoded({ extended: true, limit: '1mb' }));
+  app.use(json({limit: '1mb'}));
+  app.use(urlencoded({extended: true, limit: '1mb'}));
+  app.useStaticAssets(path.join(__filename, '..', 'public'));
 
   const port = process.env.PORT || 3333;
   await app.listen(port);

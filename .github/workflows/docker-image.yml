@@ -15,18 +15,18 @@ jobs:
         working-directory: ./infra-viewer
     steps:
     - uses: actions/checkout@v3
-    - name: Build base image
-      run: docker build . --tag ${{ secrets.USERNAME }}/infraviewer:nx-base
-    - name: Build sub-application images
-      run: docker-compose build
     -
         name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.TOKEN }}
+    - name: Build base image
+      run: docker build . --tag ${{ secrets.USERNAME }}/infraviewer:nx-base
     - name: Publish base image
       run: docker push ${{ secrets.USERNAME }}/infraviewer:nx-base
+    - name: Build sub-application images
+      run: docker-compose build
     - name: Publish api image
       run: docker push ${{ secrets.USERNAME }}/infraviewer:api
     - name: Publish website image

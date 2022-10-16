@@ -12,9 +12,9 @@ import SearchSource from '@arcgis/core/widgets/Search/SearchSource';
 import {createTablePopup} from '../../../utils/utils';
 import {MapUIBuilderService} from '../../../services/map-uibuilder/map-uibuilder.service';
 import {MapEventHandlerService} from '../../../services/map-event-handler/map-event-handler.service';
-import ViewClickEvent = __esri.ViewClickEvent;
-import * as projection from '@arcgis/core/geometry/projection';
-import SpatialReference from '@arcgis/core/geometry/SpatialReference';
+import Basemap from '@arcgis/core/Basemap';
+import TileLayer from '@arcgis/core/layers/TileLayer';
+import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
 
 @Component({
   selector: 'app-arcgis-map',
@@ -38,13 +38,23 @@ export class ArcgisMapComponent implements OnInit {
       this.createView();
       this.uiBuilder.buildUI(this.view);
       this.applyConfig().then();
-      this.registerEvents();
+      this.eventHandler.registerEvents(this.view);
     });
   }
 
   private async createMap(): Promise<void> {
     this.map = new WebScene({
-      basemap: (await this.configService.getConfiguration()).basemap,
+      basemap: new Basemap({
+        baseLayers: [
+          new TileLayer({
+            url: 'https://services.arcgisonline.nl/arcgis/rest/services/Luchtfoto/Luchtfoto/MapServer'
+          }),
+          new VectorTileLayer({
+            url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/OSM_RD/VectorTileServer',
+            opacity: 0.5
+          }),
+        ],
+      }),
       layers: [],
     });
   }
@@ -53,47 +63,33 @@ export class ArcgisMapComponent implements OnInit {
   private createView(): void {
     const extent = {
       // autocasts as new Extent()
-      xmax: 6.041874,
-      xmin: 5.784768,
-      ymax: 52.096953,
-      ymin: 51.927599,
+      xmin: 151575.98477672008,
+      ymin: 433495.6075078908,
+      xmax: 232549.08692756083,
+      ymax: 453749.52060500067,
       spatialReference: {
-        // autocasts as new SpatialReference()
-        wkid: this.targetWKID
+        wkid: 28992,
       }
     };
 
     // Create the view
     this.view = new SceneView({
+      spatialReference: {wkid: 28992},
       qualityProfile: 'low',
       clippingArea: extent,
       container: 'map',
       viewingMode: 'local',
       map: this.map,
       camera: {
-        position: {
-          latitude: 51.972075,
-          longitude: 5.907671,
-          z: 2500,
+        // The spatial reference is not in the type but does make it work, so we cast it to any
+        spatialReference: {
+          wkid: 28992
         },
-        tilt: 30,
-        heading: 0,
-      }
+        x: 190871.79970213366,
+        y: 443752.26031690626,
+        z: 5966.512190682592
+      } as any
     });
-
-    this.view
-      .when(() => {
-        const sketchVM = new SketchViewModel({
-          view: this.view,
-        });
-
-        sketchVM.on('create', (event) => {
-          if (event.state === 'complete') {
-            sketchVM.update(event.graphic);
-          }
-        });
-      })
-      .catch(console.error);
   }
 
   private async applyConfig(): Promise<void> {
@@ -140,9 +136,5 @@ export class ArcgisMapComponent implements OnInit {
       type: 'none',
     };
     this.map.ground.opacity = 0.4;
-  }
-
-  registerEvents() {
-    this.view.on('immediate-click' as any, (event: ViewClickEvent) => this.eventHandler.onViewClick(event, this.view));
   }
 }

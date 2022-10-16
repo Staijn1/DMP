@@ -22,8 +22,8 @@ export const createTablePopup = (layer: GeoJSONLayer | FeatureLayer): PopupTempl
     const td2 = document.createElement('td');
 
     td1.classList.add('esri-feature__field-header');
-    td1.classList.add('uk-text-capitalize');
-    td2.classList.add('uk-text-capitalize');
+    // td1.classList.add('uk-text-capitalize');
+    // td2.classList.add('uk-text-capitalize');
 
     td1.innerText = (field.alias || field.name).replace(/_/g, ' ');
     td2.innerText = `{${field.name}}`;
