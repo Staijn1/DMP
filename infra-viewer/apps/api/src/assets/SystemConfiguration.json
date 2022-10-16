@@ -288,7 +288,255 @@
                   },
                   "type": "icon",
                   "material": {
-                    "color": "#4e61af"
+                    "color": "#bddaff"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "value": "Groen",
+            "symbol": {
+              "verticalOffset": {
+                "screenLength": 40,
+                "maxWorldLength": 200,
+                "minWorldLength": 35
+              },
+              "callout": {
+                "type": "line",
+                "color": "white",
+                "size": 1,
+                "border": {
+                  "color": "black"
+                }
+              },
+              "type": "point-3d",
+              "symbolLayers": [
+                {
+                  "outline": {
+                    "color": "black",
+                    "size": 1
+                  },
+                  "type": "icon",
+                  "material": {
+                    "color": "#28b01e"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "value": "Overlast en handhaving",
+            "symbol": {
+              "verticalOffset": {
+                "screenLength": 40,
+                "maxWorldLength": 200,
+                "minWorldLength": 35
+              },
+              "callout": {
+                "type": "line",
+                "color": "white",
+                "size": 1,
+                "border": {
+                  "color": "black"
+                }
+              },
+              "type": "point-3d",
+              "symbolLayers": [
+                {
+                  "outline": {
+                    "color": "black",
+                    "size": 1
+                  },
+                  "type": "icon",
+                  "material": {
+                    "color": "#267eeb"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "value": "Straatmeubilair",
+            "symbol": {
+              "verticalOffset": {
+                "screenLength": 40,
+                "maxWorldLength": 200,
+                "minWorldLength": 35
+              },
+              "callout": {
+                "type": "line",
+                "color": "white",
+                "size": 1,
+                "border": {
+                  "color": "black"
+                }
+              },
+              "type": "point-3d",
+              "symbolLayers": [
+                {
+                  "outline": {
+                    "color": "black",
+                    "size": 1
+                  },
+                  "type": "icon",
+                  "material": {
+                    "color": "#ababab"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "value": "Wegen en stoepen",
+            "symbol": {
+              "verticalOffset": {
+                "screenLength": 40,
+                "maxWorldLength": 200,
+                "minWorldLength": 35
+              },
+              "callout": {
+                "type": "line",
+                "color": "white",
+                "size": 1,
+                "border": {
+                  "color": "black"
+                }
+              },
+              "type": "point-3d",
+              "symbolLayers": [
+                {
+                  "outline": {
+                    "color": "black",
+                    "size": 1
+                  },
+                  "type": "icon",
+                  "material": {
+                    "color": "#c51d34"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "value": "Openbare verlichting",
+            "symbol": {
+              "verticalOffset": {
+                "screenLength": 40,
+                "maxWorldLength": 200,
+                "minWorldLength": 35
+              },
+              "callout": {
+                "type": "line",
+                "color": "white",
+                "size": 1,
+                "border": {
+                  "color": "black"
+                }
+              },
+              "type": "point-3d",
+              "symbolLayers": [
+                {
+                  "outline": {
+                    "color": "black",
+                    "size": 1
+                  },
+                  "type": "icon",
+                  "material": {
+                    "color": "#FFDD6F"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "value": "Parkeren",
+            "symbol": {
+              "verticalOffset": {
+                "screenLength": 40,
+                "maxWorldLength": 200,
+                "minWorldLength": 35
+              },
+              "callout": {
+                "type": "line",
+                "color": "white",
+                "size": 1,
+                "border": {
+                  "color": "black"
+                }
+              },
+              "type": "point-3d",
+              "symbolLayers": [
+                {
+                  "outline": {
+                    "color": "black",
+                    "size": 1
+                  },
+                  "type": "icon",
+                  "material": {
+                    "color": "#3fd4c7"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "value": "Dieren",
+            "symbol": {
+              "verticalOffset": {
+                "screenLength": 40,
+                "maxWorldLength": 200,
+                "minWorldLength": 35
+              },
+              "callout": {
+                "type": "line",
+                "color": "white",
+                "size": 1,
+                "border": {
+                  "color": "black"
+                }
+              },
+              "type": "point-3d",
+              "symbolLayers": [
+                {
+                  "outline": {
+                    "color": "black",
+                    "size": 1
+                  },
+                  "type": "icon",
+                  "material": {
+                    "color": "#f09c16"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "value": "Verkeer",
+            "symbol": {
+              "verticalOffset": {
+                "screenLength": 40,
+                "maxWorldLength": 200,
+                "minWorldLength": 35
+              },
+              "callout": {
+                "type": "line",
+                "color": "white",
+                "size": 1,
+                "border": {
+                  "color": "black"
+                }
+              },
+              "type": "point-3d",
+              "symbolLayers": [
+                {
+                  "outline": {
+                    "color": "black",
+                    "size": 1
+                  },
+                  "type": "icon",
+                  "material": {
+                    "color": "#06070E"
                   }
                 }
               ]
