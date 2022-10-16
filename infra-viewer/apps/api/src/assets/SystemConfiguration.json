@@ -44,13 +44,13 @@
         "type": "selection"
       },
       "minScale": 3000,
-      "visible": false
+      "visible": true
     },
     {
       "title": "3D Windturbines",
       "id": "windTurbines",
       "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Windturbines/SceneServer",
-      "visible": false
+      "visible": true
     }
   ],
   "featurelayers": [
@@ -59,35 +59,35 @@
       "title": "Hemelwaterafvoer",
       "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/hemelwaterafvoer/FeatureServer/0",
       "minScale": 3000,
-      "visible": false
+      "visible": true
     },
     {
       "id": "asbest",
       "title": "Asbest",
       "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/asbest/FeatureServer",
       "minScale": 3000,
-      "visible": false
+      "visible": true
     },
     {
       "id": "ondergrondse_tanks",
       "title": "Ondergrondse tanks",
       "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/ondergrondse_tanks/FeatureServer",
       "minScale": 3000,
-      "visible": false
+      "visible": true
     },
     {
       "id": "VRI_kasten",
       "title": "VRI kasten",
       "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/VRI_kasten/FeatureServer",
       "minScale": 3000,
-      "visible": false
+      "visible": true
     },
     {
       "id": "VRI_masten",
       "title": "VRI masten",
       "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/VRI_masten/FeatureServer",
       "minScale": 3000,
-      "visible": false
+      "visible": true
     },
     {
       "id": "kabels_laagspanning",
@@ -117,7 +117,7 @@
         "mode": "relative-to-ground",
         "offset": -3
       },
-      "visible": false
+      "visible": true
     },
     {
       "id": "mantelbuis",
@@ -147,14 +147,14 @@
         "mode": "relative-to-ground",
         "offset": -3
       },
-      "visible": false
+      "visible": true
     },
     {
       "id": "masten",
       "title": "Masten",
       "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/masten/FeatureServer",
       "minScale": 3000,
-      "visible": false
+      "visible": true
     },
     {
       "id": "putten",
@@ -211,7 +211,7 @@
         "mode": "relative-to-ground",
         "offset": -3
       },
-      "visible": false
+      "visible": true
     },
     {
       "id": "meldingen_or",
@@ -608,7 +608,7 @@
           ]
         }
       },
-      "visible": false
+      "visible": true
     },
     {
       "id": "trafficSigns",
@@ -625,40 +625,40 @@
       "title": "Banken",
       "id": "banken",
       "minScale": 3000,
-      "visible": false
+      "visible": true
     },
     {
       "id": "speeltoestellen",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Spelenkaart/MapServer/1",
       "title": "Speeltoestellen",
       "minScale": 3000,
-      "visible": false
+      "visible": true
     },
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Wegbeheer/MapServer/0",
       "title": "Wegbeheer",
       "minScale": 3000,
-      "visible": false
+      "visible": true
     },
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Trolleymasten/MapServer/0",
       "title": "Trolleymasten",
       "minScale": 3000,
-      "visible": false
+      "visible": true
     },
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Afvalbakken/MapServer/0",
       "id": "afvalbakken",
       "title": "Afvalbakken",
       "minScale": 3000,
-      "visible": false
+      "visible": true
     },
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Afvalcontainers/MapServer/0/",
       "id": "afvalcontainers",
       "title": "Afvalcontainers",
       "minScale": 3000,
-      "visible": false
+      "visible": true
     },
     {
       "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Ziekenhuizen2/FeatureServer/0",
@@ -669,7 +669,7 @@
         "mode": "relative-to-scene",
         "offset": 3
       },
-      "visible": false
+      "visible": true
     },
     {
       "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Politiebureaus/FeatureServer",
@@ -680,7 +680,7 @@
         "mode": "relative-to-scene",
         "offset": 3
       },
-      "visible": false
+      "visible": true
     },
     {
       "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Brandweerkazernes/FeatureServer/0",
@@ -691,7 +691,7 @@
         "mode": "relative-to-scene",
         "offset": 3
       },
-      "visible": false
+      "visible": true
     }
   ],
   "geoJSONLayers": [],
