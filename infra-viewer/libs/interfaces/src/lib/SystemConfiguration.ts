@@ -1,11 +1,17 @@
 // import SceneLayerProperties from '@arcgis/core/interfaces';
 
-export type SystemConfiguration = {
-  scenelayers: any[];
-  featurelayers: any[];
-  elevationLayer: { url: string } & any;
-  geoJSONLayers: any[];
-};
+import {ApiProperty} from '@nestjs/swagger';
+
+export class SystemConfiguration {
+  @ApiProperty()
+  scenelayers!: any[];
+  @ApiProperty()
+  featurelayers!: any[];
+  @ApiProperty()
+  elevationLayer!: { url: string } & any;
+  @ApiProperty()
+  geoJSONLayers!: any[];
+}
 
 export type SystemConfigurationLayerTypes =
   'scenelayers'
