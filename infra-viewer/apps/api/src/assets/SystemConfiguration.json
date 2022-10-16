@@ -154,7 +154,16 @@
       "title": "Masten",
       "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/masten/FeatureServer",
       "minScale": 3000,
-      "visible": true
+      "visible": true,
+      "renderer": {
+        "type": "simple",
+        "symbol": {
+          "type": "picture-marker",
+          "url": "https://static.arcgis.com/images/Symbols/Basic/GreenSphere.png",
+          "width": "32px",
+          "height": "32px"
+        }
+      }
     },
     {
       "id": "putten",
@@ -679,6 +688,15 @@
       "elevationInfo": {
         "mode": "relative-to-scene",
         "offset": 3
+      },
+      "renderer": {
+        "type": "simple",
+        "symbol": {
+          "type": "picture-marker",
+          "url": "https://api.infraviewer.steinjonker.nl/politie.png",
+          "width": "32px",
+          "height": "32px"
+        }
       },
       "visible": true
     },
