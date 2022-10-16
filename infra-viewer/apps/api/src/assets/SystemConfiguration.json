@@ -170,7 +170,7 @@
             {
               "type": "object",
               "width": 2,
-              "height": 0,
+              "height": 1,
               "depth": 2,
               "resource": {
                 "primitive": "cylinder"

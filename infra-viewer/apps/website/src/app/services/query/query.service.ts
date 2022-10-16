@@ -20,11 +20,13 @@ export class QueryService {
 
     const querySupportedLayers = layers.filter(layer => layer.type === 'feature' || layer.type === 'geojson') as Collection<FeatureLayer>;
 
-    const resultset = []
-    for (const layer of querySupportedLayers) {
+    // Query all the layers
+    const queryResults = await Promise.all(querySupportedLayers.map(async (layer) => {
       const featureSet = await layer.queryFeatures(query);
-      resultset.push({featureSet: featureSet, layer: layer});
-    }
-    return resultset;
+      return {featureSet, layer};
+    }));
+
+
+    return queryResults
   }
 }
