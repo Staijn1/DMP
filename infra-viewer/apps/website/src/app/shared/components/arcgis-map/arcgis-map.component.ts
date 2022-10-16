@@ -14,6 +14,7 @@ import {MapUIBuilderService} from '../../../services/map-uibuilder/map-uibuilder
 import {MapEventHandlerService} from '../../../services/map-event-handler/map-event-handler.service';
 import Basemap from '@arcgis/core/Basemap';
 import TileLayer from '@arcgis/core/layers/TileLayer';
+import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
 
 @Component({
   selector: 'app-arcgis-map',
@@ -46,7 +47,11 @@ export class ArcgisMapComponent implements OnInit {
       basemap: new Basemap({
         baseLayers: [
           new TileLayer({
-            url: 'https://services.arcgisonline.nl/ArcGIS/rest/services/Basiskaarten/Topo/MapServer',
+            url: 'https://services.arcgisonline.nl/arcgis/rest/services/Luchtfoto/Luchtfoto/MapServer'
+          }),
+          new VectorTileLayer({
+            url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/OSM_RD/VectorTileServer',
+            opacity: 0.5
           }),
         ],
       }),
