@@ -62,13 +62,6 @@
       "visible": true
     },
     {
-      "id": "asbest",
-      "title": "Asbest",
-      "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/asbest/FeatureServer",
-      "minScale": 3000,
-      "visible": true
-    },
-    {
       "id": "ondergrondse_tanks",
       "title": "Ondergrondse tanks",
       "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/ondergrondse_tanks/FeatureServer",

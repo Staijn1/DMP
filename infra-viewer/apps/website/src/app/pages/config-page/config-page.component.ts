@@ -18,6 +18,7 @@ import LayerProperties = __esri.LayerProperties;
 })
 export class ConfigPageComponent {
   @ViewChild('modal') modalRef!: ElementRef;
+  @ViewChild('advancedForm') advancedForm!: NgForm;
   selectedLayer: FeatureLayerProperties | undefined;
   configuration!: SystemConfiguration;
   private configurationBackup!: SystemConfiguration;
@@ -25,6 +26,15 @@ export class ConfigPageComponent {
 
   get configurationString() {
     return JSON.stringify(this.configuration, null, 2);
+  }
+
+  set configurationString(value: string) {
+    try {
+      this.configuration = JSON.parse(value);
+    } catch (e) {
+      debugger;
+      this.advancedForm.controls['advancedConfiguration'].setErrors({json: true});
+    }
   }
 
   constructor(private readonly configService: ConfigurationService) {
@@ -39,14 +49,12 @@ export class ConfigPageComponent {
    * This method is called by the form for advanced editing or when saving an individual layer
    * @param {NgForm | SystemConfiguration} configuration
    */
-  onConfigurationSubmit(configuration: NgForm | SystemConfiguration) {
-    let config: SystemConfiguration;
-    if (configuration instanceof NgForm) {
-      config = configuration.value.configuration;
-    } else {
-      config = configuration;
-    }
-    this.configService.setConfiguration(config).then(() => this.getInformation());
+  onConfigurationSubmit(configuration: SystemConfiguration) {
+    this.configService.setConfiguration(configuration).then(() => this.getInformation());
+  }
+
+  onAdvancedConfigSubmit() {
+    console.log(this.configuration);
   }
 
   /**
