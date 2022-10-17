@@ -12,6 +12,18 @@ type FeatureCollectionExtended = FeatureCollection & {
 @Injectable()
 export class ScraperService {
   list = [
+    {name: 'VRI_kasten', url: 'https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/72'},
+    {name: 'VRI_masten', url: 'https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/71'},
+    {
+      name: 'kabels_laagspanning',
+      url: 'https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/70'
+    },
+    {name: 'ondergrondse_tanks', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_Bodem/MapServer/4/'},
+    {
+      name: 'hemelwaterafvoer',
+      url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_Klimaat/MapServer/0/query'
+    },
+    {name: 'meldingenOR', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Meldingen_OR/FeatureServer/query'},
     {name: 'masten', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/27/query'},
     {name: 'verkeersborden', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/70/query'},
     {name: 'putten', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/13/query'},
@@ -20,12 +32,6 @@ export class ScraperService {
     {name: 'kabels', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/30/query'},
     {name: 'OV_Meubilair', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/29/query'},
     {name: 'mantelbuis', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/31/query'},
-    {name: "meldingenOR", url: "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Meldingen_OR/FeatureServer/query"},
-    {name: "VRI_kasten", url: "https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/72"},
-    {name: "VRI_masten", url: "https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/71"},
-    {name: "kabels_laagspanning", url: "https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/70"},
-    {name: "ondergrondse_tanks", url: "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_Bodem/MapServer/4/"},
-    {name: "hemelwaterafvoer", url: "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_Klimaat/MapServer/0/query"},
   ]
 
   constructor(private readonly httpService: HttpService) {
@@ -96,7 +102,8 @@ export class ScraperService {
     const hasError = response.statusText !== 'OK' || response.data.error !== undefined;
 
     if (hasError) {
-      throw new InternalServerErrorException(response.data.error, `Error fetching data from ${url}`);
+      const description = `Error fetching data from ${url}`
+      throw new InternalServerErrorException(response.data.error, description);
     }
 
     return response.data;
