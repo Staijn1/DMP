@@ -27,7 +27,9 @@ export class ConfigurationService extends HTTPService implements OnDestroy {
   }
 
   public setArcgisKey(): void {
-    esriConfig.apiKey = environment.arcgisKey;
+    if (!environment.production) {
+      esriConfig.apiKey = environment.arcgisKey;
+    }
   }
 
   ngOnDestroy(): void {
