@@ -91,7 +91,7 @@ export class ConfigPageComponent implements OnDestroy {
     // Create a UIKit dialog to confirm the deletion
     UIkit.modal.confirm('Are you sure you want to delete this layer?').then(() => {
       // Remove the layer from the configuration
-      this.configuration[type] = this.configuration[type].filter((l: LayerProperties) => l.id !== layer.id);
+      this.configuration[type] = (this.configuration[type] as any).filter((l: LayerProperties) => l.id !== layer.id);
       // Save the configuration
       this.onConfigurationSubmit(this.configuration);
     }, () => {

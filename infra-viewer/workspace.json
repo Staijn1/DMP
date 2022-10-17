@@ -4,6 +4,7 @@
   "projects": {
     "api": "apps/api",
     "interfaces": "libs/interfaces",
+    "scraper": "apps/scraper",
     "website": "apps/website"
   }
 }
