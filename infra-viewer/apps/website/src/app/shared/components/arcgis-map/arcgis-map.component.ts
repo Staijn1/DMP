@@ -79,6 +79,13 @@ export class ArcgisMapComponent implements OnInit, OnDestroy {
       container: 'map',
       viewingMode: 'local',
       map: this.map,
+      environment: {
+        lighting: {
+          type: 'sun',
+          directShadowsEnabled: true,
+          ambientOcclusionEnabled: true
+        }
+      },
       camera: {
         // The spatial reference is not in the type but does make it work, so we cast it to any
         spatialReference: {
