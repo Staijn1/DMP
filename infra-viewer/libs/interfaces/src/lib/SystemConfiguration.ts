@@ -1,8 +1,8 @@
 import {ApiProperty} from '@nestjs/swagger';
 import SceneLayerProperties from '@arcgis/core/layers/SceneLayer';
-import FeatureLayerProperties = __esri.FeatureLayerProperties;
-import ElevationLayerProperties = __esri.ElevationLayerProperties;
-import GeoJSONLayerProperties = __esri.GeoJSONLayerProperties;
+import FeatureLayerProperties from '@arcgis/core/layers/FeatureLayer';
+import ElevationLayerProperties from '@arcgis/core/layers/ElevationLayer';
+import GeoJSONLayerProperties from '@arcgis/core/layers/GeoJSONLayer';
 
 export class SystemConfiguration {
   @ApiProperty()
