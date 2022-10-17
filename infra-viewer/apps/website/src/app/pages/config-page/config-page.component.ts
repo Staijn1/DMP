@@ -32,7 +32,6 @@ export class ConfigPageComponent {
     try {
       this.configuration = JSON.parse(value);
     } catch (e) {
-      debugger;
       this.advancedForm.controls['advancedConfiguration'].setErrors({json: true});
     }
   }

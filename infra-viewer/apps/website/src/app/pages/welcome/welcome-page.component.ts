@@ -7,8 +7,6 @@ import {environment} from '../../../environments/environment';
   styleUrls: ['./welcome-page.component.scss'],
 })
 export class WelcomePageComponent {
-  constructor() {
-  }
 
   /**
    * Uses the environments api url to get the url to the publicly hosted images
