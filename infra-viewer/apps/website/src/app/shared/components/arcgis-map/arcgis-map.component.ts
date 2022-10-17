@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import WebScene from '@arcgis/core/WebScene';
 import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 import SceneView from '@arcgis/core/views/SceneView';
@@ -21,8 +21,7 @@ import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
   templateUrl: './arcgis-map.component.html',
   styleUrls: ['./arcgis-map.component.scss'],
 })
-export class ArcgisMapComponent implements OnInit {
-  private readonly targetWKID = 4326;
+export class ArcgisMapComponent implements OnInit, OnDestroy {
   private map!: WebScene;
   private view!: SceneView;
 
@@ -136,5 +135,14 @@ export class ArcgisMapComponent implements OnInit {
       type: 'none',
     };
     this.map.ground.opacity = 0.4;
+  }
+
+  /**
+   * Deconstruct the component by removing all layers and destroying the view
+   */
+  ngOnDestroy(): void {
+    this.map.removeAll();
+    this.map.destroy();
+    this.view.destroy();
   }
 }

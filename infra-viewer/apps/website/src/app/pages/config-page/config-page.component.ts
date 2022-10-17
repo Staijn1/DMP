@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {ConfigurationService} from '../../services/configuration/configuration.service';
 import {NgForm} from '@angular/forms';
 import {SystemConfiguration, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
@@ -16,7 +16,7 @@ import LayerProperties = __esri.LayerProperties;
   templateUrl: './config-page.component.html',
   styleUrls: ['./config-page.component.scss'],
 })
-export class ConfigPageComponent {
+export class ConfigPageComponent implements OnDestroy {
   @ViewChild('modal') modalRef!: ElementRef;
   @ViewChild('advancedForm') advancedForm!: NgForm;
   selectedLayer: FeatureLayerProperties | undefined;
@@ -135,5 +135,9 @@ export class ConfigPageComponent {
         ]
       })
     }));
+  }
+
+  ngOnDestroy(): void {
+    this.configuration = {} as SystemConfiguration;
   }
 }

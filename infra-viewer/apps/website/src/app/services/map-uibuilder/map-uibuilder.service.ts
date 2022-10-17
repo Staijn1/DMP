@@ -1,9 +1,8 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import Search from '@arcgis/core/widgets/Search';
 import LayerList from '@arcgis/core/widgets/LayerList';
 import Expand from '@arcgis/core/widgets/Expand';
 import ElevationProfile from '@arcgis/core/widgets/ElevationProfile';
-import Weather from '@arcgis/core/widgets/Weather';
 import Daylight from '@arcgis/core/widgets/Daylight';
 import ShadowCast from '@arcgis/core/widgets/ShadowCast';
 import Legend from '@arcgis/core/widgets/Legend';
@@ -11,7 +10,7 @@ import Legend from '@arcgis/core/widgets/Legend';
 @Injectable({
   providedIn: 'root'
 })
-export class MapUIBuilderService {
+export class MapUIBuilderService implements OnDestroy {
   private searchWidget!: __esri.widgetsSearch;
   public legend!: __esri.Legend;
 
@@ -58,14 +57,6 @@ export class MapUIBuilderService {
       content: elevationProfile,
     });
 
-    const weatherExpand = new Expand({
-      view: view,
-      content: new Weather({
-        view: view,
-      }),
-      group: 'top-right'
-    });
-
     const daylightExpand = new Expand({
       view: view,
       content: new Daylight({
@@ -86,7 +77,7 @@ export class MapUIBuilderService {
 
     view.ui.add(this.legend, 'bottom-right');
     view.ui.add([elevationProfileExpand, layerlistExpand], 'top-left');
-    view.ui.add([this.searchWidget, weatherExpand, daylightExpand, shadowWidget], 'top-right');
+    view.ui.add([this.searchWidget, daylightExpand, shadowWidget], 'top-right');
   }
 
   /**
@@ -105,5 +96,10 @@ export class MapUIBuilderService {
     this.legend.layerInfos.push({
       layer: layer,
     });
+  }
+
+  ngOnDestroy(): void {
+    this.searchWidget.destroy();
+    this.legend.destroy();
   }
 }
