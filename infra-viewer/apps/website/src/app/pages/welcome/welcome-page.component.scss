@@ -1,0 +1,24 @@
+
+.container {
+  position: relative;
+  // 80 px is the default height of the header
+  height: calc(100vh - 80px);
+}
+
+.text-container {
+  z-index: 1;
+  position: absolute;
+  left: 15%;
+  top: 15%;
+}
+
+$offset-left: 40%;
+.image-container {
+  z-index: 0;
+  position: absolute;
+  left: $offset-left;
+  height: 100%;
+  width: calc(100% - $offset-left);
+  clip-path: polygon(25% 0%, 100% 0, 75% 100%, 0% 100%);
+  background: black;
+}

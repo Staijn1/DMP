@@ -13,7 +13,7 @@ export class SystemController {
   }
 
   @Post('Configuration')
-  async uploadConfiguration(@Body() configuration: SystemConfiguration): Promise<void> {
+  public async uploadConfiguration(@Body() configuration: SystemConfiguration): Promise<void> {
     return this.systemService.setConfiguration(configuration);
   }
 }

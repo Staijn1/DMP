@@ -26,15 +26,15 @@
     <li>
       <h2 class="uk-accordion-title">Advanced Config</h2>
       <section class="uk-accordion-content">
-        <form class="uk-form-stacked" #f="ngForm" (ngSubmit)="onConfigurationSubmit(f)">
+        <form class="uk-form-stacked" #advancedForm="ngForm" (ngSubmit)="onAdvancedConfigSubmit()">
           <div>
             <label class="uk-form-label">Configuration JSON</label>
             <div class="uk-form-controls">
-          <textarea class="uk-textarea uk-height-viewport" name="configuration"
-                    [value]="configurationString"></textarea>
+            <textarea class="uk-textarea uk-height-viewport" name="advancedConfiguration"
+                      [(ngModel)]="configurationString"></textarea>
             </div>
           </div>
-          <button type="submit" class="uk-margin-small-top uk-button uk-button-primary">Submit</button>
+          <button type="submit" [disabled]="advancedForm.invalid" class="uk-margin-small-top uk-button uk-button-primary">Submit</button>
         </form>
       </section>
     </li>

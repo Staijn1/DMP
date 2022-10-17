@@ -1,11 +1,27 @@
-<div class="uk-container">
-  <h1>Welkom bij de infra-viewer!</h1>
-  <p>Snelle navigatie:</p>
-
-  <div class="uk-button-group">
-    <button class="uk-button uk-button-primary" (click)="startLogin()">Login</button>
-    <button class="uk-button uk-button-default" routerLink="./map">Map</button>
-    <button class="uk-button uk-button-default" routerLink="./config">Config</button>
+<div class="container">
+  <div class="text-container">
+    <h1 class="uk-heading-large">Infraviewer</h1>
+    <p>Bekijk de openbare ruimte van Arnhem in 3D.</p>
+    <button class="uk-button uk-button-primary" routerLink="/map">Beginnen!</button>
+  </div>
+  <div class="image-container">
+    <div class="uk-position-relative uk-visible-toggle uk-light uk-height-1-1"
+         tabindex="-1"
+         uk-slideshow="animation: push; autoplay: true; autoplay-interval: 5000;">
+      <ul class="uk-slideshow-items uk-height-1-1">
+        <li>
+          <img [src]="getSrc('musis.jpg')" alt="" uk-cover>
+        </li>
+        <li>
+          <img [src]="getSrc('station.jpg')" alt="" uk-cover>
+        </li>
+        <li>
+          <img [src]="getSrc('johnfrost.jpg')" alt="" uk-cover>
+        </li>
+        <li>
+          <img [src]="getSrc('korenmarkt.jpg')" alt="" uk-cover>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>
-
