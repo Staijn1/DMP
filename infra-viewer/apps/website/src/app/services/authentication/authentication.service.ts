@@ -31,12 +31,8 @@ export class AuthenticationService implements OnDestroy {
    * Redirect the user to the Arcgis Enterprise login portal
    */
   login() {
-    esriId.getCredential(this.portalSharingUrl, {
-        oAuthPopupConfirmation: false
-      }
-    ).then((credential) => {
-      console.log(credential);
-      this.router.navigate(['/map']).then();
+    esriId.getCredential(this.portalSharingUrl).then((credential) => {
+      return this.router.navigate(['/map']);
     });
   }
 
@@ -44,6 +40,11 @@ export class AuthenticationService implements OnDestroy {
    * Finish the login process by getting the token from the url and setting it in the identity manager
    */
   finishLogin() {
+    console.log('opener', opener)
+    console.log('location', location)
+    console.log('location.hash', location.hash)
+    console.log('location.search', location.search)
+    console.log('Typeof opener.require', typeof opener.require)
     if (opener) {
       if (location.hash) {
         // opener.console.log("oauth callback href:", location.href);
