@@ -59,7 +59,7 @@
       "title": "Hemelwaterafvoer",
       "url": "https://services8.arcgis.com/wL8901MkZuOYDkG2/arcgis/rest/services/hemelwaterafvoer/FeatureServer/0",
       "minScale": 3000,
-      "visible": true
+      "visible": false
     },
     {
       "id": "ondergrondse_tanks",
@@ -624,7 +624,8 @@
         "type": "selection"
       },
       "minScale": 3000,
-      "visible": false
+      "visible": true,
+      "title": "Verkeersborden"
     },
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Banken/MapServer/0",
@@ -644,7 +645,7 @@
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Wegbeheer/MapServer/0",
       "title": "Wegbeheer",
       "minScale": 3000,
-      "visible": true
+      "visible": false
     },
     {
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Trolleymasten/MapServer/0",
