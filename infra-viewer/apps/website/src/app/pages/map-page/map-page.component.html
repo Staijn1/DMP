@@ -1,3 +1,26 @@
 <div class="map-container">
   <app-arcgis-map></app-arcgis-map>
 </div>
+
+<div *ngIf="results">
+  <div class="uk-card uk-card-default uk-card-body">
+    <ul uk-tab>
+      <li *ngFor="let result of results; let i = index">
+        <a href="#">{{result.layer.title}}</a>
+      </li>
+    </ul>
+    <ul class="uk-switcher">
+      <li *ngFor="let result of results; let i = index">
+        <div class="uk-card uk-card-default uk-card-body">
+          <h3 class="uk-card-title">{{result.layer.title}}</h3>
+          <ul>
+            <li *ngFor="let feature of result.featureSet.features">
+              <pre>{{feature | json}}</pre>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+<pre>{{results | json}}</pre>
