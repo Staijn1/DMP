@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {environment} from '../../../environments/environment';
+import {AuthenticationService} from '../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-welcome-page',
@@ -7,6 +8,8 @@ import {environment} from '../../../environments/environment';
   styleUrls: ['./welcome-page.component.scss'],
 })
 export class WelcomePageComponent {
+  constructor(public readonly authService: AuthenticationService) {
+  }
 
   /**
    * Uses the environments api url to get the url to the publicly hosted images

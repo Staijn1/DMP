@@ -53,7 +53,7 @@ export class ConfigPageComponent implements OnDestroy {
   }
 
   onAdvancedConfigSubmit() {
-    console.log(this.configuration);
+    this.onConfigurationSubmit(this.configuration);
   }
 
   /**

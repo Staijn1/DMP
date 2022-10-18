@@ -33,11 +33,17 @@ import {SharedModule} from './shared/shared.module';
               (m) => m.ConfigPageModule
             ),
         },
+        {
+          path: 'login',
+          loadChildren: () =>
+            import('./pages/login-page/login-page.module').then((m) => m.LoginPageModule),
+        }
       ],
-      { initialNavigation: 'enabledBlocking' }
+      {initialNavigation: 'enabledBlocking'}
     ),
   ],
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+}

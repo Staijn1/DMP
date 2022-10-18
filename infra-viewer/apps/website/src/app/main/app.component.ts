@@ -13,7 +13,6 @@ export class AppComponent {
   constructor(private readonly configurationService: ConfigurationService) {
     // loads the Icon plugin
     UIkit.use(Icons);
-    this.configurationService.setArcgisKey()
     this.configurationService.getConfiguration().then();
   }
 }
