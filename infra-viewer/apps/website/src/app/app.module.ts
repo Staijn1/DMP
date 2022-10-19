@@ -3,13 +3,11 @@ import {BrowserModule} from '@angular/platform-browser';
 
 import {AppComponent} from './main/app.component';
 import {RouterModule} from '@angular/router';
-import {SharedModule} from './shared/shared.module';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    SharedModule,
     RouterModule.forRoot(
       [
         {
@@ -33,11 +31,17 @@ import {SharedModule} from './shared/shared.module';
               (m) => m.ConfigPageModule
             ),
         },
+        {
+          path: 'login',
+          loadChildren: () =>
+            import('./pages/login-page/login-page.module').then((m) => m.LoginPageModule),
+        }
       ],
-      { initialNavigation: 'enabledBlocking' }
+      {initialNavigation: 'enabledBlocking'}
     ),
   ],
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+}

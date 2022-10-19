@@ -1,4 +1,8 @@
 $global-primary-background: #02357c;
+.ag-row .ag-cell {
+  display: flex;
+  align-items: center;
+}
 
 // 1. Your custom variables and variable overwrites.
 @import "theme/text.scss";
@@ -14,3 +18,5 @@ $global-primary-background: #02357c;
 
 // 4. Import UIkit
 @import "uikit/src/scss/uikit.scss";
+@import 'ag-grid-community/styles/ag-grid.css';
+@import 'ag-grid-community/styles/ag-theme-alpine.css';

@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import WebScene from '@arcgis/core/WebScene';
-import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 import SceneView from '@arcgis/core/views/SceneView';
 import {ConfigurationService} from '../../../services/configuration/configuration.service';
 import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
@@ -15,6 +14,8 @@ import {MapEventHandlerService} from '../../../services/map-event-handler/map-ev
 import Basemap from '@arcgis/core/Basemap';
 import TileLayer from '@arcgis/core/layers/TileLayer';
 import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
+import FeatureLayerView from '@arcgis/core/views/layers/FeatureLayerView';
+import {HighlightStyleOptions} from 'ag-grid-community';
 
 @Component({
   selector: 'app-arcgis-map',
@@ -24,6 +25,7 @@ import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
 export class ArcgisMapComponent implements OnInit, OnDestroy {
   private map!: WebScene;
   private view!: SceneView;
+  private activeHighlight: __esri.Handle | undefined;
 
   constructor(
     private readonly configService: ConfigurationService,
@@ -73,6 +75,14 @@ export class ArcgisMapComponent implements OnInit, OnDestroy {
 
     // Create the view
     this.view = new SceneView({
+      highlightOptions: {
+        color: [255, 255, 0, 1],
+        haloColor: 'white',
+        haloOpacity: 0.9,
+        fillOpacity: 0.2,
+        shadowColor: 'black',
+        shadowOpacity: 0.5
+      } as HighlightStyleOptions,
       spatialReference: {wkid: 28992},
       qualityProfile: 'low',
       clippingArea: extent,
@@ -95,6 +105,13 @@ export class ArcgisMapComponent implements OnInit, OnDestroy {
         y: 443752.26031690626,
         z: 5966.512190682592
       } as any
+    });
+
+    // When a feature is clicked reset the highlight and zoom to the feature
+    this.view.on('click', (event) => {
+      if (this.activeHighlight) {
+        this.activeHighlight.remove();
+      }
     });
   }
 
@@ -125,7 +142,7 @@ export class ArcgisMapComponent implements OnInit, OnDestroy {
       const layerConfig = constructedLayer[1];
       // Create a popup template if the layer is not a scene layer
       if (layer.type !== 'scene') {
-        this.uiBuilder.addLegendLayer(layer);
+        this.uiBuilder.addLayerToLegend(layer);
         layer.when(() => {
           layer.popupTemplate = createTablePopup(layer);
         });
@@ -151,5 +168,25 @@ export class ArcgisMapComponent implements OnInit, OnDestroy {
     this.map.removeAll();
     this.map.destroy();
     this.view.destroy();
+  }
+
+  highlightAndZoomTo(graphic: __esri.Graphic) {
+    // If the layer the graphic is in is hidden, show it
+    if (!graphic.layer.visible) {
+      graphic.layer.visible = true;
+    }
+
+    // Go to the graphic
+    this.view.goTo({
+      target: graphic.geometry,
+      scale: 100
+    }).then();
+    // Highlight it with the configured highlight options in the view
+    this.view.whenLayerView(graphic.layer as FeatureLayer).then((layerView: FeatureLayerView) => {
+      if (this.activeHighlight) {
+        this.activeHighlight.remove();
+      }
+      this.activeHighlight = layerView.highlight(graphic);
+    });
   }
 }

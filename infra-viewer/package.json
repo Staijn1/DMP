@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start:api": "nx run website:serve:development",
+    "start:api": "nx run api:serve",
     "start:website": "npx nx serve website",
     "build:api": "nx build api",
     "build:website": "nx build website",
@@ -67,6 +67,8 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.1.2",
+    "ag-grid-angular": "^28.2.0",
+    "ag-grid-community": "^28.2.0",
     "express": "^4.18.1",
     "nestjs-http-promise": "^2.0.0",
     "reflect-metadata": "^0.1.13",

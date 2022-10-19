@@ -12,26 +12,26 @@ type FeatureCollectionExtended = FeatureCollection & {
 @Injectable()
 export class ScraperService {
   list = [
-    {name: 'VRI_kasten', url: 'https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/72'},
-    {name: 'VRI_masten', url: 'https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/71'},
-    {
-      name: 'kabels_laagspanning',
-      url: 'https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/70'
-    },
-    {name: 'ondergrondse_tanks', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_Bodem/MapServer/4/'},
-    {
-      name: 'hemelwaterafvoer',
-      url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_Klimaat/MapServer/0/query'
-    },
-    {name: 'meldingenOR', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Meldingen_OR/FeatureServer/query'},
-    {name: 'masten', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/27/query'},
-    {name: 'verkeersborden', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/70/query'},
-    {name: 'putten', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/13/query'},
-    {name: 'strengen', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/14/query'},
-    {name: 'kasten', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/28/query'},
-    {name: 'kabels', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/30/query'},
-    {name: 'OV_Meubilair', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/29/query'},
-    {name: 'mantelbuis', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/31/query'},
+    {name: 'meldingenOR', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Meldingen_OR/FeatureServer/0'},
+    /*  {name: 'VRI_kasten', url: 'https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/72'},
+      {name: 'VRI_masten', url: 'https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/71'},
+      {
+        name: 'kabels_laagspanning',
+        url: 'https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/70'
+      },
+      {name: 'ondergrondse_tanks', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_Bodem/MapServer/4/'},
+      {
+        name: 'hemelwaterafvoer',
+        url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_Klimaat/MapServer/0/query'
+      },
+      {name: 'masten', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/27/query'},
+      {name: 'verkeersborden', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/70/query'},
+      {name: 'putten', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/13/query'},
+      {name: 'strengen', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/14/query'},
+      {name: 'kasten', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/28/query'},
+      {name: 'kabels', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/30/query'},
+      {name: 'OV_Meubilair', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/29/query'},
+      {name: 'mantelbuis', url: 'https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/31/query'},*/
   ]
 
   constructor(private readonly httpService: HttpService) {
@@ -73,8 +73,7 @@ export class ScraperService {
     if (!url.endsWith('/query')) {
       url += '/query';
     }
-
-    const token = 'Cu_dbBsJUiz0MncltiKww_fJdomrISLARt_5K9YJK84T7o3sbi6Dhcfpr6VtLr2z0OfdB4RR0mXWAGveiDKwzG38ZS4rur_uRUkGNe7HwPQ8KpM7idtkXZ8V0bl_oyv8aq-whS-UfcpeMLShDISqf8IuLgRYFPlCLAcK5QYAifTNeDXd-fl8o-7fw1howMun5AaZkQ2eGMItYtni0y86kuS3ppN81eFlH1_AKb01rQNrTCQfkW5JQ0lcxYKPw5AR_KNa33Skp5qbMsRz8lVGOg..'
+    const token = 'O4o9Ws-jGRZiVVP17cukjhH_GnwG9zncccZKCUplhvn_FJsLbVPSd2IMKgASHjd0XSU3pUabTptOBO9SStV25OsP9-BWHPhl4og-EsYOm5yYY-yk_4Ib1PqjkReIDz-2BA-zQe0pb01uYmbJ4DphcRV1t92DyjcEPLY3h6xg_Sey_M_4cIUZxooygI4TKuG5mQ2MUC_V0IIHtWYwwBYR7mWyPUmlQa88pAq3snl0W2MWufU6uPQsnp9KdaMegcM2MJSbQv-sduJAUHc2m7i7ZA..'
     logger.log(`Fetching page ${featureOffset / 2000} from ${url}`);
     // Build the url
     const params = {
