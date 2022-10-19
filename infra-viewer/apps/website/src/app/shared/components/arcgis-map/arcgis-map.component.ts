@@ -25,6 +25,7 @@ import {HighlightStyleOptions} from 'ag-grid-community';
 export class ArcgisMapComponent implements OnInit, OnDestroy {
   private map!: WebScene;
   private view!: SceneView;
+  private activeHighlight: __esri.Handle | undefined;
 
   constructor(
     private readonly configService: ConfigurationService,
@@ -105,6 +106,13 @@ export class ArcgisMapComponent implements OnInit, OnDestroy {
         z: 5966.512190682592
       } as any
     });
+
+    // When a feature is clicked reset the highlight and zoom to the feature
+    this.view.on('click', (event) => {
+      if (this.activeHighlight) {
+        this.activeHighlight.remove();
+      }
+    });
   }
 
   private async applyConfig(): Promise<void> {
@@ -175,7 +183,10 @@ export class ArcgisMapComponent implements OnInit, OnDestroy {
     }).then();
     // Highlight it with the configured highlight options in the view
     this.view.whenLayerView(graphic.layer as FeatureLayer).then((layerView: FeatureLayerView) => {
-      layerView.highlight(graphic);
+      if (this.activeHighlight) {
+        this.activeHighlight.remove();
+      }
+      this.activeHighlight = layerView.highlight(graphic);
     });
   }
 }

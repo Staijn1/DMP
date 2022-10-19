@@ -5,7 +5,7 @@ import {ICellRendererParams} from 'ag-grid-community';
 @Component({
   selector: 'app-zoom-to-feature-renderer',
   template: `
-    <div class="uk-width-1-1 uk-flex uk-flex-center" (click)="onClick()">
+    <div class="uk-width-1-1 uk-flex uk-flex-center uk-items-middle" (click)="onClick()">
       <span uk-icon="icon: location"></span>
     </div>`,
 })

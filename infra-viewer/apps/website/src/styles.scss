@@ -1,4 +1,8 @@
 $global-primary-background: #02357c;
+.ag-row .ag-cell {
+  display: flex;
+  align-items: center;
+}
 
 // 1. Your custom variables and variable overwrites.
 @import "theme/text.scss";

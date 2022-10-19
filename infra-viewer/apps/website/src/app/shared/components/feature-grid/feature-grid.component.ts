@@ -30,7 +30,7 @@ export class FeatureGridComponent {
     cellRendererParams: {
       clicked: this.zoomToFeature.bind(this),
     },
-    width: 100,
+    width: 100
   };
   gridOptions: GridOptions = {};
 
