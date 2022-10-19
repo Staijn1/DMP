@@ -1,3 +1,21 @@
-<div class="map-container">
+<div class="map-container uk-container uk-container-xlarge">
   <app-arcgis-map></app-arcgis-map>
+</div>
+
+<div *ngIf="results">
+  <div class="uk-card uk-card-default uk-card-body">
+    <ul uk-tab>
+      <li *ngFor="let result of results; let i = index">
+        <a href="#">{{result.layer.title}}</a>
+      </li>
+    </ul>
+    <ul class="uk-switcher">
+      <li *ngFor="let result of results; let i = index">
+        <div class="uk-card uk-card-default uk-card-body">
+          <h3 class="uk-card-title">{{result.layer.title}}</h3>
+          <app-feature-grid [input]="result" [map]="map"></app-feature-grid>
+        </div>
+      </li>
+    </ul>
+  </div>
 </div>

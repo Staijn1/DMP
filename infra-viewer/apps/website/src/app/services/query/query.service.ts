@@ -4,13 +4,13 @@ import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import Collection from '@arcgis/core/core/Collection';
 import Layer from '@arcgis/core/layers/Layer';
 import Point from '@arcgis/core/geometry/Point';
-import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
+import {QueriedFeatures} from '@infra-viewer/interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class QueryService {
-  async queryOnLocation(mapPoint: Point, layers: Collection<Layer>): Promise<{ featureSet: FeatureSet; layer: FeatureLayer }[]> {
+  async queryOnLocation(mapPoint: Point, layers: Collection<Layer>): Promise<QueriedFeatures[]> {
     const query = new Query();
     query.geometry = mapPoint;
     query.distance = 100;

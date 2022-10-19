@@ -1,0 +1,11 @@
+<ag-grid-angular
+  class="ag-theme-alpine grid-container"
+  [columnDefs]="columnDefs"
+  [defaultColDef]="defaultColDef"
+  [rowData]="rowData"
+  [rowSelection]="'multiple'"
+  [animateRows]="true"
+  [gridOptions]="gridOptions"
+  (gridReady)="onGridReady($event)"
+  (cellClicked)="onCellClicked($event)"
+></ag-grid-angular>

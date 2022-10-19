@@ -10,10 +10,15 @@ import {environment} from '../../../environments/environment';
   providedIn: 'root'
 })
 export class AuthenticationService implements OnDestroy {
+  private static credential: __esri.Credential;
   private readonly appId = 'jpL480B69UHL0NWO';
   private readonly portalURL = 'https://geo.arnhem.nl/portal';
   private readonly portalSharingUrl = this.portalURL + '/sharing/';
   private routeSubscription: Subscription | undefined;
+
+  get isLoggedIn(): boolean {
+    return AuthenticationService.credential !== undefined;
+  }
 
   constructor(private router: Router) {
     const info = new OAuthInfo({
@@ -32,8 +37,9 @@ export class AuthenticationService implements OnDestroy {
    */
   login() {
     esriId.getCredential(this.portalSharingUrl).then((credential) => {
+      AuthenticationService.credential = credential
       return this.router.navigate(['/map']);
-    });
+    }).catch(e => console.error(e));
   }
 
   /**

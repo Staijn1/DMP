@@ -12,12 +12,17 @@ import Point from '@arcgis/core/geometry/Point';
 import PointSymbol3D from '@arcgis/core/symbols/PointSymbol3D';
 import ViewClickEvent = __esri.ViewClickEvent;
 import {MapUIBuilderService} from '../map-uibuilder/map-uibuilder.service';
+import FeatureLayerProperties = __esri.FeatureLayerProperties;
+import {BehaviorSubject} from 'rxjs';
+import {QueriedFeatures} from '@infra-viewer/interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MapEventHandlerService {
   private queryResultGroupLayer!: GroupLayer;
+  private queriedFeatures = new BehaviorSubject<QueriedFeatures[] | null>(null);
+  queredFeatures$ = this.queriedFeatures.asObservable();
 
   constructor(
     private readonly queryService: QueryService,
@@ -30,7 +35,7 @@ export class MapEventHandlerService {
    * @private
    */
   private get isQueryActive(): boolean {
-     return this.queryResultGroupLayer && this.queryResultGroupLayer.visible;
+    return this.queryResultGroupLayer && this.queryResultGroupLayer.visible;
   }
 
   onViewClick(event: __esri.ViewClickEvent, view: __esri.SceneView) {
@@ -51,12 +56,16 @@ export class MapEventHandlerService {
         // If the user held ctrl, then we want to query the location
         if (event.native.ctrlKey) {
           this.queryService.queryOnLocation(event.mapPoint, view.map.layers as Collection<Layer>)
-            .then(results => this.displayFeaturesAroundLocation(results, event.mapPoint, view));
+            .then(results => {
+              this.displayFeaturesAroundLocation(results, event.mapPoint, view)
+              this.queriedFeatures.next(results)
+            });
         } else {
           // If not, then we want to clear the query results
           // Enable all the layers and remove the query results layer
           if (this.isQueryActive) {
             this.queryResultGroupLayer.visible = false;
+            this.queriedFeatures.next(null)
             view.map.layers.filter(layer => layer.type != 'scene').forEach((layer) => layer.visible = true);
             view.map.remove(this.queryResultGroupLayer);
           }
@@ -76,7 +85,7 @@ export class MapEventHandlerService {
    * @param {__esri.SceneView} view
    * @private
    */
-  private displayFeaturesAroundLocation(results: { featureSet: FeatureSet; layer: FeatureLayer }[], locationClicked: Point, view: SceneView) {
+  private displayFeaturesAroundLocation(results:QueriedFeatures[], locationClicked: Point, view: SceneView) {
     // If the query results group layer already exists, remove it
     if (this.isQueryActive) view.map.remove(this.queryResultGroupLayer);
 
