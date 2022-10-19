@@ -40,7 +40,7 @@ export class AuthenticationService {
     });
     esriId.getCredential(this.portalSharingUrl).then((credential) => {
       AuthenticationService.credential = credential
-      this.router.navigate(['/map']).then();
+      return this.router.navigateByUrl('/map');
     }).catch(e => console.error(e))
   }
 }

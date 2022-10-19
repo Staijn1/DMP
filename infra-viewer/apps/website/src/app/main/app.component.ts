@@ -3,7 +3,7 @@ import {ConfigurationService} from '../services/configuration/configuration.serv
 import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 import {AuthenticationService} from '../services/authentication/authentication.service';
-import {Router} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 
 
 @Component({
@@ -20,8 +20,12 @@ export class AppComponent {
     // Subscribe to all route changes and check if the user is logged in
     // If not, and the route is not /, redirect to /
     this.router.events.subscribe((val) => {
-      if (!this.authService.isLoggedIn && this.router.url !== '/') {
-        this.router.navigateByUrl('/').then();
+      if (val instanceof NavigationEnd) {
+        if (this.authService.isLoggedIn) return;
+
+        if (val.url !== '/' && !val.url.includes('/login')) {
+          this.router.navigateByUrl('/').then();
+        }
       }
     });
   }
