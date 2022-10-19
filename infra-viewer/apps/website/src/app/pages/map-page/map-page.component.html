@@ -13,10 +13,9 @@
       <li *ngFor="let result of results; let i = index">
         <div class="uk-card uk-card-default uk-card-body">
           <h3 class="uk-card-title">{{result.layer.title}}</h3>
-          <app-feature-grid></app-feature-grid>
+          <app-feature-grid [input]="result" [map]="map"></app-feature-grid>
         </div>
       </li>
     </ul>
   </div>
 </div>
-<pre>{{results | json}}</pre>

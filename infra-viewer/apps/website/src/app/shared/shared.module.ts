@@ -1,19 +1,18 @@
-import {ArcgisMapComponent} from './components/arcgis-map/arcgis-map.component';
-import {NgModule} from '@angular/core';
-import {FeatureGridComponent} from './components/feature-grid/feature-grid.component';
-import {AgGridModule} from 'ag-grid-angular';
-import {CommonModule} from '@angular/common';
-import {HttpClientModule} from '@angular/common/http';
+import { ArcgisMapComponent } from './components/arcgis-map/arcgis-map.component';
+import { NgModule } from '@angular/core';
+import { FeatureGridComponent } from './components/feature-grid/feature-grid.component';
+import { AgGridModule } from 'ag-grid-angular';
+import { CommonModule } from '@angular/common';
+import { ZoomToFeatureRendererComponent } from './components/feature-grid/renderers/zoom-to-feature-renderer/zoom-to-feature-renderer.component';
 
 @NgModule({
-  declarations: [ArcgisMapComponent, FeatureGridComponent],
-  exports: [ArcgisMapComponent, FeatureGridComponent],
-  imports: [
-    AgGridModule,
-    CommonModule,
-    HttpClientModule
+  declarations: [
+    ArcgisMapComponent,
+    FeatureGridComponent,
+    ZoomToFeatureRendererComponent,
   ],
-  providers: []
+  exports: [ArcgisMapComponent, FeatureGridComponent],
+  imports: [AgGridModule, CommonModule],
+  providers: [],
 })
-export class SharedModule {
-}
+export class SharedModule {}

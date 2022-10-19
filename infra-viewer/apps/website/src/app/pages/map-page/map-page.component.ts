@@ -1,8 +1,8 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, ViewChild} from '@angular/core';
 import {MapEventHandlerService} from '../../services/map-event-handler/map-event-handler.service';
 import {Subscription} from 'rxjs';
-import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
-import FeatureLayerProperties = __esri.FeatureLayerProperties;
+import {QueriedFeatures} from '@infra-viewer/interfaces';
+import {ArcgisMapComponent} from '../../shared/components/arcgis-map/arcgis-map.component';
 
 @Component({
   selector: 'app-map-page',
@@ -10,11 +10,12 @@ import FeatureLayerProperties = __esri.FeatureLayerProperties;
   styleUrls: ['./map-page.component.scss'],
 })
 export class MapPageComponent implements OnDestroy {
+  @ViewChild(ArcgisMapComponent) map!: ArcgisMapComponent;
   private featureSubscription: Subscription;
-  results: { featureSet: FeatureSet, layer: FeatureLayerProperties }[] | null = null;
+  results: QueriedFeatures[] | null = null;
 
   constructor(private readonly eventHandler: MapEventHandlerService) {
-    this.featureSubscription = eventHandler.queredFeatures$.subscribe(results =>this.results = results)
+    this.featureSubscription = eventHandler.queredFeatures$.subscribe(results => this.results = results)
   }
 
   ngOnDestroy(): void {

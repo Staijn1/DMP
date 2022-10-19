@@ -92,7 +92,7 @@ export class MapUIBuilderService implements OnDestroy {
    * Adds a layer to the legend
    * @param {__esri.Layer} layer
    */
-  addLegendLayer(layer: __esri.Layer): void {
+  addLayerToLegend(layer: __esri.Layer): void {
     this.legend.layerInfos.push({
       layer: layer,
     });

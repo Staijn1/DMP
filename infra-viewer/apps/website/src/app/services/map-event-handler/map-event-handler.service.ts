@@ -14,13 +14,14 @@ import ViewClickEvent = __esri.ViewClickEvent;
 import {MapUIBuilderService} from '../map-uibuilder/map-uibuilder.service';
 import FeatureLayerProperties = __esri.FeatureLayerProperties;
 import {BehaviorSubject} from 'rxjs';
+import {QueriedFeatures} from '@infra-viewer/interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MapEventHandlerService {
   private queryResultGroupLayer!: GroupLayer;
-  private queriedFeatures = new BehaviorSubject<{ featureSet: FeatureSet, layer: FeatureLayerProperties }[] | null>(null);
+  private queriedFeatures = new BehaviorSubject<QueriedFeatures[] | null>(null);
   queredFeatures$ = this.queriedFeatures.asObservable();
 
   constructor(
@@ -84,7 +85,7 @@ export class MapEventHandlerService {
    * @param {__esri.SceneView} view
    * @private
    */
-  private displayFeaturesAroundLocation(results: { featureSet: FeatureSet; layer: FeatureLayer }[], locationClicked: Point, view: SceneView) {
+  private displayFeaturesAroundLocation(results:QueriedFeatures[], locationClicked: Point, view: SceneView) {
     // If the query results group layer already exists, remove it
     if (this.isQueryActive) view.map.remove(this.queryResultGroupLayer);
 
