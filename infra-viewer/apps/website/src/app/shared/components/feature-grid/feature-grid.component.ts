@@ -47,7 +47,9 @@ export class FeatureGridComponent {
     this.createRowData(this.input.featureSet.features);
   }
 
+// todo
   onCellClicked(e: CellClickedEvent): void {
+    console.log('Todo: Implement onCellClicked');
   }
 
   zoomToFeature(graphic: Graphic) {
