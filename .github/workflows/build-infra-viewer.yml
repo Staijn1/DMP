@@ -1,4 +1,4 @@
-name: Build infra-viewer
+
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
   
 jobs:
   main:
+    name: Build infra-viewer
     runs-on: ubuntu-latest
     defaults:
       run:

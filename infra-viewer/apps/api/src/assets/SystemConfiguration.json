@@ -2,7 +2,7 @@
   "scenelayers": [
     {
       "minScale": 65000,
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/Hosted/3dgebouwenWGS84/SceneServer",
+      "url": "https://geo.arnhem.nl/arcgis/rest/services/Hosted/3dgebouwenArnhem/SceneServer",
       "id": "buildings",
       "title": "3D Gebouwen",
       "featureReduction": {

@@ -7,9 +7,14 @@ import {environment} from '../../../environments/environment';
   providedIn: 'root'
 })
 export class AuthenticationService {
+  private static credential: __esri.Credential;
   private readonly appId = 'jpL480B69UHL0NWO';
   private readonly portalURL = 'https://geo.arnhem.nl/portal';
   private readonly portalSharingUrl = this.portalURL + '/sharing/';
+
+  get isLoggedIn(): boolean {
+    return AuthenticationService.credential !== undefined;
+  }
 
   constructor(private router: Router) {
   }
@@ -33,7 +38,9 @@ export class AuthenticationService {
       token: token,
       expires: isNaN(Number(expiration)) ? new Date().getTime() + (3600 * 1000) : Number(expiration)
     });
-
-    this.router.navigate(['/map']).then();
+    esriId.getCredential(this.portalSharingUrl).then((credential) => {
+      AuthenticationService.credential = credential
+      this.router.navigate(['/map']).then();
+    }).catch(e => console.error(e))
   }
 }
