@@ -22,7 +22,7 @@ import {HighlightStyleOptions} from 'ag-grid-community';
   templateUrl: './arcgis-map.component.html',
   styleUrls: ['./arcgis-map.component.scss'],
 })
-export class ArcgisMapComponent implements OnInit, OnDestroy {
+export class ArcgisMapComponent implements OnInit {
   private map!: WebScene;
   private view!: SceneView;
   private activeHighlight: __esri.Handle | undefined;
@@ -159,15 +159,6 @@ export class ArcgisMapComponent implements OnInit, OnDestroy {
       type: 'none',
     };
     this.map.ground.opacity = 0.4;
-  }
-
-  /**
-   * Deconstruct the component by removing all layers and destroying the view
-   */
-  ngOnDestroy(): void {
-    this.map.removeAll();
-    this.map.destroy();
-    this.view.destroy();
   }
 
   highlightAndZoomTo(graphic: __esri.Graphic) {

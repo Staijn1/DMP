@@ -12,7 +12,7 @@
         <a href="#">Meer <span uk-icon="icon: triangle-down"></span></a>
         <div uk-dropdown="mode: click">
           <ul class="uk-nav uk-dropdown-nav">
-            <li *ngFor="let result of results | slice:5">
+            <li *ngFor="let result of results | slice:4">
               <a (click)="showTab(result)">{{result.layer.title}}</a>
             </li>
           </ul>
