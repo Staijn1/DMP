@@ -1,7 +1,7 @@
 <div class="uk-container">
   <h1 class="uk-heading-medium uk-heading-bullet">Configuration</h1>
   <p>On this page you can quickly configure the infraviewer</p>
-
+  <button class="uk-button uk-button-primary" type="button" (click)="getInformation(true)">Refresh config</button>
 
   <ul uk-accordion *ngIf="configuration">
     <li class="uk-open">
@@ -34,7 +34,9 @@
                       [(ngModel)]="configurationString"></textarea>
             </div>
           </div>
-          <button type="submit" [disabled]="advancedForm.invalid" class="uk-margin-small-top uk-button uk-button-primary">Submit</button>
+          <button type="submit" [disabled]="advancedForm.invalid"
+                  class="uk-margin-small-top uk-button uk-button-primary">Submit
+          </button>
         </form>
       </section>
     </li>

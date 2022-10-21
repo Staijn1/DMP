@@ -10,8 +10,8 @@ import esriConfig from '@arcgis/core/config';
 export class ConfigurationService extends HTTPService implements OnDestroy {
   private static configuration: SystemConfiguration | null = null;
 
-  async getConfiguration(): Promise<SystemConfiguration> {
-    if (ConfigurationService.configuration) return ConfigurationService.configuration;
+  async getConfiguration(force?: boolean): Promise<SystemConfiguration> {
+    if (ConfigurationService.configuration && !force) return ConfigurationService.configuration;
 
     return this.request(`${environment.api}/System/Configuration`, {});
   }
