@@ -4,7 +4,7 @@ import UIkit from 'uikit';
 import Icons from 'uikit/dist/js/uikit-icons';
 import {AuthenticationService} from '../services/authentication/authentication.service';
 import {NavigationEnd, Router} from '@angular/router';
-
+import * as AOS from 'aos';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +16,7 @@ export class AppComponent {
     // loads the Icon plugin
     UIkit.use(Icons);
     this.configurationService.getConfiguration().then();
-
+    AOS.init()
     // Subscribe to all route changes and check if the user is logged in
     // If not, and the route is not /, redirect to /
     this.router.events.subscribe((val) => {

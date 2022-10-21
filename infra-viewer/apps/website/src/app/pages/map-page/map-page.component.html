@@ -28,7 +28,7 @@
 </div>
 
 <ng-template #layerResult let-result="result">
-  <div class="uk-card uk-card-default uk-card-body">
+  <div data-aos="fade-up" class="uk-card uk-card-default uk-card-body">
     <h3 class="uk-card-title">{{result.layer.title}}</h3>
     <app-feature-grid (filterChanged)="onGridFilterChange($event, result.layer)" [input]="result" [map]="map"></app-feature-grid>
   </div>
