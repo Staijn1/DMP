@@ -24,7 +24,7 @@ import {HighlightStyleOptions} from 'ag-grid-community';
 })
 export class ArcgisMapComponent implements OnInit {
   private map!: WebScene;
-  private view!: SceneView;
+  view!: SceneView;
   private activeHighlight: __esri.Handle | undefined;
 
   constructor(

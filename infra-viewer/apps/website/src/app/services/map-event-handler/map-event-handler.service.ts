@@ -6,15 +6,14 @@ import {QueryService} from '../query/query.service';
 import GroupLayer from '@arcgis/core/layers/GroupLayer';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
 import SceneView from '@arcgis/core/views/SceneView';
 import Point from '@arcgis/core/geometry/Point';
 import PointSymbol3D from '@arcgis/core/symbols/PointSymbol3D';
-import ViewClickEvent = __esri.ViewClickEvent;
 import {MapUIBuilderService} from '../map-uibuilder/map-uibuilder.service';
-import FeatureLayerProperties = __esri.FeatureLayerProperties;
 import {BehaviorSubject} from 'rxjs';
 import {QueriedFeatures} from '@infra-viewer/interfaces';
+import ViewClickEvent = __esri.ViewClickEvent;
+import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
 
 @Injectable({
   providedIn: 'root'
@@ -85,7 +84,7 @@ export class MapEventHandlerService {
    * @param {__esri.SceneView} view
    * @private
    */
-  private displayFeaturesAroundLocation(results:QueriedFeatures[], locationClicked: Point, view: SceneView) {
+  private displayFeaturesAroundLocation(results: QueriedFeatures[], locationClicked: Point, view: SceneView) {
     // If the query results group layer already exists, remove it
     if (this.isQueryActive) view.map.remove(this.queryResultGroupLayer);
 
@@ -131,17 +130,7 @@ export class MapEventHandlerService {
 
     for (const result of results) {
       // Create a feature layer with the returned features
-      const featureLayer = new FeatureLayer(
-        {
-          popupTemplate: result.layer.popupTemplate,
-          source: result.featureSet.features,
-          title: result.layer.title,
-          renderer: result.layer.renderer,
-          objectIdField: result.layer.objectIdField,
-          fields: result.layer.fields,
-          elevationInfo: result.layer.elevationInfo,
-        }
-      );
+      const featureLayer = this.createFeatureLayerFromFeatureLayer(result);
       this.queryResultGroupLayer.add(featureLayer);
     }
 
@@ -151,7 +140,50 @@ export class MapEventHandlerService {
     view.map.add(this.queryResultGroupLayer);
   }
 
+
   registerEvents(view: __esri.SceneView) {
     view.on('immediate-click' as any, (event: ViewClickEvent) => this.onViewClick(event, view));
+  }
+
+  /**
+   * This function is called when the filtering changes in the grids that show up after using the location query
+   * The parameters contain the graphics that matched the filters and the layer that they belong to
+   * In the corrosponding graphics layer, the graphics that did not match should be hidden and the ones that did should be shown
+   * @param {__esri.Graphic[]} $event
+   * @param {__esri.Layer} layer
+   * @param view
+   */
+  onFilterChange($event: __esri.Graphic[], layer: __esri.Layer, view: __esri.SceneView) {
+    const generatedFeatureLayer = this.queryResultGroupLayer.layers.find((graphicsLayer) => graphicsLayer.title == layer.title) as FeatureLayer;
+    this.queryResultGroupLayer.remove(generatedFeatureLayer);
+    view.map.remove(this.queryResultGroupLayer);
+    const featureSet = new FeatureSet();
+    featureSet.features = $event;
+    const newFeatureLayer = this.createFeatureLayerFromFeatureLayer({featureSet: featureSet, layer: layer as FeatureLayer})
+    // Replace the source of the feature layer with the filtered features
+    this.queryResultGroupLayer.add(newFeatureLayer);
+
+    view.map.add(this.queryResultGroupLayer);
+  }
+
+  /**
+   * Create a feature layer based on the configuration of a featurelayer, but only showing specific graphics.
+   * These graphics are put into the source
+   * @param {QueriedFeatures} result
+   * @returns {__esri.FeatureLayer | __esri.FeatureLayer}
+   * @private
+   */
+  private createFeatureLayerFromFeatureLayer(result: QueriedFeatures) {
+    return new FeatureLayer(
+      {
+        popupTemplate: result.layer.popupTemplate,
+        source: result.featureSet.features,
+        title: result.layer.title,
+        renderer: result.layer.renderer,
+        objectIdField: result.layer.objectIdField,
+        fields: result.layer.fields,
+        elevationInfo: result.layer.elevationInfo,
+      }
+    );
   }
 }

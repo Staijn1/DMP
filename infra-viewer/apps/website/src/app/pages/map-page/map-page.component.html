@@ -10,7 +10,7 @@
       </li>
       <li>
         <a href="#">Meer <span uk-icon="icon: triangle-down"></span></a>
-        <div uk-dropdown="mode: click">
+        <div uk-dropdown="mode: hover; pos:bottom-center">
           <ul class="uk-nav uk-dropdown-nav">
             <li *ngFor="let result of results | slice:4">
               <a (click)="showTab(result)">{{result.layer.title}}</a>
@@ -30,6 +30,6 @@
 <ng-template #layerResult let-result="result">
   <div class="uk-card uk-card-default uk-card-body">
     <h3 class="uk-card-title">{{result.layer.title}}</h3>
-    <app-feature-grid [input]="result" [map]="map"></app-feature-grid>
+    <app-feature-grid (filterChanged)="onGridFilterChange($event, result.layer)" [input]="result" [map]="map"></app-feature-grid>
   </div>
 </ng-template>

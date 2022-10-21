@@ -4,6 +4,7 @@ import {Subscription} from 'rxjs';
 import {QueriedFeatures} from '@infra-viewer/interfaces';
 import {ArcgisMapComponent} from '../../shared/components/arcgis-map/arcgis-map.component';
 import UIkit from 'uikit';
+import Layer from '@arcgis/core/layers/Layer';
 
 
 @Component({
@@ -33,5 +34,14 @@ export class MapPageComponent implements OnDestroy {
     if (index !== undefined) {
       UIkit.switcher(this.switcher.nativeElement).show(index);
     }
+  }
+
+  /**
+   * This method is called when the user changes the filtering in the grid that appears after a query.
+   * This function calls the eventhandler that will deal with it further
+   * @param {__esri.Graphic[]} $event
+   */
+  onGridFilterChange($event: __esri.Graphic[], layer: Layer) {
+    this.eventHandler.onFilterChange($event, layer, this.map.view);
   }
 }
