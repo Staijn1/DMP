@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import WebScene from '@arcgis/core/WebScene';
 import SceneView from '@arcgis/core/views/SceneView';
 import {ConfigurationService} from '../../../services/configuration/configuration.service';
@@ -35,15 +35,14 @@ export class ArcgisMapComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.createMap().then(() => {
-      this.createView();
-      this.uiBuilder.buildUI(this.view);
-      this.applyConfig().then();
-      this.eventHandler.registerEvents(this.view);
-    });
+    this.createMap()
+    this.createView();
+    this.uiBuilder.buildUI(this.view);
+    this.applyConfig().then();
+    this.eventHandler.registerEvents(this.view);
   }
 
-  private async createMap(): Promise<void> {
+  private createMap(): void {
     this.map = new WebScene({
       basemap: new Basemap({
         baseLayers: [
@@ -52,7 +51,7 @@ export class ArcgisMapComponent implements OnInit {
           }),
           new VectorTileLayer({
             url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/OSM_RD/VectorTileServer',
-            opacity: 0.5
+            blendMode: 'multiply'
           }),
         ],
       }),
