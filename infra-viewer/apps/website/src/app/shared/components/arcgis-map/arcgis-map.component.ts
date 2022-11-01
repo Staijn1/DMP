@@ -3,11 +3,8 @@ import WebScene from '@arcgis/core/WebScene';
 import SceneView from '@arcgis/core/views/SceneView';
 import {ConfigurationService} from '../../../services/configuration/configuration.service';
 import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
-import SceneLayer from '@arcgis/core/layers/SceneLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
 import {QueryService} from '../../../services/query/query.service';
-import SearchSource from '@arcgis/core/widgets/Search/SearchSource';
 import {createTablePopup} from '../../../utils/utils';
 import {MapUIBuilderService} from '../../../services/map-uibuilder/map-uibuilder.service';
 import {MapEventHandlerService} from '../../../services/map-event-handler/map-event-handler.service';
@@ -16,6 +13,8 @@ import TileLayer from '@arcgis/core/layers/TileLayer';
 import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
 import FeatureLayerView from '@arcgis/core/views/layers/FeatureLayerView';
 import {HighlightStyleOptions} from 'ag-grid-community';
+import {SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
+import {LayerFactoryService} from '../../../services/layer-factory/layer-factory.service';
 
 @Component({
   selector: 'app-arcgis-map',
@@ -31,7 +30,8 @@ export class ArcgisMapComponent implements OnInit {
     private readonly configService: ConfigurationService,
     private readonly queryService: QueryService,
     private readonly uiBuilder: MapUIBuilderService,
-    private readonly eventHandler: MapEventHandlerService) {
+    private readonly eventHandler: MapEventHandlerService,
+    private readonly layerFactory: LayerFactoryService) {
   }
 
   ngOnInit(): void {
@@ -117,41 +117,20 @@ export class ArcgisMapComponent implements OnInit {
   private async applyConfig(): Promise<void> {
     const config = await this.configService.getConfiguration();
 
-    const elevationLayer = new ElevationLayer(config.elevationLayer);
-    this.map.ground.layers.add(elevationLayer);
+    for (const layerConfig of config.layers) {
+      const layer = this.layerFactory.constructLayer(layerConfig)
+      if ((layerConfig.type as SystemConfigurationLayerTypes) === 'elevation') {
+        this.map.ground.layers.add(layer as ElevationLayer)
+      }
 
-    const constructedLayers: any[][] = [];
-    for (const sceneLayerConfig of config.scenelayers) {
-      const sceneLayer = new SceneLayer(sceneLayerConfig);
-      constructedLayers.push([sceneLayer, sceneLayerConfig]);
-    }
-
-    for (const featureLayerConfig of config.featurelayers) {
-      const featureLayer = new FeatureLayer(featureLayerConfig);
-      constructedLayers.push([featureLayer, featureLayerConfig]);
-    }
-
-    for (const geoJSONLayerConfig of config.geoJSONLayers) {
-      const geoJSONLayer = new GeoJSONLayer(geoJSONLayerConfig);
-      constructedLayers.push([geoJSONLayer, geoJSONLayerConfig]);
-    }
-
-    for (const constructedLayer of constructedLayers) {
-      const layer = constructedLayer[0];
-      const layerConfig = constructedLayer[1];
-      // Create a popup template if the layer is not a scene layer
       if (layer.type !== 'scene') {
         this.uiBuilder.addLayerToLegend(layer);
         layer.when(() => {
-          layer.popupTemplate = createTablePopup(layer);
+          (layer as FeatureLayer).popupTemplate = createTablePopup(layer as FeatureLayer);
         });
       }
 
-      if (layerConfig.searchConfig) {
-        this.uiBuilder.addSearch(new SearchSource({...layerConfig.searchConfig, layer: layer}));
-      }
-
-      this.map.add(layer);
+      this.map.layers.add(layer)
     }
 
     this.map.ground.navigationConstraint = {

@@ -1,21 +1,21 @@
-import {ApiProperty} from '@nestjs/swagger';
 import SceneLayerProperties from '@arcgis/core/layers/SceneLayer';
 import FeatureLayerProperties from '@arcgis/core/layers/FeatureLayer';
 import GeoJSONLayerProperties from '@arcgis/core/layers/GeoJSONLayer';
+import Layer from '@arcgis/core/layers/Layer';
 
 export class SystemConfiguration {
-  @ApiProperty()
-  scenelayers!: SceneLayerProperties[];
-  @ApiProperty()
-  featurelayers!: FeatureLayerProperties[];
-  @ApiProperty()
-  elevationLayer!: any;
-  @ApiProperty()
-  geoJSONLayers!: GeoJSONLayerProperties[];
+  // @ApiProperty()
+  layers!: LayerConfig[]
 }
 
+export type LayerConfig = SceneLayerProperties | FeatureLayerProperties | GeoJSONLayerProperties
 
 export type SystemConfigurationLayerTypes =
-  'scenelayers'
-  | 'featurelayers'
-  | 'geoJSONLayers'
+  'scene'
+  | 'feature'
+  | 'geoJSON'
+  | 'elevation'
+
+export type LayerConstructor = {
+  [key in SystemConfigurationLayerTypes]: () => Layer
+};

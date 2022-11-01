@@ -10,14 +10,8 @@
         <section class="layers">
           <h3 class="uk-heading-divider">Layers</h3>
           <ul class="uk-list uk-list-disc uk-list-primary uk-list-divider">
-            <li *ngFor="let scene of configuration.scenelayers">
-              <ng-template *ngTemplateOutlet="layer; context: {layer: scene, type: 'scenelayers'} "></ng-template>
-            </li>
-            <li *ngFor="let feature of configuration.featurelayers">
-              <ng-template *ngTemplateOutlet="layer; context: {layer: feature, type: 'featurelayers'} "></ng-template>
-            </li>
-            <li *ngFor="let geojson of configuration.geoJSONLayers">
-              <ng-template *ngTemplateOutlet="layer; context: {layer: geojson, type: 'geoJSONLayers'} "></ng-template>
+            <li *ngFor="let layer of configuration.layers">
+              <ng-template *ngTemplateOutlet="layerTemplate; context: {layer: layer, type: layer.type} "></ng-template>
             </li>
           </ul>
         </section>
@@ -152,7 +146,7 @@
   <button class="uk-button uk-button-primary" type="button" (click)="createRenderer()">Create Renderer</button>
 </ng-template>
 
-<ng-template #layer let-layer="layer" let-type="type">
+<ng-template #layerTemplate let-layer="layer" let-type="type">
   <div class="uk-flex uk-flex-between">
     <div uk-toggle="target: #details-pane" class="uk-width-1-1" (click)="selectLayer(layer)">
       <ng-container [ngSwitch]="type">
@@ -165,11 +159,11 @@
             [class.uk-text-warning]="!layer.title">{{layer.title || "Unknown Title"}}</span>
     </div>
     <div class="uk-flex">
-      <button class="uk-button uk-button-default uk-button-small" (click)="toggleVisibility(layer, type)">
+      <button class="uk-button uk-button-default uk-button-small" (click)="toggleVisibility(layer)">
         <span uk-icon="icon: check" *ngIf="layer.visible === undefined || layer.visible === true"></span>
         <span uk-icon="icon: close" *ngIf="layer.visible === false"></span>
       </button>
-      <button class="uk-button uk-button-danger uk-button-small" (click)="deleteLayer(layer, type)">
+      <button class="uk-button uk-button-danger uk-button-small" (click)="deleteLayer(layer)">
         <span uk-icon="icon: trash"></span>
       </button>
     </div>
