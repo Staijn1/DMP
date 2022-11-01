@@ -40,8 +40,8 @@ export class ConfigPageComponent implements OnDestroy {
     this.getInformation();
   }
 
-  private getInformation() {
-    this.configService.getConfiguration().then(config => this.configuration = config);
+  getInformation(force?: boolean) {
+    this.configService.getConfiguration(force).then(config => this.configuration = config);
   }
 
   /**
@@ -87,11 +87,11 @@ export class ConfigPageComponent implements OnDestroy {
     };
   }
 
-  deleteLayer(layer: FeatureLayerProperties, type: SystemConfigurationLayerTypes) {
+  deleteLayer(layer: FeatureLayerProperties) {
     // Create a UIKit dialog to confirm the deletion
     UIkit.modal.confirm('Are you sure you want to delete this layer?').then(() => {
       // Remove the layer from the configuration
-      this.configuration[type] = (this.configuration[type] as any).filter((l: LayerProperties) => l.id !== layer.id);
+      this.configuration.layers = this.configuration.layers.filter((l: LayerProperties) => l.id !== layer.id);
       // Save the configuration
       this.onConfigurationSubmit(this.configuration);
     }, () => {
@@ -99,7 +99,7 @@ export class ConfigPageComponent implements OnDestroy {
     });
   }
 
-  toggleVisibility(layer: FeatureLayerProperties, type: SystemConfigurationLayerTypes) {
+  toggleVisibility(layer: FeatureLayerProperties) {
     layer.visible = layer.visible === undefined ? true : layer.visible;
     layer.visible = !layer.visible;
     this.onLayerConfigSave()

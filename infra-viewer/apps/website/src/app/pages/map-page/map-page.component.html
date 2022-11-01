@@ -5,17 +5,31 @@
 <div *ngIf="results">
   <div class="uk-card uk-card-default uk-card-body">
     <ul uk-tab>
-      <li *ngFor="let result of results; let i = index">
-        <a href="#">{{result.layer.title}}</a>
+      <li *ngFor="let result of results | slice:0:4">
+        <a (click)="showTab(result)">{{result.layer.title}}</a>
+      </li>
+      <li>
+        <a href="#">Meer <span uk-icon="icon: triangle-down"></span></a>
+        <div uk-dropdown="mode: hover; pos:bottom-center">
+          <ul class="uk-nav uk-dropdown-nav">
+            <li *ngFor="let result of results | slice:4">
+              <a (click)="showTab(result)">{{result.layer.title}}</a>
+            </li>
+          </ul>
+        </div>
       </li>
     </ul>
-    <ul class="uk-switcher">
-      <li *ngFor="let result of results; let i = index">
-        <div class="uk-card uk-card-default uk-card-body">
-          <h3 class="uk-card-title">{{result.layer.title}}</h3>
-          <app-feature-grid [input]="result" [map]="map"></app-feature-grid>
-        </div>
+    <ul class="uk-switcher" #switcher>
+      <li *ngFor="let result of results">
+        <ng-template *ngTemplateOutlet="layerResult; context: {result: result} "></ng-template>
       </li>
     </ul>
   </div>
 </div>
+
+<ng-template #layerResult let-result="result">
+  <div data-aos="fade-up" class="uk-card uk-card-default uk-card-body">
+    <h3 class="uk-card-title">{{result.layer.title}}</h3>
+    <app-feature-grid (filterChanged)="onGridFilterChange($event, result.layer)" [input]="result" [map]="map"></app-feature-grid>
+  </div>
+</ng-template>

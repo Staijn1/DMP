@@ -1,6 +1,7 @@
 {
-  "scenelayers": [
+  "layers": [
     {
+      "type": "scene",
       "minScale": 65000,
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Hosted/3dgebouwenArnhem/SceneServer",
       "id": "buildings",
@@ -36,6 +37,7 @@
       "visible": true
     },
     {
+      "type": "scene",
       "id": "trees",
       "title": "3D Bomen",
       "screenSizePerspectiveEnabled": true,
@@ -47,14 +49,14 @@
       "visible": true
     },
     {
+      "type": "scene",
       "title": "3D Windturbines",
       "id": "windTurbines",
       "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Windturbines/SceneServer",
       "visible": true
-    }
-  ],
-  "featurelayers": [
+    },
     {
+      "type": "feature",
       "id": "ondergrondse_tanks",
       "title": "Ondergrondse tanks",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_Bodem/MapServer/4",
@@ -66,6 +68,7 @@
       }
     },
     {
+      "type": "feature",
       "id": "VRI_kasten",
       "title": "VRI kasten",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/72",
@@ -73,6 +76,7 @@
       "visible": true
     },
     {
+      "type": "feature",
       "id": "VRI_masten",
       "title": "VRI masten",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/71",
@@ -80,6 +84,7 @@
       "visible": true
     },
     {
+      "type": "feature",
       "id": "kabels_laagspanning",
       "title": "Kabels laagspanning",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/70",
@@ -110,6 +115,7 @@
       "visible": true
     },
     {
+      "type": "feature",
       "id": "mantelbuis",
       "title": "Mantelbuis",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/31",
@@ -140,6 +146,7 @@
       "visible": true
     },
     {
+      "type": "feature",
       "id": "masten",
       "title": "Licht masten",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/27",
@@ -156,6 +163,7 @@
       }
     },
     {
+      "type": "feature",
       "id": "putten",
       "title": "Putten",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/13",
@@ -183,6 +191,7 @@
       }
     },
     {
+      "type": "feature",
       "id": "kabels",
       "title": "Kabels",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/30",
@@ -213,6 +222,7 @@
       "visible": true
     },
     {
+      "type": "feature",
       "id": "meldingen_or",
       "title": "Meldingen OR",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Meldingen_OR/FeatureServer/0",
@@ -570,6 +580,7 @@
       }
     },
     {
+      "type": "feature",
       "id": "strengen",
       "title": "Strengen",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/14",
@@ -610,6 +621,7 @@
       "visible": true
     },
     {
+      "type": "feature",
       "id": "trafficSigns",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/70",
       "screenSizePerspectiveEnabled": true,
@@ -621,6 +633,7 @@
       "title": "Verkeersborden"
     },
     {
+      "type": "feature",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Banken/MapServer/0",
       "title": "Banken",
       "id": "banken",
@@ -628,6 +641,7 @@
       "visible": true
     },
     {
+      "type": "feature",
       "id": "speeltoestellen",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Spelenkaart/MapServer/1",
       "title": "Speeltoestellen",
@@ -635,18 +649,21 @@
       "visible": true
     },
     {
+      "type": "feature",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Wegbeheer/MapServer/0",
       "title": "Wegbeheer",
       "minScale": 3000,
       "visible": false
     },
     {
+      "type": "feature",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Trolleymasten/MapServer/0",
       "title": "Trolleymasten",
       "minScale": 3000,
       "visible": true
     },
     {
+      "type": "feature",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Afvalbakken/MapServer/0",
       "id": "afvalbakken",
       "title": "Afvalbakken",
@@ -654,6 +671,7 @@
       "visible": true
     },
     {
+      "type": "feature",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Afvalcontainers/MapServer/0/",
       "id": "afvalcontainers",
       "title": "Afvalcontainers",
@@ -661,6 +679,7 @@
       "visible": true
     },
     {
+      "type": "feature",
       "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Ziekenhuizen2/FeatureServer/0",
       "id": "ziekenhuizen",
       "title": "Ziekenhuizen",
@@ -672,6 +691,7 @@
       "visible": true
     },
     {
+      "type": "feature",
       "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Politiebureaus/FeatureServer",
       "id": "politiebureaus",
       "title": "Politiebureaus",
@@ -692,6 +712,7 @@
       "visible": true
     },
     {
+      "type": "feature",
       "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Brandweerkazernes/FeatureServer/0",
       "title": "Brandweerkazernes",
       "minScale": 100000,
@@ -701,11 +722,11 @@
         "offset": 3
       },
       "visible": true
+    },
+    {
+      "type": "elevation",
+      "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Elevation_3D_RD/ImageServer",
+      "id": "elevation"
     }
-  ],
-  "geoJSONLayers": [],
-  "elevationLayer": {
-    "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Elevation_3D_RD/ImageServer",
-    "id": "elevation"
-  }
+  ]
 }

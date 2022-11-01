@@ -1,13 +1,10 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import WebScene from '@arcgis/core/WebScene';
 import SceneView from '@arcgis/core/views/SceneView';
 import {ConfigurationService} from '../../../services/configuration/configuration.service';
 import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
-import SceneLayer from '@arcgis/core/layers/SceneLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
 import {QueryService} from '../../../services/query/query.service';
-import SearchSource from '@arcgis/core/widgets/Search/SearchSource';
 import {createTablePopup} from '../../../utils/utils';
 import {MapUIBuilderService} from '../../../services/map-uibuilder/map-uibuilder.service';
 import {MapEventHandlerService} from '../../../services/map-event-handler/map-event-handler.service';
@@ -16,34 +13,36 @@ import TileLayer from '@arcgis/core/layers/TileLayer';
 import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
 import FeatureLayerView from '@arcgis/core/views/layers/FeatureLayerView';
 import {HighlightStyleOptions} from 'ag-grid-community';
+import {SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
+import {LayerFactoryService} from '../../../services/layer-factory/layer-factory.service';
 
 @Component({
   selector: 'app-arcgis-map',
   templateUrl: './arcgis-map.component.html',
   styleUrls: ['./arcgis-map.component.scss'],
 })
-export class ArcgisMapComponent implements OnInit, OnDestroy {
+export class ArcgisMapComponent implements OnInit {
   private map!: WebScene;
-  private view!: SceneView;
+  view!: SceneView;
   private activeHighlight: __esri.Handle | undefined;
 
   constructor(
     private readonly configService: ConfigurationService,
     private readonly queryService: QueryService,
     private readonly uiBuilder: MapUIBuilderService,
-    private readonly eventHandler: MapEventHandlerService) {
+    private readonly eventHandler: MapEventHandlerService,
+    private readonly layerFactory: LayerFactoryService) {
   }
 
   ngOnInit(): void {
-    this.createMap().then(() => {
-      this.createView();
-      this.uiBuilder.buildUI(this.view);
-      this.applyConfig().then();
-      this.eventHandler.registerEvents(this.view);
-    });
+    this.createMap()
+    this.createView();
+    this.uiBuilder.buildUI(this.view);
+    this.applyConfig().then();
+    this.eventHandler.registerEvents(this.view);
   }
 
-  private async createMap(): Promise<void> {
+  private createMap(): void {
     this.map = new WebScene({
       basemap: new Basemap({
         baseLayers: [
@@ -52,7 +51,7 @@ export class ArcgisMapComponent implements OnInit, OnDestroy {
           }),
           new VectorTileLayer({
             url: 'https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/OSM_RD/VectorTileServer',
-            opacity: 0.5
+            blendMode: 'multiply'
           }),
         ],
       }),
@@ -118,56 +117,26 @@ export class ArcgisMapComponent implements OnInit, OnDestroy {
   private async applyConfig(): Promise<void> {
     const config = await this.configService.getConfiguration();
 
-    const elevationLayer = new ElevationLayer(config.elevationLayer);
-    this.map.ground.layers.add(elevationLayer);
+    for (const layerConfig of config.layers) {
+      const layer = this.layerFactory.constructLayer(layerConfig)
+      if ((layerConfig.type as SystemConfigurationLayerTypes) === 'elevation') {
+        this.map.ground.layers.add(layer as ElevationLayer)
+      }
 
-    const constructedLayers: any[][] = [];
-    for (const sceneLayerConfig of config.scenelayers) {
-      const sceneLayer = new SceneLayer(sceneLayerConfig);
-      constructedLayers.push([sceneLayer, sceneLayerConfig]);
-    }
-
-    for (const featureLayerConfig of config.featurelayers) {
-      const featureLayer = new FeatureLayer(featureLayerConfig);
-      constructedLayers.push([featureLayer, featureLayerConfig]);
-    }
-
-    for (const geoJSONLayerConfig of config.geoJSONLayers) {
-      const geoJSONLayer = new GeoJSONLayer(geoJSONLayerConfig);
-      constructedLayers.push([geoJSONLayer, geoJSONLayerConfig]);
-    }
-
-    for (const constructedLayer of constructedLayers) {
-      const layer = constructedLayer[0];
-      const layerConfig = constructedLayer[1];
-      // Create a popup template if the layer is not a scene layer
       if (layer.type !== 'scene') {
         this.uiBuilder.addLayerToLegend(layer);
         layer.when(() => {
-          layer.popupTemplate = createTablePopup(layer);
+          (layer as FeatureLayer).popupTemplate = createTablePopup(layer as FeatureLayer);
         });
       }
 
-      if (layerConfig.searchConfig) {
-        this.uiBuilder.addSearch(new SearchSource({...layerConfig.searchConfig, layer: layer}));
-      }
-
-      this.map.add(layer);
+      this.map.layers.add(layer)
     }
 
     this.map.ground.navigationConstraint = {
       type: 'none',
     };
     this.map.ground.opacity = 0.4;
-  }
-
-  /**
-   * Deconstruct the component by removing all layers and destroying the view
-   */
-  ngOnDestroy(): void {
-    this.map.removeAll();
-    this.map.destroy();
-    this.view.destroy();
   }
 
   highlightAndZoomTo(graphic: __esri.Graphic) {
