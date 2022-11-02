@@ -1,0 +1,12 @@
+<div class="uk-container" *ngIf="hubItems">
+  <!--Create rows with four columns iterating over the hubitems, showing it's information-->
+  <div class="uk-flex">
+    <div class="uk-width-1-4" *ngFor="let hubItem of hubItems">
+      <div class="uk-card uk-card-default uk-card-body">
+        <h3 class="uk-card-title">{{hubItem.title}}</h3>
+        <p>{{hubItem.description}}</p>
+        <a class="uk-button uk-button-text" [href]="hubItem.link">Read more</a>
+      </div>
+    </div>
+  </div>
+</div>

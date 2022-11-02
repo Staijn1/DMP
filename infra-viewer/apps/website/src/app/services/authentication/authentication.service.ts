@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import esriId from '@arcgis/core/identity/IdentityManager';
 import {Router} from '@angular/router';
 import {environment} from '../../../environments/environment';
+import Portal from '@arcgis/core/portal/Portal';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import {environment} from '../../../environments/environment';
 export class AuthenticationService {
   private static credential: __esri.Credential;
   private readonly appId = 'jpL480B69UHL0NWO';
-  private readonly portalURL = 'https://geo.arnhem.nl/portal';
+  private readonly portalURL = environment.portalURL;
   private readonly portalSharingUrl = this.portalURL + '/sharing/';
 
   get isLoggedIn(): boolean {

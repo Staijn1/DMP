@@ -7,6 +7,7 @@ export const environment = {
   api: 'http://localhost:3333/api',
   redirectUri: 'http://localhost:4200/login',
   hmr: false,
+  portalURL: 'https://geo.arnhem.nl/portal'
 };
 
 /*
