@@ -22,6 +22,7 @@ export class FeatureGridComponent {
   public defaultColDef: ColDef = {
     sortable: true,
     filter: true,
+    resizable: true,
   };
   public columnDefs: ColDef[] = [];
   private zoomToFeatureColumn: ColDef = {
