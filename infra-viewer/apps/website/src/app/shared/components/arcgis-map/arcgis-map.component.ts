@@ -42,6 +42,10 @@ export class ArcgisMapComponent implements OnInit {
     this.eventHandler.registerEvents(this.view);
   }
 
+  /**
+   * Create the map with base layers in the RD projection. Because there is no hybrid RD layer we create one by combining a vector tile layer and a tile layer
+   * @private
+   */
   private createMap(): void {
     this.map = new WebScene({
       basemap: new Basemap({
@@ -59,7 +63,10 @@ export class ArcgisMapComponent implements OnInit {
     });
   }
 
-
+  /**
+   * Initialise the view by adding it to the dom and configuring it with options
+   * @private
+   */
   private createView(): void {
     const extent = {
       // autocasts as new Extent()
@@ -114,6 +121,11 @@ export class ArcgisMapComponent implements OnInit {
     });
   }
 
+  /**
+   * Get the configuration from the API and create layers based on the configuration, and add them to the map
+   * @returns {Promise<void>}
+   * @private
+   */
   private async applyConfig(): Promise<void> {
     const config = await this.configService.getConfiguration();
 
@@ -139,6 +151,10 @@ export class ArcgisMapComponent implements OnInit {
     this.map.ground.opacity = 0.4;
   }
 
+  /**
+   * Zoom and highlight the selected feature
+   * @param {__esri.Graphic} graphic
+   */
   highlightAndZoomTo(graphic: __esri.Graphic) {
     // If the layer the graphic is in is hidden, show it
     if (!graphic.layer.visible) {
