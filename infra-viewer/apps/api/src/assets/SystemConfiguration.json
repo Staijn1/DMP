@@ -737,6 +737,41 @@
       "id": "editabletrees",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Hosted/Stadsplanning/FeatureServer",
       "title": "Bomenplanning",
+      "renderer": {
+        "type": "unique-value",
+        "field": "BOOM_SOORT",
+        "defaultSymbol": {
+          "type": "web-style",
+          "name": "Unknown",
+          "styleName": "EsriThematicTreesStyle"
+        },
+        "uniqueValueInfos": [
+          {
+            "value": "BERK",
+            "symbol": {
+              "type": "web-style",
+              "name": "Betula",
+              "styleName": "EsriRealisticTreesStyle"
+            }
+          },
+          {
+            "value": "EIK",
+            "symbol": {
+              "type": "web-style",
+              "name": "Quercus Rubra",
+              "styleName": "EsriRealisticTreesStyle"
+            }
+          },
+          {
+            "value": "POPULIER",
+            "symbol": {
+              "type": "web-style",
+              "name": "Populus",
+              "styleName": "EsriRealisticTreesStyle"
+            }
+          }
+        ]
+      },
       "visible": true
     },
     {
