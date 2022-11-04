@@ -745,6 +745,14 @@
           "name": "Unknown",
           "styleName": "EsriThematicTreesStyle"
         },
+        "visualVariables": [
+          {
+            "type": "size",
+            "field": "KROON_DIAMETER",
+            "axis": "width-and-depth",
+            "valueUnit": "meters"
+          }
+        ],
         "uniqueValueInfos": [
           {
             "value": "BERK",
