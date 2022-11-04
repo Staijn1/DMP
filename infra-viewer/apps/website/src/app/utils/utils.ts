@@ -2,6 +2,7 @@ import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import PopupTemplate from '@arcgis/core/PopupTemplate';
 import Field from '@arcgis/core/layers/support/Field';
+import {QueriedFeatures} from '@infra-viewer/interfaces';
 
 /**
  * Create an HTML table from an object
@@ -38,4 +39,26 @@ export const createTablePopup = (layer: GeoJSONLayer | FeatureLayer): PopupTempl
     title: layer.title,
     content: table.outerHTML
   })
+}
+
+/**
+ * Create a feature layer based on the configuration of a featurelayer, but only showing specific graphics.
+ * These graphics are put into the source
+ * @param {QueriedFeatures} result
+ * @returns {__esri.FeatureLayer | __esri.FeatureLayer}
+ * @private
+ */
+export const createFeatureLayerFromFeatureLayer = (result: QueriedFeatures) => {
+  console.log(result.featureSet.features.length);
+  return new FeatureLayer(
+    {
+      popupTemplate: result.layer.popupTemplate,
+      source: result.featureSet.features,
+      title: result.layer.title,
+      renderer: result.layer.renderer,
+      objectIdField: result.layer.objectIdField,
+      fields: result.layer.fields,
+      elevationInfo: result.layer.elevationInfo,
+    }
+  );
 }

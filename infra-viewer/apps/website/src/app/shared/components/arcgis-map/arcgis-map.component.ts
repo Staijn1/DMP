@@ -37,8 +37,7 @@ export class ArcgisMapComponent implements OnInit {
   ngOnInit(): void {
     this.createMap()
     this.createView();
-    this.uiBuilder.buildUI(this.view);
-    this.applyConfig().then();
+    this.applyConfig().then(() => this.uiBuilder.buildUI(this.view));
     this.eventHandler.registerEvents(this.view);
   }
 
@@ -133,10 +132,10 @@ export class ArcgisMapComponent implements OnInit {
       const layer = this.layerFactory.constructLayer(layerConfig)
       if ((layerConfig.type as SystemConfigurationLayerTypes) === 'elevation') {
         this.map.ground.layers.add(layer as ElevationLayer)
+        continue;
       }
 
       if (layer.type !== 'scene') {
-        this.uiBuilder.addLayerToLegend(layer);
         layer.when(() => {
           (layer as FeatureLayer).popupTemplate = createTablePopup(layer as FeatureLayer);
         });

@@ -14,6 +14,7 @@ import {BehaviorSubject} from 'rxjs';
 import {QueriedFeatures} from '@infra-viewer/interfaces';
 import ViewClickEvent = __esri.ViewClickEvent;
 import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
+import {createFeatureLayerFromFeatureLayer} from '../../utils/utils';
 
 @Injectable({
   providedIn: 'root'
@@ -130,7 +131,7 @@ export class MapEventHandlerService {
 
     for (const result of results) {
       // Create a feature layer with the returned features
-      const featureLayer = this.createFeatureLayerFromFeatureLayer(result);
+      const featureLayer = createFeatureLayerFromFeatureLayer(result);
       this.queryResultGroupLayer.add(featureLayer);
     }
 
@@ -159,31 +160,10 @@ export class MapEventHandlerService {
     view.map.remove(this.queryResultGroupLayer);
     const featureSet = new FeatureSet();
     featureSet.features = $event;
-    const newFeatureLayer = this.createFeatureLayerFromFeatureLayer({featureSet: featureSet, layer: layer as FeatureLayer})
+    const newFeatureLayer = createFeatureLayerFromFeatureLayer({featureSet: featureSet, layer: layer as FeatureLayer})
     // Replace the source of the feature layer with the filtered features
     this.queryResultGroupLayer.add(newFeatureLayer);
 
     view.map.add(this.queryResultGroupLayer);
-  }
-
-  /**
-   * Create a feature layer based on the configuration of a featurelayer, but only showing specific graphics.
-   * These graphics are put into the source
-   * @param {QueriedFeatures} result
-   * @returns {__esri.FeatureLayer | __esri.FeatureLayer}
-   * @private
-   */
-  private createFeatureLayerFromFeatureLayer(result: QueriedFeatures) {
-    return new FeatureLayer(
-      {
-        popupTemplate: result.layer.popupTemplate,
-        source: result.featureSet.features,
-        title: result.layer.title,
-        renderer: result.layer.renderer,
-        objectIdField: result.layer.objectIdField,
-        fields: result.layer.fields,
-        elevationInfo: result.layer.elevationInfo,
-      }
-    );
   }
 }

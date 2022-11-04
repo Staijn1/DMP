@@ -6,6 +6,11 @@ import ElevationProfile from '@arcgis/core/widgets/ElevationProfile';
 import Daylight from '@arcgis/core/widgets/Daylight';
 import ShadowCast from '@arcgis/core/widgets/ShadowCast';
 import Legend from '@arcgis/core/widgets/Legend';
+import Editor from '@arcgis/core/widgets/Editor';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import {createFeatureLayerFromFeatureLayer} from '../../utils/utils';
+import {QueryService} from '../query/query.service';
+import LayerInfo = __esri.LayerInfo;
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +19,24 @@ export class MapUIBuilderService implements OnDestroy {
   private searchWidget!: __esri.widgetsSearch;
   public legend!: __esri.Legend;
 
+  constructor(private readonly queryService: QueryService) {
+  }
 
-  buildUI(view: __esri.SceneView): void {
+  async buildUI(view: __esri.SceneView): Promise<void> {
+    const layersToViewInLegend = view.map.layers.filter(layer => layer.type !== 'group' && layer.type !== 'elevation').map((layer) => {
+      return {
+        layer: layer,
+      }
+    });
+
     this.legend = new Legend({
-      view
+        view: view
+      }
+    );
+    this.legend.layerInfos.push(...layersToViewInLegend);
+    const legendExpand = new Expand({
+      view: view,
+      content: this.legend
     });
 
     this.searchWidget = new Search({
@@ -75,9 +94,36 @@ export class MapUIBuilderService implements OnDestroy {
       }
     });
 
-    view.ui.add(this.legend, 'bottom-right');
+    const editor = await this.createEditorWidget(view);
+
+    view.ui.add([legendExpand], 'bottom-right');
     view.ui.add([elevationProfileExpand, layerlistExpand], 'top-left');
-    view.ui.add([this.searchWidget, daylightExpand, shadowWidget], 'top-right');
+    view.ui.add([this.searchWidget, daylightExpand, shadowWidget, editor], 'top-right');
+  }
+
+  /**
+   * Create a widget to edit features.
+   * Disable editing for all layers, even if they are marked as editable, except for the layers that have an id that starts with 'editable'
+   * @param {__esri.SceneView} view
+   * @returns {__esri.Expand | __esri.Expand}
+   * @private
+   */
+  private async createEditorWidget(view: __esri.SceneView) {
+    const layerInfos = view.map.layers.map((layer) => {
+      const editable = layer.id.startsWith('editable');
+      return {
+        layer: layer,
+        addEnabled: editable,
+      }
+    });
+
+    return new Expand({
+      view: view,
+      content: new Editor({
+        view: view,
+        layerInfos: layerInfos as any
+      })
+    });
   }
 
   /**
@@ -88,18 +134,7 @@ export class MapUIBuilderService implements OnDestroy {
     this.searchWidget.sources.add(source);
   }
 
-  /**
-   * Adds a layer to the legend
-   * @param {__esri.Layer} layer
-   */
-  addLayerToLegend(layer: __esri.Layer): void {
-    this.legend.layerInfos.push({
-      layer: layer,
-    });
-  }
-
   ngOnDestroy(): void {
     this.searchWidget.destroy();
-    this.legend.destroy();
   }
 }
