@@ -216,6 +216,7 @@ export class MapEventHandlerService {
  * Energy labels go from A+++++ to G
  */
 class EnergyLabelStrategy {
+  private static displayLayer: FeatureLayer | undefined;
   private view: __esri.SceneView;
 
   constructor(view: __esri.SceneView) {
@@ -223,7 +224,6 @@ class EnergyLabelStrategy {
   }
 
   async execute(event: __esri.FeatureLayerEditsEvent, editedFeatures: QueriedFeatures, affectedLayers: __esri.Collection<CustomFeatureLayer>) {
-    debugger;
     // If there are no affected layers, return
     if (!affectedLayers || affectedLayers.length == 0) return;
     // If there are no edits, return
@@ -240,21 +240,29 @@ class EnergyLabelStrategy {
 
   /**
    * Find the energy labels that are close to the trees that were edited
-   * Energy labels are considered close to a tree when the distance between the tree and the energy label is less than 10 meters
+   * Energy labels are considered close to a tree when the distance between the tree and the energy label is less than 20 meters
    */
   async findEnergyLabelsCloseToTrees(
     event: __esri.FeatureLayerEditsEvent,
     editedFeatures: QueriedFeatures,
     energyLabelsLayer: CustomFeatureLayer): Promise<FeatureSet> {
-    // Get the energy labels that are close to the trees
-    return await energyLabelsLayer.queryFeatures({
-      geometry: editedFeatures.featureSet.features[0].geometry,
-      spatialRelationship: 'intersects',
-      outFields: ['*'],
-      returnGeometry: true,
-      distance: 10,
-      units: 'meters'
+    // For each tree that was edited, find the energy labels that are close to it
+    const energyLabels = new FeatureSet();
+    const promises = [];
+    for (const tree of editedFeatures.featureSet.features) {
+      const query = energyLabelsLayer.createQuery();
+      query.geometry = tree.geometry;
+      query.outFields = ['*'];
+      query.returnGeometry = true;
+      query.distance = 20;
+      query.units = 'meters';
+      promises.push(energyLabelsLayer.queryFeatures(query));
+    }
+    const results = await Promise.all(promises);
+    results.forEach((result) => {
+      energyLabels.features = energyLabels.features.concat(result.features);
     });
+    return energyLabels;
   }
 
   /**
@@ -269,20 +277,21 @@ class EnergyLabelStrategy {
       }
     );
 
-    // Create a new graphics layer to show the updated energy labels
-    const updatedEnergyLabelsLayer = createFeatureLayerFromFeatureLayer({
-      featureSet: energyLabels,
-      layer: energyLabelsLayer,
-    });
-
-    updatedEnergyLabelsLayer.title = updatedEnergyLabelsLayer.title + ' (aangepast)';
-    energyLabelsLayer.visible = false;
-    // If the layer supports editing, then update the layer
-    if (energyLabelsLayer.editingEnabled) {
-      await energyLabelsLayer.applyEdits({updateFeatures: energyLabels.features});
-    }// If the layer does not support editing, then update the layer in the client
-    else {
-      this.view.map.add(updatedEnergyLabelsLayer);
+    // If the layer does not support editing, then update the graphics in the client. Do this by creating a client side feature layer
+    if (!energyLabelsLayer.editingEnabled) {
+      // If the display layer does not exist yet, create it
+      if (!EnergyLabelStrategy.displayLayer) {
+        EnergyLabelStrategy.displayLayer = createFeatureLayerFromFeatureLayer({
+          featureSet: energyLabels,
+          layer: energyLabelsLayer,
+        });
+        EnergyLabelStrategy.displayLayer.title = EnergyLabelStrategy.displayLayer.title + ' (aangepast)';
+        this.view.map.add(EnergyLabelStrategy.displayLayer);
+      } else {
+        // If the display layer does exist, update it by appending the new graphics
+        await EnergyLabelStrategy.displayLayer.applyEdits({addFeatures: energyLabels.features});
+        EnergyLabelStrategy.displayLayer.refresh();
+      }
     }
   }
 }
