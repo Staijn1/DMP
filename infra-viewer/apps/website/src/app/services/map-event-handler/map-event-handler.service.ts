@@ -12,9 +12,10 @@ import PointSymbol3D from '@arcgis/core/symbols/PointSymbol3D';
 import {MapUIBuilderService} from '../map-uibuilder/map-uibuilder.service';
 import {BehaviorSubject} from 'rxjs';
 import {QueriedFeatures} from '@infra-viewer/interfaces';
-import ViewClickEvent = __esri.ViewClickEvent;
 import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
 import {createFeatureLayerFromFeatureLayer} from '../../utils/utils';
+import {CustomFeatureLayer} from '../../../../../../libs/interfaces/src/lib/Custom-Arcgis';
+import ViewClickEvent = __esri.ViewClickEvent;
 
 @Injectable({
   providedIn: 'root'
@@ -144,6 +145,15 @@ export class MapEventHandlerService {
 
   registerEvents(view: __esri.SceneView) {
     view.on('immediate-click' as any, (event: ViewClickEvent) => this.onViewClick(event, view));
+    // Find layers starting with id editable and add the edits event
+    // todo does not work
+    view.map.layers
+      .filter(layer => layer.id.startsWith('editable'))
+      .forEach((layer) => {
+        if (layer instanceof FeatureLayer) {
+          layer.on('edits', (event) => this.onLayerEdited(event, view, layer));
+        }
+      });
   }
 
   /**
@@ -165,5 +175,114 @@ export class MapEventHandlerService {
     this.queryResultGroupLayer.add(newFeatureLayer);
 
     view.map.add(this.queryResultGroupLayer);
+  }
+
+  /**
+   * Fired when a user edits something in an editable layer.
+   * If the layer edited has a "affects" property, then these layers should be edited as well with a certain strategy
+   * This strategy depends on the layer that is affected.
+   * For example when a tree is edited/added, the distance to tree layer should be updated
+   * For now we update the energylabels layer as a placeholder
+   * @param {__esri.EditsEvent} event - The event that contains the edits
+   * @param {__esri.SceneView} view - The view that contains the layers
+   * @param {__esri.FeatureLayer} editedLayer - The layer that was edited
+   */
+  onLayerEdited(event: __esri.FeatureLayerEditsEvent, view: __esri.SceneView, editedLayer: CustomFeatureLayer) {
+    if (!editedLayer.affects) return;
+    // First, find if there are any layers that are affected by the edits
+    const affectedLayers = view.map.layers
+      .filter(layer => layer instanceof FeatureLayer)
+      .filter(layer => editedLayer.affects?.includes(layer.id) as boolean) as Collection<CustomFeatureLayer>;
+
+    // Query the graphics that were edited
+    const query = editedLayer.createQuery();
+    query.objectIds = event.addedFeatures.map(feature => feature.objectId);
+    query.objectIds = query.objectIds.concat(event.updatedFeatures.map(feature => feature.objectId));
+    // todo what to do with deleted features?
+
+    editedLayer.queryFeatures(query).then((editedFeatures) => {
+      // For now just use one strategy, but in the future this should be more dynamic
+      // todo make this more dynamic
+      const strategy = new EnergyLabelStrategy(view);
+      return strategy.execute(event, {featureSet: editedFeatures, layer: editedLayer}, affectedLayers);
+    }).then(() => console.log('done'));
+
+  }
+}
+
+/**
+ * Strategy that is used to update the energy label layer when a tree is edited
+ * When a tree is placed or moved, the energy label layer should be updated. When a tree is close to a building, the energy label increases
+ * Energy labels go from A+++++ to G
+ */
+class EnergyLabelStrategy {
+  private view: __esri.SceneView;
+
+  constructor(view: __esri.SceneView) {
+    this.view = view;
+  }
+
+  async execute(event: __esri.FeatureLayerEditsEvent, editedFeatures: QueriedFeatures, affectedLayers: __esri.Collection<CustomFeatureLayer>) {
+    debugger;
+    // If there are no affected layers, return
+    if (!affectedLayers || affectedLayers.length == 0) return;
+    // If there are no edits, return
+    if (!event.addedFeatures && !event.updatedFeatures && !event.deletedFeatures) return;
+
+    // Get the energy labels layer
+    const energyLabelsLayer = affectedLayers.getItemAt(0) as CustomFeatureLayer;
+
+    // Find the energy labels that are close to the trees that were edited
+    const energyLabels = await this.findEnergyLabelsCloseToTrees(event, editedFeatures, energyLabelsLayer);
+    // Update the energy labels
+    await this.updateEnergyLabels(energyLabels, energyLabelsLayer);
+  }
+
+  /**
+   * Find the energy labels that are close to the trees that were edited
+   * Energy labels are considered close to a tree when the distance between the tree and the energy label is less than 10 meters
+   */
+  async findEnergyLabelsCloseToTrees(
+    event: __esri.FeatureLayerEditsEvent,
+    editedFeatures: QueriedFeatures,
+    energyLabelsLayer: CustomFeatureLayer): Promise<FeatureSet> {
+    // Get the energy labels that are close to the trees
+    return await energyLabelsLayer.queryFeatures({
+      geometry: editedFeatures.featureSet.features[0].geometry,
+      spatialRelationship: 'intersects',
+      outFields: ['*'],
+      returnGeometry: true,
+      distance: 10,
+      units: 'meters'
+    });
+  }
+
+  /**
+   * Update the energy labels that are close to the trees that were edited.
+   * If the layer does not support editing then make the changes in the client
+   */
+  async updateEnergyLabels(energyLabels: __esri.FeatureSet, energyLabelsLayer: CustomFeatureLayer) {
+    // Update the energy labels
+    energyLabels.features.forEach((energyLabel) => {
+        // Increase the energy label by one
+        energyLabel.attributes.Meest_voorkomende_label = 'A'
+      }
+    );
+
+    // Create a new graphics layer to show the updated energy labels
+    const updatedEnergyLabelsLayer = createFeatureLayerFromFeatureLayer({
+      featureSet: energyLabels,
+      layer: energyLabelsLayer,
+    });
+
+    updatedEnergyLabelsLayer.title = updatedEnergyLabelsLayer.title + ' (aangepast)';
+    energyLabelsLayer.visible = false;
+    // If the layer supports editing, then update the layer
+    if (energyLabelsLayer.editingEnabled) {
+      await energyLabelsLayer.applyEdits({updateFeatures: energyLabels.features});
+    }// If the layer does not support editing, then update the layer in the client
+    else {
+      this.view.map.add(updatedEnergyLabelsLayer);
+    }
   }
 }

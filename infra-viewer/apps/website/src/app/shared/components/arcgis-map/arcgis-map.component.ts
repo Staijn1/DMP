@@ -37,8 +37,9 @@ export class ArcgisMapComponent implements OnInit {
   ngOnInit(): void {
     this.createMap()
     this.createView();
-    this.applyConfig().then(() => this.uiBuilder.buildUI(this.view));
-    this.eventHandler.registerEvents(this.view);
+    this.applyConfig()
+      .then(() => this.uiBuilder.buildUI(this.view))
+      .then(() => this.eventHandler.registerEvents(this.view));
   }
 
   /**
