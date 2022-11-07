@@ -1,30 +1,27 @@
-import { createFeatureLayerFromFeatureLayer } from "apps/website/src/app/utils/utils";
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import {CustomFeatureLayer, QueriedFeatures} from '@infra-viewer/interfaces';
 import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
 import {Strategy} from './Strategy';
+import {createFeatureLayerFromFeatureLayer} from '../../../../utils/utils';
 
 /**
  * Strategy that is used to update the energy label layer when a tree is edited
  * When a tree is placed or moved, the energy label layer should be updated. When a tree is close to a building, the energy label increases
  * Energy labels go from A+++++ to G
  */
-export class EnergyLabelStrategy extends Strategy{
+export class EnergyLabelStrategy extends Strategy {
   private static displayLayer: FeatureLayer | undefined;
 
-  async execute(event: __esri.FeatureLayerEditsEvent, editedFeatures: QueriedFeatures, affectedLayers: __esri.Collection<CustomFeatureLayer>) {
-    // If there are no affected layers, return
-    if (!affectedLayers || affectedLayers.length == 0) return;
+  async execute(event: __esri.FeatureLayerEditsEvent, editedFeatures: QueriedFeatures, affectedLayer: CustomFeatureLayer): Promise<void> {
+    // If there are no affected layer, return
+    if (!affectedLayer) return;
     // If there are no edits, return
     if (!event.addedFeatures && !event.updatedFeatures && !event.deletedFeatures) return;
 
-    // Get the energy labels layer
-    const energyLabelsLayer = affectedLayers.getItemAt(0) as CustomFeatureLayer;
-
     // Find the energy labels that are close to the trees that were edited
-    const energyLabels = await this.findEnergyLabelsCloseToTrees(event, editedFeatures, energyLabelsLayer);
+    const energyLabels = await this.findEnergyLabelsCloseToTrees(event, editedFeatures, affectedLayer);
     // Update the energy labels
-    await this.updateEnergyLabels(energyLabels, energyLabelsLayer);
+    await this.updateEnergyLabels(energyLabels, affectedLayer);
   }
 
   /**

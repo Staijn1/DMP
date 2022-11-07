@@ -7,5 +7,5 @@ export abstract class Strategy {
     this.view = view;
   }
 
-  abstract execute(event: __esri.FeatureLayerEditsEvent, editedFeatures: QueriedFeatures, affectedLayers: __esri.Collection<CustomFeatureLayer>): Promise<void>;
+  abstract execute(event: __esri.FeatureLayerEditsEvent, editedFeatures: QueriedFeatures, affectedLayers: CustomFeatureLayer): Promise<void>;
 }

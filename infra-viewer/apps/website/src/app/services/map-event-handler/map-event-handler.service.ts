@@ -17,6 +17,7 @@ import {createFeatureLayerFromFeatureLayer} from '../../utils/utils';
 import {CustomFeatureLayer} from '../../../../../../libs/interfaces/src/lib/Custom-Arcgis';
 import ViewClickEvent = __esri.ViewClickEvent;
 import {EnergyLabelStrategy} from '../../shared/components/arcgis-map/strategies/EnergyLabelStrategy';
+import {Strategy} from '../../shared/components/arcgis-map/strategies/Strategy';
 
 @Injectable({
   providedIn: 'root'
@@ -188,11 +189,16 @@ export class MapEventHandlerService {
    * @param {__esri.FeatureLayer} editedLayer - The layer that was edited
    */
   onLayerEdited(event: __esri.FeatureLayerEditsEvent, view: __esri.SceneView, editedLayer: CustomFeatureLayer) {
+    const strategyMap = new Map<string, Strategy>([
+      ['EnergyLabel', new EnergyLabelStrategy(view)],
+      ['300Rule', new EnergyLabelStrategy(view)]
+    ]);
+
     if (!editedLayer.affects) return;
     // First, find if there are any layers that are affected by the edits
     const affectedLayers = view.map.layers
       .filter(layer => layer instanceof FeatureLayer)
-      .filter(layer => editedLayer.affects?.includes(layer.id) as boolean) as Collection<CustomFeatureLayer>;
+      .filter(layer => editedLayer.affects?.map(a => a.id).includes(layer.id) as boolean) as Collection<CustomFeatureLayer>;
 
     // Query the graphics that were edited
     const query = editedLayer.createQuery();
@@ -201,11 +207,15 @@ export class MapEventHandlerService {
     // todo what to do with deleted features?
 
     editedLayer.queryFeatures(query).then((editedFeatures) => {
-      // For now just use one strategy, but in the future this should be more dynamic
-      // todo make this more dynamic
-      const strategy = new EnergyLabelStrategy(view);
-      return strategy.execute(event, {featureSet: editedFeatures, layer: editedLayer}, affectedLayers);
-    }).then(() => console.log('done'));
-
+      const promises = [];
+      for (const affectedLayer of affectedLayers) {
+        // The edited layer contains an array of layers that it affects, with a strategy for each
+        const strategy = strategyMap.get(editedLayer.affects?.find(a => a.id == affectedLayer.id)?.strategy as string);
+        if (strategy) {
+          promises.push(strategy.execute(event, {featureSet: editedFeatures, layer: editedLayer}, affectedLayer));
+        }
+      }
+      return Promise.all(promises);
+    });
   }
 }
