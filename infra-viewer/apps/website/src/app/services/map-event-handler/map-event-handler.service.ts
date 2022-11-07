@@ -146,7 +146,6 @@ export class MapEventHandlerService {
   registerEvents(view: __esri.SceneView) {
     view.on('immediate-click' as any, (event: ViewClickEvent) => this.onViewClick(event, view));
     // Find layers starting with id editable and add the edits event
-    // todo does not work
     view.map.layers
       .filter(layer => layer.id.startsWith('editable'))
       .forEach((layer) => {
