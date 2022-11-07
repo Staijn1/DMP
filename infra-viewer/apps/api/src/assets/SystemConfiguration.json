@@ -736,7 +736,7 @@
       "type": "feature",
       "id": "editabletrees",
       "affects": [
-        "energielabels"
+        "3-30-300"
       ],
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Hosted/Stadsplanning/FeatureServer",
       "title": "Bomenplanning",
@@ -786,15 +786,15 @@
       "visible": true
     },
     {
-      "title": "Energielabels",
-      "id": "energielabels",
+      "title": "3-30-300 Vuistregel",
+      "id": "3-30-300",
       "elevationInfo": {
         "mode": "relative-to-scene",
         "offset": 1
       },
       "visible": true,
       "type": "feature",
-      "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Energielabels/FeatureServer/1",
+      "url": "https://geo.arnhem.nl/portal/sharing/servers/5c1efaebfc7040c4817f3e6d9887edce/rest/services/Geoweb/Arnhem_Klimaat/MapServer/24",
       "maxScale": 0
     },
     {
