@@ -797,7 +797,7 @@
       },
       "visible": true,
       "type": "feature",
-      "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Energielabels/FeatureServer/1",
+      "url": "https://geo.arnhem.nl/portal/sharing/servers/5c1efaebfc7040c4817f3e6d9887edce/rest/services/Geoweb/Arnhem_Klimaat/MapServer/24",
       "maxScale": 0
     },
     {

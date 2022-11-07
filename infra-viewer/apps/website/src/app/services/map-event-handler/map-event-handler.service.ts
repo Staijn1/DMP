@@ -11,13 +11,12 @@ import Point from '@arcgis/core/geometry/Point';
 import PointSymbol3D from '@arcgis/core/symbols/PointSymbol3D';
 import {MapUIBuilderService} from '../map-uibuilder/map-uibuilder.service';
 import {BehaviorSubject} from 'rxjs';
-import {QueriedFeatures} from '@infra-viewer/interfaces';
+import {CustomFeatureLayer, QueriedFeatures} from '@infra-viewer/interfaces';
 import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
 import {createFeatureLayerFromFeatureLayer} from '../../utils/utils';
-import {CustomFeatureLayer} from '../../../../../../libs/interfaces/src/lib/Custom-Arcgis';
-import ViewClickEvent = __esri.ViewClickEvent;
-import {EnergyLabelStrategy} from '../../shared/components/arcgis-map/strategies/EnergyLabelStrategy';
 import {Strategy} from '../../shared/components/arcgis-map/strategies/Strategy';
+import {RuleStrategy} from '../../shared/components/arcgis-map/strategies/300RuleStrategy';
+import ViewClickEvent = __esri.ViewClickEvent;
 
 @Injectable({
   providedIn: 'root'
@@ -190,8 +189,7 @@ export class MapEventHandlerService {
    */
   onLayerEdited(event: __esri.FeatureLayerEditsEvent, view: __esri.SceneView, editedLayer: CustomFeatureLayer) {
     const strategyMap = new Map<string, Strategy>([
-      ['EnergyLabel', new EnergyLabelStrategy(view)],
-      ['300Rule', new EnergyLabelStrategy(view)]
+      ['300Rule', new RuleStrategy(view)]
     ]);
 
     if (!editedLayer.affects) return;
