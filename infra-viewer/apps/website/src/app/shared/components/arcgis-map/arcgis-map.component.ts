@@ -15,6 +15,13 @@ import FeatureLayerView from '@arcgis/core/views/layers/FeatureLayerView';
 import {HighlightStyleOptions} from 'ag-grid-community';
 import {SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
 import {LayerFactoryService} from '../../../services/layer-factory/layer-factory.service';
+import Point from '@arcgis/core/geometry/Point';
+import Mesh from '@arcgis/core/geometry/Mesh';
+import Graphic from '@arcgis/core/Graphic';
+import MeshSymbol3DConstructor = __esri.MeshSymbol3DConstructor;
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import SceneLayer from '@arcgis/core/layers/SceneLayer';
+import Editor from '@arcgis/core/widgets/Editor';
 
 @Component({
   selector: 'app-arcgis-map',
@@ -40,6 +47,7 @@ export class ArcgisMapComponent implements OnInit {
     this.uiBuilder.buildUI(this.view);
     this.applyConfig().then();
     this.eventHandler.registerEvents(this.view);
+    this.createMeshes()
   }
 
   private createMap(): void {
@@ -129,7 +137,6 @@ export class ArcgisMapComponent implements OnInit {
           (layer as FeatureLayer).popupTemplate = createTablePopup(layer as FeatureLayer);
         });
       }
-
       this.map.layers.add(layer)
     }
 
@@ -157,5 +164,53 @@ export class ArcgisMapComponent implements OnInit {
       }
       this.activeHighlight = layerView.highlight(graphic);
     });
+  }
+
+  /**
+   * Load the meshes and add them to the map.
+   * @private
+   */
+  private createMeshes() {
+    this.view.on('immediate-click', (event) => {
+      this.view.hitTest(event).then((response) => {
+        if (response.results.length > 0) {
+          // Log the coordinates of the items that were clicked
+          response.results.forEach((result) => {
+            console.log(result.layer.title, result.mapPoint.toJSON());
+          });
+        }
+      });
+    });
+    const location = new Point({
+      x: 190928.50230067183, y: 443549.0011246043, z: 23.620267403533955,
+      spatialReference: {
+        wkid: 28992
+      }
+    });
+    const gltfURL = '../../../assets/3d-models/eusebiuskerk/eusebius.gltf';
+    Mesh.createFromGLTF(location, gltfURL)
+      .then((geometry) => {
+        // add it to a graphic
+        const graphic = new Graphic({
+          geometry: geometry,
+          symbol: {
+            type: 'mesh-3d', // autocasts as new MeshSymbol3D()
+            symbolLayers: [{
+              type: 'fill', // autocasts as new FillSymbol3DLayer()
+              material: {
+                color: [255, 255, 255, 1],
+                colorMixMode: 'tint'
+              }
+            }]
+          } as any
+        });
+        this.view.graphics.add(graphic);
+      })
+      .catch(console.error);
+
+    const editor = new Editor({
+      view: this.view,
+    });
+    this.view.ui.add(editor, 'top-right');
   }
 }
