@@ -17,6 +17,7 @@ import {createFeatureLayerFromFeatureLayer} from '../../utils/utils';
 import {Strategy} from '../../shared/components/arcgis-map/strategies/Strategy';
 import {RuleStrategy} from '../../shared/components/arcgis-map/strategies/300RuleStrategy';
 import ViewClickEvent = __esri.ViewClickEvent;
+import {EnergyLabelStrategy} from '../../shared/components/arcgis-map/strategies/EnergyLabelStrategy';
 
 @Injectable({
   providedIn: 'root'
@@ -189,7 +190,8 @@ export class MapEventHandlerService {
    */
   onLayerEdited(event: __esri.FeatureLayerEditsEvent, view: __esri.SceneView, editedLayer: CustomFeatureLayer) {
     const strategyMap = new Map<string, Strategy>([
-      ['300Rule', new RuleStrategy(view)]
+      ['300Rule', new RuleStrategy(view)],
+      ['energielabels', new EnergyLabelStrategy(view)]
     ]);
 
     if (!editedLayer.affects) return;
@@ -214,6 +216,6 @@ export class MapEventHandlerService {
         }
       }
       return Promise.all(promises);
-    });
+    }).then(() => console.log("Executed strategies"));
   }
 }

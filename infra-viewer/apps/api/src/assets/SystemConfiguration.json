@@ -739,6 +739,10 @@
         {
           "id": "3-30-300",
           "strategy": "300Rule"
+        },
+        {
+          "id": "energielabels",
+          "strategy": "energielabels"
         }
       ],
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Hosted/Stadsplanning/FeatureServer",
@@ -797,7 +801,19 @@
       },
       "visible": true,
       "type": "feature",
-      "url": "https://geo.arnhem.nl/portal/sharing/servers/5c1efaebfc7040c4817f3e6d9887edce/rest/services/Geoweb/Arnhem_Klimaat/MapServer/24",
+      "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_Klimaat/MapServer/24",
+      "maxScale": 0
+    },
+    {
+      "title": "Energielabels",
+      "id": "energielabels",
+      "elevationInfo": {
+        "mode": "relative-to-scene",
+        "offset": 1
+      },
+      "visible": true,
+      "type": "feature",
+      "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Energielabels/FeatureServer/1",
       "maxScale": 0
     },
     {

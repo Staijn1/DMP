@@ -49,7 +49,7 @@ export const createTablePopup = (layer: GeoJSONLayer | FeatureLayer): PopupTempl
  * @private
  */
 export const createFeatureLayerFromFeatureLayer = (result: QueriedFeatures) => {
-  console.log(result.featureSet.features.length);
+  console.log(result.layer.title, 'Queried features in layer: ' + result.featureSet.features.length);
   return new FeatureLayer(
     {
       popupTemplate: result.layer.popupTemplate,

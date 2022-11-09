@@ -21,7 +21,7 @@ export class EnergyLabelStrategy extends Strategy {
     // Find the energy labels that are close to the trees that were edited
     const energyLabels = await this.findEnergyLabelsCloseToTrees(event, editedFeatures, affectedLayer);
     // Update the energy labels
-    await this.updateEnergyLabels(energyLabels, affectedLayer);
+    return await this.updateEnergyLabels(energyLabels, affectedLayer);
   }
 
   /**

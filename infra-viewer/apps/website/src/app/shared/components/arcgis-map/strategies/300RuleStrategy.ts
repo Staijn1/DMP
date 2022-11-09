@@ -4,6 +4,7 @@ import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
 import {Strategy} from './Strategy';
 import {createFeatureLayerFromFeatureLayer} from '../../../../utils/utils';
 import Collection from '@arcgis/core/core/Collection';
+import PolygonSymbol3D from '@arcgis/core/symbols/PolygonSymbol3D';
 
 /**
  * Strategy that is used to update the 3-30-300 policy map
@@ -57,9 +58,9 @@ export class RuleStrategy extends Strategy {
    * @returns {Promise<__esri.FeatureSet | __esri.FeatureSet>}
    * @private
    */
-  private async findGeometriesNearTrees( event: __esri.FeatureLayerEditsEvent,
-                                         editedFeatures: QueriedFeatures,
-                                         affectedLayer: CustomFeatureLayer) {
+  private async findGeometriesNearTrees(event: __esri.FeatureLayerEditsEvent,
+                                        editedFeatures: QueriedFeatures,
+                                        affectedLayer: CustomFeatureLayer) {
     // For each tree that was edited, find the features that are close to it
     const features = new FeatureSet();
     const promises = [];
@@ -74,6 +75,17 @@ export class RuleStrategy extends Strategy {
     }
     const results = await Promise.all(promises);
     results.forEach((result) => {
+      // If the features in the result do not have a symbol, add a default symbol
+      result.features.forEach((feature) => {
+        if (!feature.symbol) {
+          feature.symbol = new PolygonSymbol3D({
+            symbolLayers: [{
+              type: 'fill',  // autocasts as new FillSymbol3DLayer()
+              material: {color: 'red'}
+            }]
+          });
+        }
+      });
       features.features = features.features.concat(result.features);
     });
     return features;
