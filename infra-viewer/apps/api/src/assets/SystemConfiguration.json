@@ -737,10 +737,6 @@
       "id": "editabletrees",
       "affects": [
         {
-          "id": "3-30-300",
-          "strategy": "300Rule"
-        },
-        {
           "id": "energielabels",
           "strategy": "energielabels"
         }
@@ -791,18 +787,6 @@
         ]
       },
       "visible": true
-    },
-    {
-      "title": "3-30-300 Vuistregel",
-      "id": "3-30-300",
-      "elevationInfo": {
-        "mode": "relative-to-scene",
-        "offset": 1
-      },
-      "visible": true,
-      "type": "feature",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_Klimaat/MapServer/24",
-      "maxScale": 0
     },
     {
       "title": "Energielabels",

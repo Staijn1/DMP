@@ -214,6 +214,7 @@ export class MapEventHandlerService {
         if (strategy) {
           promises.push(strategy.execute(event, {featureSet: editedFeatures, layer: editedLayer}, affectedLayer));
         }
+        affectedLayer.visible = false;
       }
       return Promise.all(promises);
     }).then(() => console.log("Executed strategies"));
