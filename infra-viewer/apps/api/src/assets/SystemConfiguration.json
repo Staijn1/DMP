@@ -805,5 +805,19 @@
       "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Elevation_3D_RD/ImageServer",
       "id": "elevation"
     }
-  ]
+  ],
+  "view": {
+    "camera": {},
+    "qualityProfile": "low",
+    "environment": {
+      "lighting": {
+        "type": "sun",
+        "directShadowsEnabled": true,
+        "amóbientOcclusionEnabled": true
+      }
+    },
+    "spatialReference": {
+      "wkid": 28992
+    }
+  }
 }
