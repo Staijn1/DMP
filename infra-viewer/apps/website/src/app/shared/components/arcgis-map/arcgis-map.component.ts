@@ -37,11 +37,15 @@ export class ArcgisMapComponent implements OnInit {
   ngOnInit(): void {
     this.createMap()
     this.createView();
-    this.uiBuilder.buildUI(this.view);
-    this.applyConfig().then();
-    this.eventHandler.registerEvents(this.view);
+    this.applyConfig()
+      .then(() => this.uiBuilder.buildUI(this.view))
+      .then(() => this.eventHandler.registerEvents(this.view));
   }
 
+  /**
+   * Create the map with base layers in the RD projection. Because there is no hybrid RD layer we create one by combining a vector tile layer and a tile layer
+   * @private
+   */
   private createMap(): void {
     this.map = new WebScene({
       basemap: new Basemap({
@@ -59,7 +63,10 @@ export class ArcgisMapComponent implements OnInit {
     });
   }
 
-
+  /**
+   * Initialise the view by adding it to the dom and configuring it with options
+   * @private
+   */
   private createView(): void {
     const extent = {
       // autocasts as new Extent()
@@ -114,6 +121,11 @@ export class ArcgisMapComponent implements OnInit {
     });
   }
 
+  /**
+   * Get the configuration from the API and create layers based on the configuration, and add them to the map
+   * @returns {Promise<void>}
+   * @private
+   */
   private async applyConfig(): Promise<void> {
     const config = await this.configService.getConfiguration();
 
@@ -121,10 +133,10 @@ export class ArcgisMapComponent implements OnInit {
       const layer = this.layerFactory.constructLayer(layerConfig)
       if ((layerConfig.type as SystemConfigurationLayerTypes) === 'elevation') {
         this.map.ground.layers.add(layer as ElevationLayer)
+        continue;
       }
 
       if (layer.type !== 'scene') {
-        this.uiBuilder.addLayerToLegend(layer);
         layer.when(() => {
           (layer as FeatureLayer).popupTemplate = createTablePopup(layer as FeatureLayer);
         });
@@ -139,6 +151,10 @@ export class ArcgisMapComponent implements OnInit {
     this.map.ground.opacity = 0.4;
   }
 
+  /**
+   * Zoom and highlight the selected feature
+   * @param {__esri.Graphic} graphic
+   */
   highlightAndZoomTo(graphic: __esri.Graphic) {
     // If the layer the graphic is in is hidden, show it
     if (!graphic.layer.visible) {

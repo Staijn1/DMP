@@ -37,13 +37,21 @@
       "visible": true
     },
     {
-      "type": "scene",
+      "type": "feature",
       "id": "trees",
-      "title": "3D Bomen",
+      "title": "Bomen",
       "screenSizePerspectiveEnabled": true,
-      "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Bomen/SceneServer",
+      "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Bomenkaart/MapServer/WFSServer",
       "featureReduction": {
         "type": "selection"
+      },
+      "renderer": {
+        "type": "simple",
+        "symbol": {
+          "type": "web-style",
+          "name": "Populus",
+          "styleName": "EsriRealisticTreesStyle"
+        }
       },
       "minScale": 3000,
       "visible": true
@@ -61,7 +69,7 @@
       "title": "Ondergrondse tanks",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_Bodem/MapServer/4",
       "minScale": 3000,
-      "visible": true,
+      "visible": false,
       "elevationInfo": {
         "mode": "relative-to-scene",
         "offset": 3
@@ -73,7 +81,7 @@
       "title": "VRI kasten",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/72",
       "minScale": 3000,
-      "visible": true
+      "visible": false
     },
     {
       "type": "feature",
@@ -81,7 +89,7 @@
       "title": "VRI masten",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/71",
       "minScale": 3000,
-      "visible": true
+      "visible": false
     },
     {
       "type": "feature",
@@ -112,7 +120,7 @@
         "mode": "relative-to-ground",
         "offset": -3
       },
-      "visible": true
+      "visible": false
     },
     {
       "type": "feature",
@@ -143,7 +151,7 @@
         "mode": "relative-to-ground",
         "offset": -3
       },
-      "visible": true
+      "visible": false
     },
     {
       "type": "feature",
@@ -151,7 +159,7 @@
       "title": "Licht masten",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/27",
       "minScale": 3000,
-      "visible": true,
+      "visible": false,
       "renderer": {
         "type": "simple",
         "symbol": {
@@ -168,7 +176,7 @@
       "title": "Putten",
       "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/13",
       "minScale": 3000,
-      "visible": true,
+      "visible": false,
       "renderer": {
         "type": "simple",
         "symbol": {
@@ -219,7 +227,7 @@
         "mode": "relative-to-ground",
         "offset": -3
       },
-      "visible": true
+      "visible": false
     },
     {
       "type": "feature",
@@ -577,7 +585,8 @@
         "mode": "relative-to-scene",
         "unit": "meters",
         "offset": 5
-      }
+      },
+      "visible": false
     },
     {
       "type": "feature",
@@ -618,7 +627,7 @@
           ]
         }
       },
-      "visible": true
+      "visible": false
     },
     {
       "type": "feature",
@@ -629,7 +638,7 @@
         "type": "selection"
       },
       "minScale": 3000,
-      "visible": true,
+      "visible": false,
       "title": "Verkeersborden"
     },
     {
@@ -638,7 +647,7 @@
       "title": "Banken",
       "id": "banken",
       "minScale": 3000,
-      "visible": true
+      "visible": false
     },
     {
       "type": "feature",
@@ -646,7 +655,7 @@
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Spelenkaart/MapServer/1",
       "title": "Speeltoestellen",
       "minScale": 3000,
-      "visible": true
+      "visible": false
     },
     {
       "type": "feature",
@@ -660,7 +669,7 @@
       "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Trolleymasten/MapServer/0",
       "title": "Trolleymasten",
       "minScale": 3000,
-      "visible": true
+      "visible": false
     },
     {
       "type": "feature",
@@ -668,7 +677,7 @@
       "id": "afvalbakken",
       "title": "Afvalbakken",
       "minScale": 3000,
-      "visible": true
+      "visible": false
     },
     {
       "type": "feature",
@@ -676,7 +685,7 @@
       "id": "afvalcontainers",
       "title": "Afvalcontainers",
       "minScale": 3000,
-      "visible": true
+      "visible": false
     },
     {
       "type": "feature",
@@ -722,6 +731,74 @@
         "offset": 3
       },
       "visible": true
+    },
+    {
+      "type": "feature",
+      "id": "editabletrees",
+      "affects": [
+        {
+          "id": "energielabels",
+          "strategy": "energielabels"
+        }
+      ],
+      "url": "https://geo.arnhem.nl/arcgis/rest/services/Hosted/Stadsplanning/FeatureServer",
+      "title": "Bomenplanning",
+      "renderer": {
+        "type": "unique-value",
+        "field": "BOOM_SOORT",
+        "defaultSymbol": {
+          "type": "web-style",
+          "name": "Unknown",
+          "styleName": "EsriThematicTreesStyle"
+        },
+        "visualVariables": [
+          {
+            "type": "size",
+            "field": "KROON_DIAMETER",
+            "axis": "width-and-depth",
+            "valueUnit": "meters"
+          }
+        ],
+        "uniqueValueInfos": [
+          {
+            "value": "BERK",
+            "symbol": {
+              "type": "web-style",
+              "name": "Betula",
+              "styleName": "EsriRealisticTreesStyle"
+            }
+          },
+          {
+            "value": "EIK",
+            "symbol": {
+              "type": "web-style",
+              "name": "Quercus Rubra",
+              "styleName": "EsriRealisticTreesStyle"
+            }
+          },
+          {
+            "value": "POPULIER",
+            "symbol": {
+              "type": "web-style",
+              "name": "Populus",
+              "styleName": "EsriRealisticTreesStyle"
+            }
+          }
+        ]
+      },
+      "visible": true
+    },
+    {
+      "title": "Energielabels",
+      "id": "energielabels",
+      "elevationInfo": {
+        "mode": "relative-to-scene",
+        "offset": 1
+      },
+      "visible": true,
+      "type": "feature",
+      "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Energielabels/FeatureServer/1",
+      "maxScale": 0
     },
     {
       "type": "elevation",
