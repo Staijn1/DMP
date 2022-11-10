@@ -11,6 +11,7 @@ import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import {createFeatureLayerFromFeatureLayer} from '../../utils/utils';
 import {QueryService} from '../query/query.service';
 import LayerInfo = __esri.LayerInfo;
+import Sketch from "@arcgis/core/widgets/Sketch";
 
 @Injectable({
   providedIn: 'root'
@@ -95,10 +96,18 @@ export class MapUIBuilderService implements OnDestroy {
     });
 
     const editor = await this.createEditorWidget(view);
+    const sketchExpand = new Expand({
+      view: view,
+      group: "editor",
+      expandIconClass: 'esri-icon-polygon',
+      content: new Sketch({
+        view: view,
+      })
+    });
 
     view.ui.add([legendExpand], 'bottom-right');
     view.ui.add([elevationProfileExpand, layerlistExpand], 'top-left');
-    view.ui.add([this.searchWidget, daylightExpand, shadowWidget, editor], 'top-right');
+    view.ui.add([this.searchWidget, daylightExpand, shadowWidget, sketchExpand, editor], 'top-right');
   }
 
   /**
@@ -119,6 +128,7 @@ export class MapUIBuilderService implements OnDestroy {
 
     return new Expand({
       view: view,
+      group: "editor",
       content: new Editor({
         view: view,
         layerInfos: layerInfos as any
