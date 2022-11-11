@@ -13,7 +13,7 @@ import TileLayer from '@arcgis/core/layers/TileLayer';
 import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
 import FeatureLayerView from '@arcgis/core/views/layers/FeatureLayerView';
 import {HighlightStyleOptions} from 'ag-grid-community';
-import {SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
+import {SystemConfiguration, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
 import {LayerFactoryService} from '../../../services/layer-factory/layer-factory.service';
 
 @Component({
@@ -25,6 +25,7 @@ export class ArcgisMapComponent implements OnInit {
   private map!: WebScene;
   view!: SceneView;
   private activeHighlight: __esri.Handle | undefined;
+  private configuration!: SystemConfiguration;
 
   constructor(
     private readonly configService: ConfigurationService,
@@ -37,9 +38,10 @@ export class ArcgisMapComponent implements OnInit {
   ngOnInit(): void {
     this.createMap()
     this.createView();
-    this.applyConfig()
-      .then(() => this.uiBuilder.buildUI(this.view))
-      .then(() => this.eventHandler.registerEvents(this.view));
+    this.configService.getConfiguration().then((config) => {
+      this.configuration = config
+      return this.applyConfig();
+    }).then(() => this.uiBuilder.buildUI(this.view)).then(() => this.eventHandler.registerEvents(this.view));
   }
 
   /**
@@ -78,9 +80,8 @@ export class ArcgisMapComponent implements OnInit {
         wkid: 28992,
       }
     };
-
-    // Create the view
-    this.view = new SceneView({
+    const sceneConfig = {
+      ...this.configuration.view,
       highlightOptions: {
         color: [255, 255, 0, 1],
         haloColor: 'white',
@@ -89,29 +90,13 @@ export class ArcgisMapComponent implements OnInit {
         shadowColor: 'black',
         shadowOpacity: 0.5
       } as HighlightStyleOptions,
-      spatialReference: {wkid: 28992},
-      qualityProfile: 'low',
       clippingArea: extent,
       container: 'map',
       viewingMode: 'local',
       map: this.map,
-      environment: {
-        lighting: {
-          type: 'sun',
-          directShadowsEnabled: true,
-          ambientOcclusionEnabled: true
-        }
-      },
-      camera: {
-        // The spatial reference is not in the type but does make it work, so we cast it to any
-        spatialReference: {
-          wkid: 28992
-        },
-        x: 190871.79970213366,
-        y: 443752.26031690626,
-        z: 5966.512190682592
-      } as any
-    });
+    } as any
+    // Create the view
+    this.view = new SceneView(sceneConfig);
 
     // When a feature is clicked reset the highlight and zoom to the feature
     this.view.on('click', (event) => {
