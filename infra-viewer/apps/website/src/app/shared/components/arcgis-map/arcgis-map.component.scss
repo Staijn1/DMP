@@ -2,3 +2,43 @@
   height: 100%;
   width: 100%;
 }
+
+#infoDiv {
+  background-color: white;
+  padding: 10px;
+  width: 260px;
+  margin: 5px;
+  position: absolute;
+  bottom: 15px;
+  right: 10px;
+  font-size: 14px;
+  display: none;
+}
+
+.geometry-options {
+  display: flex;
+  flex-direction: row;
+}
+
+.geometry-button {
+  flex: 1;
+  border-style: solid;
+  border-width: 1px;
+  border-image: none;
+}
+
+.geometry-button-selected {
+  background: #4c4c4c;
+  color: #fff;
+}
+
+.options {
+  max-width: 260px;
+  width: 100%;
+  height: 25px;
+}
+
+#bufferNum {
+  width: 90%;
+  margin: 2.5em auto 0;
+}

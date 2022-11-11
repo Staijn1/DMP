@@ -7,11 +7,12 @@ import Daylight from '@arcgis/core/widgets/Daylight';
 import ShadowCast from '@arcgis/core/widgets/ShadowCast';
 import Legend from '@arcgis/core/widgets/Legend';
 import Editor from '@arcgis/core/widgets/Editor';
-import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import {createFeatureLayerFromFeatureLayer} from '../../utils/utils';
-import {QueryService} from '../query/query.service';
-import LayerInfo = __esri.LayerInfo;
-import Sketch from "@arcgis/core/widgets/Sketch";
+import Sketch from '@arcgis/core/widgets/Sketch';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import WebScene from '@arcgis/core/WebScene';
+import LayerView from '@arcgis/core/views/layers/LayerView';
+import Slider from '@arcgis/core/widgets/Slider';
+import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +21,6 @@ export class MapUIBuilderService implements OnDestroy {
   private searchWidget!: __esri.widgetsSearch;
   public legend!: __esri.Legend;
 
-  constructor(private readonly queryService: QueryService) {
-  }
 
   async buildUI(view: __esri.SceneView): Promise<void> {
     const layersToViewInLegend = view.map.layers.filter(layer => layer.type !== 'group' && layer.type !== 'elevation').map((layer) => {
@@ -96,18 +95,11 @@ export class MapUIBuilderService implements OnDestroy {
     });
 
     const editor = await this.createEditorWidget(view);
-    const sketchExpand = new Expand({
-      view: view,
-      group: "editor",
-      expandIconClass: 'esri-icon-polygon',
-      content: new Sketch({
-        view: view,
-      })
-    });
+    // const sketchExpand = this.createSketchWidget(view);
 
     view.ui.add([legendExpand], 'bottom-right');
     view.ui.add([elevationProfileExpand, layerlistExpand], 'top-left');
-    view.ui.add([this.searchWidget, daylightExpand, shadowWidget, sketchExpand, editor], 'top-right');
+    view.ui.add([this.searchWidget, daylightExpand, shadowWidget, editor], 'top-right');
   }
 
   /**
@@ -128,10 +120,10 @@ export class MapUIBuilderService implements OnDestroy {
 
     return new Expand({
       view: view,
-      group: "editor",
+      group: 'editor',
       content: new Editor({
         view: view,
-        layerInfos: layerInfos as any
+        layerInfos: layerInfos as any,
       })
     });
   }

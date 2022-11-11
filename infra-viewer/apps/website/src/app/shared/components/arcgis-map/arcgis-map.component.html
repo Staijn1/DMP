@@ -1,7 +1,42 @@
-<div id="map">
-  <div id="performanceInfo">
-    <h4 id="title"></h4>
-    <table id="memory"></table>
-    <table id="count"></table>
+<div id="map"></div>
+<div id="infoDiv" class="esri-widget">
+  <b>Filter by geometry</b><br/><br/>
+  Select the layers to filter on:<br/>
+  <input id="sceneLayerViewFilter" type="checkbox" checked/> Buildings<br/>
+  <input id="featureLayerViewFilter" type="checkbox" checked/> Trees<br/>
+  <br/>Draw a geometry to filter by:
+  <div class="geometry-options">
+    <button
+      class="esri-widget--button esri-icon-map-pin geometry-button"
+      id="point-geometry-button"
+      value="point"
+      title="Filter by point"
+    ></button>
+    <button
+      class="esri-widget--button esri-icon-polyline geometry-button"
+      id="line-geometry-button"
+      value="polyline"
+      title="Filter by line"
+    ></button>
+    <button
+      class="esri-widget--button esri-icon-polygon geometry-button"
+      id="polygon-geometry-button"
+      value="polygon"
+      title="Filter by polygon"
+    ></button>
   </div>
+  <br/>
+  <label for="relationship-select">Spatial relationship:</label>
+  <select id="relationship-select" class="options">
+    <option value="intersects">intersects</option>
+    <option value="contains">contains</option>
+    <option value="disjoint" selected>disjoint</option>
+  </select
+  ><br/><br/>
+  <label for="bufferNum">Set a geometry buffer size:</label>
+  <div id="bufferNum"></div>
+  <br/><br/>
+  <button class="esri-button" id="clearFilter" type="button">
+    Clear filter
+  </button>
 </div>
