@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import WebScene from '@arcgis/core/WebScene';
 import SceneView from '@arcgis/core/views/SceneView';
 import {ConfigurationService} from '../../../services/configuration/configuration.service';
@@ -13,18 +13,8 @@ import TileLayer from '@arcgis/core/layers/TileLayer';
 import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
 import FeatureLayerView from '@arcgis/core/views/layers/FeatureLayerView';
 import {HighlightStyleOptions} from 'ag-grid-community';
-import {SystemConfiguration, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
+import {QueriedFeatures, SystemConfiguration, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
 import {LayerFactoryService} from '../../../services/layer-factory/layer-factory.service';
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import Slider from '@arcgis/core/widgets/Slider';
-import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
-import LayerView from '@arcgis/core/views/layers/LayerView';
-import Geometry from '@arcgis/core/geometry/Geometry';
-import SceneLayerView from '@arcgis/core/views/layers/SceneLayerView';
-import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
-import Graphic from '@arcgis/core/Graphic';
-import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
-import Expand from '@arcgis/core/widgets/Expand';
 import {SketchQueryWidgetComponent} from './widgets/SketchQueryWidget/sketch-query-widget.component';
 
 @Component({
@@ -34,6 +24,7 @@ import {SketchQueryWidgetComponent} from './widgets/SketchQueryWidget/sketch-que
 })
 export class ArcgisMapComponent implements OnInit {
   @ViewChild(SketchQueryWidgetComponent) private sketchWidget!: SketchQueryWidgetComponent
+  @Output() query: EventEmitter<QueriedFeatures[]> = new EventEmitter<QueriedFeatures[]>();
   private map!: WebScene;
   view!: SceneView;
   private activeHighlight: __esri.Handle | undefined;

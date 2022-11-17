@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Output, ViewChild} from '@angular/core';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import WebScene from '@arcgis/core/WebScene';
 import LayerView from '@arcgis/core/views/layers/LayerView';
@@ -12,6 +12,7 @@ import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import Graphic from '@arcgis/core/Graphic';
 import Expand from '@arcgis/core/widgets/Expand';
 import SceneView from '@arcgis/core/views/SceneView';
+import {QueriedFeatures} from '@infra-viewer/interfaces';
 
 @Component({
   selector: 'app-sketch-query-widget',
@@ -19,17 +20,19 @@ import SceneView from '@arcgis/core/views/SceneView';
   styleUrls: ['./sketch-query-widget.component.scss'],
 })
 export class SketchQueryWidgetComponent {
-  view!: SceneView;
   @ViewChild('infoDiv') infoDiv!: ElementRef<HTMLDivElement>
+  @Output() query: EventEmitter<QueriedFeatures[]> = new EventEmitter<QueriedFeatures[]>();
+  view!: SceneView;
   private sceneLayerViews: SceneLayerView[] = [];
   private featureLayerViews: FeatureLayerView[] = [];
+  private queriedFeatures: QueriedFeatures[] = [];
+  private sketchViewModel!: __esri.SketchViewModel;
   // Contains the geometry that the user has drawn. This geometry is used to filter the layers
   sketchGeometry: Geometry | null = null;
   // update the filter geometry depending on bufferSize
   filterGeometry: Geometry | null = null;
   sketchLayer: GraphicsLayer = new GraphicsLayer({listMode: 'hide'});
   bufferLayer: GraphicsLayer = new GraphicsLayer({listMode: 'hide'});
-  private sketchViewModel!: __esri.SketchViewModel;
   selectedFilter = 'intersects';
   bufferSize = 0;
 
@@ -161,13 +164,21 @@ export class SketchQueryWidgetComponent {
       geometry: this.filterGeometry as Geometry,
       spatialRelationship: this.selectedFilter
     });
-
-    if (this.featureLayerViews.length > 0) {
-      this.featureLayerViews.forEach((layerView: FeatureLayerView) => layerView.filter = featureFilter);
-    }
-    if (this.sceneLayerViews.length > 0) {
-      this.sceneLayerViews.forEach((layerView: SceneLayerView) => layerView.filter = featureFilter);
-    }
+    this.queriedFeatures = [];
+    const filterHandler = (layerView: FeatureLayerView | SceneLayerView) => {
+      layerView.filter = featureFilter;
+    };
+    // Apply the filter to the FeatureLayerViews and SceneLayerViews
+    this.featureLayerViews.forEach(filterHandler);
+    this.sceneLayerViews.forEach(filterHandler)
+    // Query the featurelayerViews and sceneLayerViews to get the features that are within the filter
+    this.queryFeatures(this.featureLayerViews).then((queriedFeatures) => {
+      this.queriedFeatures = this.queriedFeatures.concat(queriedFeatures);
+      return this.queryFeatures(this.sceneLayerViews)
+    }).then((queriedFeatures) => {
+      this.queriedFeatures = this.queriedFeatures.concat(queriedFeatures);
+      this.query.emit(this.queriedFeatures);
+    });
   }
 
   updateFilterGeometry() {
@@ -201,17 +212,31 @@ export class SketchQueryWidgetComponent {
     this.filterGeometry = null;
     this.sketchLayer.removeAll();
     this.bufferLayer.removeAll();
-    if (this.sceneLayerViews.length > 0) this.sceneLayerViews.forEach((layerView: SceneLayerView) => layerView.filter = new FeatureFilter());
-    if (this.featureLayerViews.length > 0) this.featureLayerViews.forEach((layerView: FeatureLayerView) => layerView.filter = new FeatureFilter());
+    this.queriedFeatures = [];
+    this.query.emit(this.queriedFeatures);
+    this.sceneLayerViews.forEach((layerView: SceneLayerView) => layerView.filter = new FeatureFilter());
+    this.featureLayerViews.forEach((layerView: FeatureLayerView) => layerView.filter = new FeatureFilter());
   }
 
   /**
    * When clicking on one of the draw geometry buttons this function is fired
    * @param event
    */
-  geometryButtonsClickHandler (event: MouseEvent) {
+  geometryButtonsClickHandler(event: MouseEvent) {
     const geometryType = (event.target as HTMLButtonElement).value;
     this.clearFilter();
     this.sketchViewModel.create(geometryType as any);
+  }
+
+  /**
+   * Query all the features that are within the filter that is active
+   * @param {__esri.SceneLayerView[] | __esri.FeatureLayerView[]} layerViews
+   * @private
+   */
+  private queryFeatures(layerViews: SceneLayerView[] | FeatureLayerView[]): Promise<QueriedFeatures[]> {
+    return Promise.all(layerViews.map(async (layerView: SceneLayerView | FeatureLayerView) => {
+      const featureSet = await layerView.queryFeatures();
+      return {featureSet, layer: layerView.layer};
+    }));
   }
 }

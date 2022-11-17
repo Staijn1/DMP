@@ -1,5 +1,5 @@
 <div class="map-container uk-container uk-container-xlarge">
-  <app-arcgis-map></app-arcgis-map>
+  <app-arcgis-map (query)="onQuery($event)"></app-arcgis-map>
 </div>
 
 <div *ngIf="results">

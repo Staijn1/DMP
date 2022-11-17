@@ -12,20 +12,15 @@ import Layer from '@arcgis/core/layers/Layer';
   templateUrl: './map-page.component.html',
   styleUrls: ['./map-page.component.scss'],
 })
-export class MapPageComponent implements OnDestroy {
+export class MapPageComponent {
   @ViewChild(ArcgisMapComponent) map!: ArcgisMapComponent;
   @ViewChild('switcher') switcher!: ElementRef;
 
-  private featureSubscription: Subscription;
   results: QueriedFeatures[] | null = null;
 
   constructor(private readonly eventHandler: MapEventHandlerService) {
-    this.featureSubscription = eventHandler.queredFeatures$.subscribe(results => this.results = results)
   }
 
-  ngOnDestroy(): void {
-    this.featureSubscription.unsubscribe();
-  }
 
   showTab(result: QueriedFeatures) {
     // Find the index of the result in the results array
@@ -43,5 +38,9 @@ export class MapPageComponent implements OnDestroy {
    */
   onGridFilterChange($event: __esri.Graphic[], layer: Layer) {
     this.eventHandler.onFilterChange($event, layer, this.map.view);
+  }
+
+  onQuery($event: QueriedFeatures[]) {
+    this.results = $event;
   }
 }
