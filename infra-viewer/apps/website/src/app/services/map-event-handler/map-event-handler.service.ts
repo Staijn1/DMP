@@ -87,6 +87,6 @@ export class MapEventHandlerService {
         affectedLayer.visible = false;
       }
       return Promise.all(promises);
-    }).then(() => console.log("Executed strategies"));
+    }).then(() => console.log('Executed strategies'));
   }
 }
