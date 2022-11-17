@@ -4,7 +4,6 @@ import WebScene from '@arcgis/core/WebScene';
 import LayerView from '@arcgis/core/views/layers/LayerView';
 import FeatureLayerView from '@arcgis/core/views/layers/FeatureLayerView';
 import SceneLayerView from '@arcgis/core/views/layers/SceneLayerView';
-import Slider from '@arcgis/core/widgets/Slider';
 import Geometry from '@arcgis/core/geometry/Geometry';
 import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
@@ -15,11 +14,7 @@ import SceneView from '@arcgis/core/views/SceneView';
 import {QueriedFeatures, SpatialRelationship} from '@infra-viewer/interfaces';
 import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
 import Query from '@arcgis/core/rest/support/Query';
-import SliderMaxChangeEvent = __esri.SliderMaxChangeEvent;
-import SliderThumbChangeEvent = __esri.SliderThumbChangeEvent;
-import SliderThumbDragEvent = __esri.SliderThumbDragEvent;
-import SliderMinChangeEvent = __esri.SliderMinChangeEvent;
-import {LabelType, Options} from '@angular-slider/ngx-slider';
+import {Options} from '@angular-slider/ngx-slider';
 
 @Component({
   selector: 'app-sketch-query-widget',
@@ -166,7 +161,6 @@ export class SketchQueryWidgetComponent {
    * Query features by going to the server. This assures all features are returned, even if they are not visible in the view (yet)
    */
   queryByServersideFilter() {
-    console.log('Fired', new Date().getTime())
     // Reset the queriedFeatures array otherwise the old features will still be in the list, but they might be outside the filter
     this.queriedFeatures = [];
     this.queryFeatures(this.layerViews).then((queriedFeatures) => {
@@ -213,7 +207,6 @@ export class SketchQueryWidgetComponent {
     this.sketchLayer.removeAll();
     this.bufferLayer.removeAll();
     this.queriedFeatures = [];
-    this.query.emit(this.queriedFeatures);
     this.featureFilter = new FeatureFilter();
     this.applyFilterForAllLayers(this.layerViews);
   }

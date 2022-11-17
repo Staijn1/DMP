@@ -41,6 +41,10 @@ export class MapPageComponent {
     this.map.onFeatureGridFilterChange($event, layer);
   }
 
+  /**
+   * Fired when the user changes the filter in the map. It updates the feature grid that show the results of the query in a table
+   * @param {QueriedFeatures[]} $event
+   */
   onQuery($event: QueriedFeatures[]) {
     this.results = $event;
   }
