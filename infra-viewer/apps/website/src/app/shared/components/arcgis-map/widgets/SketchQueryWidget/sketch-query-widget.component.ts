@@ -23,8 +23,7 @@ import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
 export class SketchQueryWidgetComponent {
   @ViewChild('infoDiv') infoDiv!: ElementRef<HTMLDivElement>
   @Output() query: EventEmitter<QueriedFeatures[]> = new EventEmitter<QueriedFeatures[]>();
-  private sceneLayerViews: SceneLayerView[] = [];
-  private featureLayerViews: FeatureLayerView[] = [];
+  private layerViews: (FeatureLayerView | SceneLayerView)[] = [];
   private queriedFeatures: QueriedFeatures[] = [];
   private sketchViewModel!: __esri.SketchViewModel;
   private featureFilter: __esri.FeatureFilter = new FeatureFilter();
@@ -45,17 +44,12 @@ export class SketchQueryWidgetComponent {
 
     // create the layerView's to add the filter
     (this.view.map as WebScene).load().then(() => {
-      // loop through webmap's operational layers
-      this.view.map.layers.forEach((layer, index) => {
+      // loop through the map scene and feature layers and add them to the layerViews array
+      this.view.map.layers.filter(layer => ['scene', 'feature'].includes(layer.type)).forEach((layer) => {
         this.view
           .whenLayerView(layer)
           .then((layerView: LayerView) => {
-            if (layer.type === 'feature') {
-              this.featureLayerViews.push(layerView as FeatureLayerView);
-            }
-            if (layer.type === 'scene') {
-              this.sceneLayerViews.push(layerView as SceneLayerView);
-            }
+            this.layerViews.push(layerView as FeatureLayerView | SceneLayerView);
           })
           .catch(console.error);
       });
@@ -162,7 +156,7 @@ export class SketchQueryWidgetComponent {
    * Set the geometry filter on the visible FeatureLayerView
    */
   updateFilter() {
-    this.featureLayerViews.forEach((layerView) => layerView.layer.visible = true)
+    this.layerViews.forEach((layerView) => layerView.layer.visible = true)
     this.updateFilterGeometry();
 
     this.featureFilter = new FeatureFilter({
@@ -174,14 +168,10 @@ export class SketchQueryWidgetComponent {
     this.queriedFeatures = [];
 
     // Apply filter for all layerviews
-    this.applyFilter(this.sceneLayerViews);
-    this.applyFilter(this.featureLayerViews);
+    this.applyFilter(this.layerViews);
 
     // Now query the layer views to get the features that are within the filter
-    this.queryFeatures(this.featureLayerViews).then((queriedFeatures) => {
-      this.queriedFeatures = this.queriedFeatures.concat(queriedFeatures);
-      return this.queryFeatures(this.sceneLayerViews)
-    }).then((queriedFeatures) => {
+    this.queryFeatures(this.layerViews).then((queriedFeatures) => {
       this.queriedFeatures = this.queriedFeatures.concat(queriedFeatures);
       // We have collected all the features that are within the filter, now we can emit them to notify other components
       this.query.emit(this.queriedFeatures);
@@ -227,8 +217,7 @@ export class SketchQueryWidgetComponent {
     this.queriedFeatures = [];
     this.query.emit(this.queriedFeatures);
     this.featureFilter = new FeatureFilter();
-    this.applyFilter(this.sceneLayerViews);
-    this.applyFilter(this.featureLayerViews);
+    this.applyFilter(this.layerViews);
   }
 
   /**
@@ -246,7 +235,7 @@ export class SketchQueryWidgetComponent {
    * @param {__esri.SceneLayerView[] | __esri.FeatureLayerView[]} layerViews
    * @private
    */
-  private queryFeatures(layerViews: SceneLayerView[] | FeatureLayerView[]): Promise<QueriedFeatures[]> {
+  private queryFeatures(layerViews: (__esri.FeatureLayerView | __esri.SceneLayerView)[]): Promise<QueriedFeatures[]> {
     return Promise.all(layerViews.map(async (layerView: SceneLayerView | FeatureLayerView) => {
       try {
         // If the layerviews are sceneLayerViews, we need to use the queryFeatures method on the layerView
@@ -270,7 +259,7 @@ export class SketchQueryWidgetComponent {
    * @param {__esri.FeatureLayerView[] | __esri.SceneLayerView[]} layerViews
    * @private
    */
-  private applyFilter(layerViews: FeatureLayerView[] | SceneLayerView[]) {
+  private applyFilter(layerViews: (__esri.FeatureLayerView | __esri.SceneLayerView)[]) {
     layerViews.forEach((layerView: FeatureLayerView | SceneLayerView) => layerView.filter = this.featureFilter);
   }
 }
