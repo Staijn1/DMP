@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import WebScene from '@arcgis/core/WebScene';
 import SceneView from '@arcgis/core/views/SceneView';
 import {ConfigurationService} from '../../../services/configuration/configuration.service';
@@ -24,6 +24,8 @@ import SceneLayerView from '@arcgis/core/views/layers/SceneLayerView';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
 import Graphic from '@arcgis/core/Graphic';
 import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
+import Expand from '@arcgis/core/widgets/Expand';
+import {SketchQueryWidgetComponent} from './widgets/SketchQueryWidget/sketch-query-widget.component';
 
 @Component({
   selector: 'app-arcgis-map',
@@ -35,9 +37,7 @@ export class ArcgisMapComponent implements OnInit {
   view!: SceneView;
   private activeHighlight: __esri.Handle | undefined;
   private configuration!: SystemConfiguration;
-  private sceneLayerViews: SceneLayerView[] = [];
-  private featureLayerViews: FeatureLayerView[] = [];
-
+  @ViewChild(SketchQueryWidgetComponent) private sketchWidget!: SketchQueryWidgetComponent
 
   constructor(
     private readonly configService: ConfigurationService,
@@ -53,7 +53,7 @@ export class ArcgisMapComponent implements OnInit {
       this.createMap()
       this.createView();
       this.applyConfig();
-      this.createSketchWidget();
+      this.sketchWidget.initialize(this.view)
     }).then(() => this.uiBuilder.buildUI(this.view)).then(() => this.eventHandler.registerEvents(this.view));
   }
 
@@ -169,189 +169,5 @@ export class ArcgisMapComponent implements OnInit {
       }
       this.activeHighlight = layerView.highlight(graphic);
     });
-  }
-
-  private createSketchWidget() {
-    // add a GraphicsLayer for the sketches and the buffer
-    const sketchLayer = new GraphicsLayer();
-    const bufferLayer = new GraphicsLayer();
-    this.view.map.addMany([bufferLayer, sketchLayer]);
-
-    // create the layerView's to add the filter
-    (this.view.map as WebScene).load().then(() => {
-      // loop through webmap's operational layers
-      this.view.map.layers.forEach((layer, index) => {
-        this.view
-          .whenLayerView(layer)
-          .then((layerView: LayerView) => {
-            if (layer.type === 'feature') {
-              this.featureLayerViews.push(layerView as FeatureLayerView);
-            }
-            if (layer.type === 'scene') {
-              this.sceneLayerViews.push(layerView as SceneLayerView);
-            }
-          })
-          .catch(console.error);
-      });
-    });
-
-    const bufferNumSlider = new Slider({
-      container: 'bufferNum',
-      min: 0,
-      max: 1000,
-      steps: 1,
-      visibleElements: {
-        labels: true,
-      },
-      precision: 0,
-      labelFormatFunction: (value, type) => {
-        return `${value.toString()}m`;
-      },
-      values: [0]
-    });
-
-    let bufferSize = 0;
-    bufferNumSlider.on('thumb-change', bufferVariablesChanged);
-    bufferNumSlider.on('thumb-drag', bufferVariablesChanged);
-
-    function bufferVariablesChanged(event: any) {
-      bufferSize = event.value;
-      updateFilter();
-    }
-
-    // use SketchViewModel to draw polygons that are used as a filter
-    let sketchGeometry: Geometry | null = null;
-    const sketchViewModel = new SketchViewModel({
-      layer: sketchLayer,
-      view: this.view,
-      pointSymbol: {
-        type: 'simple-marker',
-        style: 'circle',
-        size: 10,
-        color: [255, 255, 255, 0.8],
-        outline: {
-          color: [211, 132, 80, 0.7],
-          size: 10
-        } as any
-      },
-      polylineSymbol: {
-        type: 'simple-line',
-        color: [211, 132, 80, 0.7],
-        width: 6
-      },
-      polygonSymbol: {
-        type: 'polygon-3d',
-        symbolLayers: [
-          {
-            type: 'fill',
-            material: {
-              color: [255, 255, 255, 0.8]
-            },
-            outline: {
-              color: [211, 132, 80, 0.7],
-              size: '10px'
-            }
-          }
-        ]
-      },
-      defaultCreateOptions: {hasZ: false}
-    });
-
-    sketchViewModel.on('create', (event) => {
-      // update the filter every time the user finishes drawing the filtergeometry
-      if (event.state == 'complete') {
-        sketchGeometry = event.graphic.geometry;
-        updateFilter();
-      }
-    });
-
-    sketchViewModel.on('update', (event) => {
-      const eventInfo = event.toolEventInfo;
-      // update the filter every time the user moves the filtergeometry
-      if (event.toolEventInfo && event.toolEventInfo.type.includes('stop')) {
-        sketchGeometry = event.graphics[0].geometry;
-        updateFilter();
-      }
-    });
-
-    // draw geometry buttons - use the selected geometry to sktech
-    if (document) {
-      (document.getElementById('point-geometry-button') as HTMLElement).onclick = geometryButtonsClickHandler;
-      (document.getElementById('line-geometry-button') as HTMLElement).onclick = geometryButtonsClickHandler;
-      (document.getElementById('polygon-geometry-button') as HTMLElement).onclick = geometryButtonsClickHandler;
-    }
-
-    function geometryButtonsClickHandler(event: any) {
-      const geometryType = event.target.value;
-      clearFilter();
-      sketchViewModel.create(geometryType);
-    }
-
-    // get the selected spatialRelationship
-    let selectedFilter = 'disjoint';
-    (document.getElementById('relationship-select') as any).addEventListener('change', (event: any) => {
-      const select = event.target;
-      selectedFilter = select.options[select.selectedIndex].value;
-      console.log('selectedFilter', selectedFilter);
-      updateFilter();
-    });
-
-    const clearFilter = () => {
-      sketchGeometry = null;
-      filterGeometry = null;
-      sketchLayer.removeAll();
-      bufferLayer.removeAll();
-      if (this.sceneLayerViews.length > 0) this.sceneLayerViews.forEach((layerView: SceneLayerView) => layerView.filter = new FeatureFilter());
-      if (this.featureLayerViews.length > 0) this.featureLayerViews.forEach((layerView: FeatureLayerView) => layerView.filter = new FeatureFilter());
-    }
-
-    // remove the filter
-    (document.getElementById('clearFilter') as HTMLElement).addEventListener('click', clearFilter);
-
-
-    // set the geometry filter on the visible FeatureLayerView
-    const updateFilter = () => {
-      updateFilterGeometry();
-      const featureFilter: FeatureFilter = new FeatureFilter({
-        // autocasts to FeatureFilter
-        geometry: filterGeometry as Geometry,
-        spatialRelationship: selectedFilter
-      });
-
-      if (this.featureLayerViews.length > 0) {
-        this.featureLayerViews.forEach((layerView: FeatureLayerView) => layerView.filter = featureFilter);
-      }
-      if (this.sceneLayerViews.length > 0) {
-        this.sceneLayerViews.forEach((layerView: SceneLayerView) => layerView.filter = featureFilter);
-      }
-    }
-
-    // update the filter geometry depending on bufferSize
-    let filterGeometry: Geometry | null = null;
-
-    function updateFilterGeometry() {
-      // add a polygon graphic for the bufferSize
-      if (sketchGeometry) {
-        if (bufferSize > 0) {
-          const bufferGeometry = geometryEngine.geodesicBuffer(sketchGeometry, bufferSize, 'meters') as Geometry;
-          if (bufferLayer.graphics.length === 0) {
-            bufferLayer.add(
-              new Graphic({
-                geometry: bufferGeometry,
-                symbol: sketchViewModel.polygonSymbol
-              })
-            );
-          } else {
-            bufferLayer.graphics.getItemAt(0).geometry = bufferGeometry;
-          }
-          filterGeometry = bufferGeometry;
-        } else {
-          bufferLayer.removeAll();
-          filterGeometry = sketchGeometry;
-        }
-      }
-    }
-
-    (document.getElementById('infoDiv') as HTMLDivElement).style.display = 'block';
   }
 }
