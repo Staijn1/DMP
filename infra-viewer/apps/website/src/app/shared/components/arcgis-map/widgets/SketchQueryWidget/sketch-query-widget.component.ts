@@ -14,6 +14,7 @@ import Expand from '@arcgis/core/widgets/Expand';
 import SceneView from '@arcgis/core/views/SceneView';
 import {QueriedFeatures, SpatialRelationship} from '@infra-viewer/interfaces';
 import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
+import Query from '@arcgis/core/rest/support/Query';
 
 @Component({
   selector: 'app-sketch-query-widget',
@@ -168,7 +169,7 @@ export class SketchQueryWidgetComponent {
     this.queriedFeatures = [];
 
     // Apply filter for all layerviews
-    this.applyFilter(this.layerViews);
+    this.applyFilterForAllLayers(this.layerViews);
 
     // Now query the layer views to get the features that are within the filter
     this.queryFeatures(this.layerViews).then((queriedFeatures) => {
@@ -217,7 +218,7 @@ export class SketchQueryWidgetComponent {
     this.queriedFeatures = [];
     this.query.emit(this.queriedFeatures);
     this.featureFilter = new FeatureFilter();
-    this.applyFilter(this.layerViews);
+    this.applyFilterForAllLayers(this.layerViews);
   }
 
   /**
@@ -238,13 +239,19 @@ export class SketchQueryWidgetComponent {
   private queryFeatures(layerViews: (__esri.FeatureLayerView | __esri.SceneLayerView)[]): Promise<QueriedFeatures[]> {
     return Promise.all(layerViews.map(async (layerView: SceneLayerView | FeatureLayerView) => {
       try {
+        // Build a new query based on the current filter
+        const query = new Query({
+          spatialRelationship: this.featureFilter.spatialRelationship as SpatialRelationship,
+          geometry: this.featureFilter.geometry,
+          outFields: ['*'],
+        });
         // If the layerviews are sceneLayerViews, we need to use the queryFeatures method on the layerView
         // Otherwise, we will query the server which cannot be done on scene layers without an associated feature layer
         let featureSet;
         if (layerView.layer.type === 'scene') {
-          featureSet = await layerView.queryFeatures();
+          featureSet = await layerView.queryFeatures(query);
         } else {
-          featureSet = await layerView.layer.queryFeatures();
+          featureSet = await layerView.layer.queryFeatures(query);
         }
         return {featureSet, layer: layerView.layer};
       } catch (e) {
@@ -255,11 +262,27 @@ export class SketchQueryWidgetComponent {
   }
 
   /**
-   * A helper function to apply the current featureFilter to a layerView
+   * A helper function to apply the current featureFilter to all layerViews
    * @param {__esri.FeatureLayerView[] | __esri.SceneLayerView[]} layerViews
    * @private
    */
-  private applyFilter(layerViews: (__esri.FeatureLayerView | __esri.SceneLayerView)[]) {
+  private applyFilterForAllLayers(layerViews: (__esri.FeatureLayerView | __esri.SceneLayerView)[]) {
     layerViews.forEach((layerView: FeatureLayerView | SceneLayerView) => layerView.filter = this.featureFilter);
+  }
+
+  /**
+   * When the user changes the filter outside this component, we need to update our view so the filter matches.
+   * @param {__esri.Graphic[]} graphics - The graphics that match the new filter
+   * @param {__esri.Layer} layer - The layer that was filtered
+   */
+  onExternalFilterChange(graphics: __esri.Graphic[], layer: __esri.FeatureLayer | __esri.SceneLayer) {
+   /* // Find the layerview that matches the layer that was filtered
+    const layerView = this.layerViews.find((layerView) => layerView.layer.id === layer.id);
+    if (layerView) {
+      // Change the filter to only show the graphics that are in the graphics array
+      layerView.filter = new FeatureFilter({
+        objectIds: graphics.map((graphic) => graphic.attributes[layer.objectIdField])
+      });
+    }*/
   }
 }
