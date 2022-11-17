@@ -53,6 +53,7 @@
     "typescript": "4.8.4"
   },
   "dependencies": {
+    "@angular-slider/ngx-slider": "^2.0.4",
     "@angular/animations": "~14.2.0",
     "@angular/common": "~14.2.0",
     "@angular/compiler": "~14.2.0",

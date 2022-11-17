@@ -26,13 +26,15 @@
   </div>
   <br/>
   <label for="relationship-select">Spatial relationship:</label>
-  <select id="relationship-select" class="options" [(ngModel)]="selectedSpatialRelationship" (change)="updateFilter()">
+  <select id="relationship-select" class="options" [(ngModel)]="selectedSpatialRelationship"
+          (change)="queryByClientsideFilter()">
     <!--    Create an option for all possible spatial relationships-->
     <option *ngFor="let relationship of spatialRelationships" [ngValue]="relationship">{{relationship}}</option>
   </select
   ><br/><br/>
-  <label for="bufferNum">Set a geometry buffer size:</label>
-  <div id="bufferNum"></div>
+  <label for="bufferSlider">Set a geometry buffer size:</label>
+  <ngx-slider id="bufferSlider" [options]="sliderConfig" [(value)]="bufferSize" (userChange)="onSliderUserChange()"
+              (userChangeEnd)="onSliderUserChangeEnd()"></ngx-slider>
   <br/><br/>
   <button class="esri-button" id="clearFilter" type="button" (click)="clearFilter()">
     Clear filter

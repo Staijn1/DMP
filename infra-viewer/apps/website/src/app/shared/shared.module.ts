@@ -10,6 +10,7 @@ import {
   SketchQueryWidgetComponent
 } from './components/arcgis-map/widgets/SketchQueryWidget/sketch-query-widget.component';
 import {FormsModule} from '@angular/forms';
+import {NgxSliderModule} from '@angular-slider/ngx-slider';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,7 @@ import {FormsModule} from '@angular/forms';
     ZoomToFeatureRendererComponent,
   ],
   exports: [ArcgisMapComponent, FeatureGridComponent],
-  imports: [AgGridModule, CommonModule, FormsModule],
+  imports: [AgGridModule, CommonModule, FormsModule, NgxSliderModule],
   providers: [],
 })
 export class SharedModule {

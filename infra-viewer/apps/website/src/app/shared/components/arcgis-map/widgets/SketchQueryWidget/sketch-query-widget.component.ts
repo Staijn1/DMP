@@ -15,6 +15,11 @@ import SceneView from '@arcgis/core/views/SceneView';
 import {QueriedFeatures, SpatialRelationship} from '@infra-viewer/interfaces';
 import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
 import Query from '@arcgis/core/rest/support/Query';
+import SliderMaxChangeEvent = __esri.SliderMaxChangeEvent;
+import SliderThumbChangeEvent = __esri.SliderThumbChangeEvent;
+import SliderThumbDragEvent = __esri.SliderThumbDragEvent;
+import SliderMinChangeEvent = __esri.SliderMinChangeEvent;
+import {LabelType, Options} from '@angular-slider/ngx-slider';
 
 @Component({
   selector: 'app-sketch-query-widget',
@@ -23,6 +28,7 @@ import Query from '@arcgis/core/rest/support/Query';
 })
 export class SketchQueryWidgetComponent {
   @ViewChild('infoDiv') infoDiv!: ElementRef<HTMLDivElement>
+  @ViewChild('slider') slider!: ElementRef<HTMLDivElement>;
   @Output() query: EventEmitter<QueriedFeatures[]> = new EventEmitter<QueriedFeatures[]>();
   private layerViews: (FeatureLayerView | SceneLayerView)[] = [];
   private queriedFeatures: QueriedFeatures[] = [];
@@ -40,6 +46,14 @@ export class SketchQueryWidgetComponent {
   bufferSize = 0;
   spatialRelationships = ['intersects', 'contains'];
 
+  sliderConfig: Options = {
+    floor: 0,
+    ceil: 1000,
+    step: 1,
+    translate: (value: number,): string => value + 'm',
+
+  }
+
   private createSketchWidget() {
     this.view.map.addMany([this.bufferLayer, this.sketchLayer]);
 
@@ -55,29 +69,6 @@ export class SketchQueryWidgetComponent {
           .catch(console.error);
       });
     });
-
-    const bufferNumSlider = new Slider({
-      container: 'bufferNum',
-      min: 0,
-      max: 1000,
-      steps: 1,
-      visibleElements: {
-        labels: true,
-      },
-      precision: 0,
-      labelFormatFunction: (value, type) => {
-        return `${value.toString()}m`;
-      },
-      values: [0]
-    });
-
-
-    const bufferVariablesChanged = (event: any) => {
-      this.bufferSize = event.value;
-      this.updateFilter();
-    }
-    bufferNumSlider.on('thumb-change', bufferVariablesChanged);
-    bufferNumSlider.on('thumb-drag', bufferVariablesChanged);
 
 
     this.sketchViewModel = new SketchViewModel({
@@ -120,7 +111,8 @@ export class SketchQueryWidgetComponent {
       // update the filter every time the user finishes drawing the filtergeometry
       if (event.state == 'complete') {
         this.sketchGeometry = event.graphic.geometry;
-        this.updateFilter();
+        this.queryByClientsideFilter();
+        this.queryByServersideFilter();
       }
     });
 
@@ -129,7 +121,8 @@ export class SketchQueryWidgetComponent {
       // update the filter every time the user moves the filtergeometry
       if (eventInfo && eventInfo.type.includes('stop')) {
         this.sketchGeometry = event.graphics[0].geometry;
-        this.updateFilter();
+        this.queryByClientsideFilter();
+        this.queryByServersideFilter();
       }
     });
 
@@ -156,7 +149,7 @@ export class SketchQueryWidgetComponent {
   /**
    * Set the geometry filter on the visible FeatureLayerView
    */
-  updateFilter() {
+  queryByClientsideFilter() {
     this.layerViews.forEach((layerView) => layerView.layer.visible = true)
     this.updateFilterGeometry();
 
@@ -165,13 +158,17 @@ export class SketchQueryWidgetComponent {
       geometry: this.filterGeometry as Geometry,
       spatialRelationship: this.selectedSpatialRelationship
     });
-    // Reset the queriedFeatures array otherwise the old features will still be in the list, but they might be outside the filter
-    this.queriedFeatures = [];
-
     // Apply filter for all layerviews
     this.applyFilterForAllLayers(this.layerViews);
+  }
 
-    // Now query the layer views to get the features that are within the filter
+  /**
+   * Query features by going to the server. This assures all features are returned, even if they are not visible in the view (yet)
+   */
+  queryByServersideFilter() {
+    console.log('Fired', new Date().getTime())
+    // Reset the queriedFeatures array otherwise the old features will still be in the list, but they might be outside the filter
+    this.queriedFeatures = [];
     this.queryFeatures(this.layerViews).then((queriedFeatures) => {
       this.queriedFeatures = this.queriedFeatures.concat(queriedFeatures);
       // We have collected all the features that are within the filter, now we can emit them to notify other components
@@ -284,5 +281,14 @@ export class SketchQueryWidgetComponent {
         objectIds: graphics.map((graphic) => graphic.attributes[layer.objectIdField])
       });
     }
+  }
+
+  onSliderUserChange() {
+    this.queryByClientsideFilter();
+  }
+
+  onSliderUserChangeEnd() {
+    this.queryByClientsideFilter();
+    this.queryByServersideFilter();
   }
 }
