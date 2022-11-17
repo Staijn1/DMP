@@ -33,11 +33,11 @@ import {SketchQueryWidgetComponent} from './widgets/SketchQueryWidget/sketch-que
   styleUrls: ['./arcgis-map.component.scss'],
 })
 export class ArcgisMapComponent implements OnInit {
+  @ViewChild(SketchQueryWidgetComponent) private sketchWidget!: SketchQueryWidgetComponent
   private map!: WebScene;
   view!: SceneView;
   private activeHighlight: __esri.Handle | undefined;
   private configuration!: SystemConfiguration;
-  @ViewChild(SketchQueryWidgetComponent) private sketchWidget!: SketchQueryWidgetComponent
 
   constructor(
     private readonly configService: ConfigurationService,
