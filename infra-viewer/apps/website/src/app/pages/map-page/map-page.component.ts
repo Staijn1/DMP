@@ -3,7 +3,6 @@ import {MapEventHandlerService} from '../../services/map-event-handler/map-event
 import {QueriedFeatures} from '@infra-viewer/interfaces';
 import {ArcgisMapComponent} from '../../shared/components/arcgis-map/arcgis-map.component';
 import UIkit from 'uikit';
-import Layer from '@arcgis/core/layers/Layer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import SceneLayer from '@arcgis/core/layers/SceneLayer';
 

@@ -4,7 +4,6 @@ import SceneView from '@arcgis/core/views/SceneView';
 import {ConfigurationService} from '../../../services/configuration/configuration.service';
 import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import {QueryService} from '../../../services/query/query.service';
 import {createTablePopup} from '../../../utils/utils';
 import {MapUIBuilderService} from '../../../services/map-uibuilder/map-uibuilder.service';
 import {MapEventHandlerService} from '../../../services/map-event-handler/map-event-handler.service';
@@ -33,7 +32,6 @@ export class ArcgisMapComponent implements OnInit {
 
   constructor(
     private readonly configService: ConfigurationService,
-    private readonly queryService: QueryService,
     private readonly uiBuilder: MapUIBuilderService,
     private readonly eventHandler: MapEventHandlerService,
     private readonly layerFactory: LayerFactoryService) {

@@ -1,22 +1,12 @@
 import {Injectable} from '@angular/core';
 import Collection from '@arcgis/core/core/Collection';
-import Layer from '@arcgis/core/layers/Layer';
-import Graphic from '@arcgis/core/Graphic';
-import {QueryService} from '../query/query.service';
 import GroupLayer from '@arcgis/core/layers/GroupLayer';
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import SceneView from '@arcgis/core/views/SceneView';
-import Point from '@arcgis/core/geometry/Point';
-import PointSymbol3D from '@arcgis/core/symbols/PointSymbol3D';
-import {MapUIBuilderService} from '../map-uibuilder/map-uibuilder.service';
-import {BehaviorSubject} from 'rxjs';
-import {CustomFeatureLayer, QueriedFeatures} from '@infra-viewer/interfaces';
+import {CustomFeatureLayer} from '@infra-viewer/interfaces';
 import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
 import {createFeatureLayerFromFeatureLayer} from '../../utils/utils';
 import {Strategy} from '../../shared/components/arcgis-map/strategies/Strategy';
 import {RuleStrategy} from '../../shared/components/arcgis-map/strategies/300RuleStrategy';
-import ViewClickEvent = __esri.ViewClickEvent;
 import {EnergyLabelStrategy} from '../../shared/components/arcgis-map/strategies/EnergyLabelStrategy';
 
 @Injectable({
