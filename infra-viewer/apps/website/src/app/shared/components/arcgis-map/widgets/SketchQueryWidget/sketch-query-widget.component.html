@@ -7,18 +7,21 @@
       id="point-geometry-button"
       value="point"
       title="Filter by point"
+      (click)="geometryButtonsClickHandler($event)"
     ></button>
     <button
       class="esri-widget--button esri-icon-polyline geometry-button"
       id="line-geometry-button"
       value="polyline"
       title="Filter by line"
+      (click)="geometryButtonsClickHandler($event)"
     ></button>
     <button
       class="esri-widget--button esri-icon-polygon geometry-button"
       id="polygon-geometry-button"
       value="polygon"
       title="Filter by polygon"
+      (click)="geometryButtonsClickHandler($event)"
     ></button>
   </div>
   <br/>

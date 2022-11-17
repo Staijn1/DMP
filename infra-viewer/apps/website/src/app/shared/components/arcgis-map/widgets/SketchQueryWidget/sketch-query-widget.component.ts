@@ -131,18 +131,6 @@ export class SketchQueryWidgetComponent {
       }
     });
 
-    const geometryButtonsClickHandler = (event: any) => {
-      const geometryType = event.target.value;
-      this.clearFilter();
-      this.sketchViewModel.create(geometryType);
-    }
-    // draw geometry buttons - use the selected geometry to sktech
-    if (document) {
-      (document.getElementById('point-geometry-button') as HTMLElement).onclick = geometryButtonsClickHandler;
-      (document.getElementById('line-geometry-button') as HTMLElement).onclick = geometryButtonsClickHandler;
-      (document.getElementById('polygon-geometry-button') as HTMLElement).onclick = geometryButtonsClickHandler;
-    }
-
     const expand = new Expand({
       expandIconClass: 'esri-icon-filter',
       expandTooltip: 'Filter',
@@ -215,5 +203,15 @@ export class SketchQueryWidgetComponent {
     this.bufferLayer.removeAll();
     if (this.sceneLayerViews.length > 0) this.sceneLayerViews.forEach((layerView: SceneLayerView) => layerView.filter = new FeatureFilter());
     if (this.featureLayerViews.length > 0) this.featureLayerViews.forEach((layerView: FeatureLayerView) => layerView.filter = new FeatureFilter());
+  }
+
+  /**
+   * When clicking on one of the draw geometry buttons this function is fired
+   * @param event
+   */
+  geometryButtonsClickHandler (event: MouseEvent) {
+    const geometryType = (event.target as HTMLButtonElement).value;
+    this.clearFilter();
+    this.sketchViewModel.create(geometryType as any);
   }
 }
