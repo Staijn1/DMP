@@ -1,10 +1,10 @@
-import {Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {MapEventHandlerService} from '../../services/map-event-handler/map-event-handler.service';
-import {Subscription} from 'rxjs';
 import {QueriedFeatures} from '@infra-viewer/interfaces';
 import {ArcgisMapComponent} from '../../shared/components/arcgis-map/arcgis-map.component';
 import UIkit from 'uikit';
-import Layer from '@arcgis/core/layers/Layer';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import SceneLayer from '@arcgis/core/layers/SceneLayer';
 
 
 @Component({
@@ -12,20 +12,15 @@ import Layer from '@arcgis/core/layers/Layer';
   templateUrl: './map-page.component.html',
   styleUrls: ['./map-page.component.scss'],
 })
-export class MapPageComponent implements OnDestroy {
+export class MapPageComponent {
   @ViewChild(ArcgisMapComponent) map!: ArcgisMapComponent;
   @ViewChild('switcher') switcher!: ElementRef;
 
-  private featureSubscription: Subscription;
-  results: QueriedFeatures[] | null = null;
+  results: QueriedFeatures[] = [];
 
   constructor(private readonly eventHandler: MapEventHandlerService) {
-    this.featureSubscription = eventHandler.queredFeatures$.subscribe(results => this.results = results)
   }
 
-  ngOnDestroy(): void {
-    this.featureSubscription.unsubscribe();
-  }
 
   showTab(result: QueriedFeatures) {
     // Find the index of the result in the results array
@@ -40,8 +35,17 @@ export class MapPageComponent implements OnDestroy {
    * This method is called when the user changes the filtering in the grid that appears after a query.
    * This function calls the eventhandler that will deal with it further
    * @param {__esri.Graphic[]} $event
+   * @param layer
    */
-  onGridFilterChange($event: __esri.Graphic[], layer: Layer) {
-    this.eventHandler.onFilterChange($event, layer, this.map.view);
+  onGridFilterChange($event: __esri.Graphic[], layer: FeatureLayer | SceneLayer) {
+    this.map.onFeatureGridFilterChange($event, layer);
+  }
+
+  /**
+   * Fired when the user changes the filter in the map. It updates the feature grid that show the results of the query in a table
+   * @param {QueriedFeatures[]} $event
+   */
+  onQuery($event: QueriedFeatures[]) {
+    this.results = $event;
   }
 }

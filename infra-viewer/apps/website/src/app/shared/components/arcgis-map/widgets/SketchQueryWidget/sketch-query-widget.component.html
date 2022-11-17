@@ -1,0 +1,42 @@
+<div id="infoDiv" #infoDiv class="esri-widget">
+  <b>Filter by geometry</b><br/><br/>
+  <br/>Draw a geometry to filter by:
+  <div class="geometry-options">
+    <button
+      class="esri-widget--button esri-icon-map-pin geometry-button"
+      id="point-geometry-button"
+      value="point"
+      title="Filter by point"
+      (click)="geometryButtonsClickHandler($event)"
+    ></button>
+    <button
+      class="esri-widget--button esri-icon-polyline geometry-button"
+      id="line-geometry-button"
+      value="polyline"
+      title="Filter by line"
+      (click)="geometryButtonsClickHandler($event)"
+    ></button>
+    <button
+      class="esri-widget--button esri-icon-polygon geometry-button"
+      id="polygon-geometry-button"
+      value="polygon"
+      title="Filter by polygon"
+      (click)="geometryButtonsClickHandler($event)"
+    ></button>
+  </div>
+  <br/>
+  <label for="relationship-select">Spatial relationship:</label>
+  <select id="relationship-select" class="options" [(ngModel)]="selectedSpatialRelationship"
+          (change)="queryByClientsideFilter()">
+    <!--    Create an option for all possible spatial relationships-->
+    <option *ngFor="let relationship of spatialRelationships" [ngValue]="relationship">{{relationship}}</option>
+  </select
+  ><br/><br/>
+  <label for="bufferSlider">Set a geometry buffer size:</label>
+  <ngx-slider id="bufferSlider" [options]="sliderConfig" [(value)]="bufferSize" (userChange)="onSliderUserChange()"
+              (userChangeEnd)="onSliderUserChangeEnd()"></ngx-slider>
+  <br/><br/>
+  <button class="esri-button" id="clearFilter" type="button" (click)="clearFilter()">
+    Clear filter
+  </button>
+</div>

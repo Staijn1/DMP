@@ -1,11 +1,11 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import {Pipe, PipeTransform} from '@angular/core';
 
 /**
  * Cast super type into type using generics
  * Return Type obtained by optional @param type OR assignment type.
  */
 
-@Pipe({ name: 'cast' })
+@Pipe({name: 'cast'})
 export class CastPipe implements PipeTransform {
   /**
    * Cast (S: SuperType) into (T: Type) using @Generics.

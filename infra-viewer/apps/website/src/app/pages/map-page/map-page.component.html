@@ -1,8 +1,8 @@
 <div class="map-container uk-container uk-container-xlarge">
-  <app-arcgis-map></app-arcgis-map>
+  <app-arcgis-map (query)="onQuery($event)"></app-arcgis-map>
 </div>
 
-<div *ngIf="results">
+<div *ngIf="results.length > 0">
   <div class="uk-card uk-card-default uk-card-body">
     <ul uk-tab>
       <li *ngFor="let result of results | slice:0:4">
@@ -30,6 +30,7 @@
 <ng-template #layerResult let-result="result">
   <div data-aos="fade-up" class="uk-card uk-card-default uk-card-body">
     <h3 class="uk-card-title">{{result.layer.title}}</h3>
-    <app-feature-grid (filterChanged)="onGridFilterChange($event, result.layer)" [input]="result" [map]="map"></app-feature-grid>
+    <app-feature-grid (filterChanged)="onGridFilterChange($event, result.layer)" [input]="result"
+                      [map]="map"></app-feature-grid>
   </div>
 </ng-template>

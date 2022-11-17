@@ -16,14 +16,17 @@ import FeatureLayerProperties = __esri.FeatureLayerProperties;
 export class LayerFactoryService {
 
   constructLayer(layerConfig: LayerConfig): Layer {
+    // Create a copy of the layer config
+    const layerConfigCopy = {...layerConfig};
+
     const layerType = layerConfig.type as SystemConfigurationLayerTypes;
     // Remove layer type from config
-    delete (layerConfig as any).type;
+    delete (layerConfigCopy as any).type;
     const constructList: LayerConstructor = {
-      'scene': () => new SceneLayer(layerConfig as SceneLayerProperties),
-      'elevation': () => new ElevationLayer(layerConfig as ElevationLayerProperties),
-      'geoJSON': () => new GeoJSONLayer(layerConfig as GeoJSONLayerProperties),
-      'feature': () => new FeatureLayer(layerConfig as FeatureLayerProperties)
+      'scene': () => new SceneLayer(layerConfigCopy as SceneLayerProperties),
+      'elevation': () => new ElevationLayer(layerConfigCopy as ElevationLayerProperties),
+      'geoJSON': () => new GeoJSONLayer(layerConfigCopy as GeoJSONLayerProperties),
+      'feature': () => new FeatureLayer(layerConfigCopy as FeatureLayerProperties)
     }
     const constructedLayer = constructList[layerType as SystemConfigurationLayerTypes];
     if (!constructedLayer) console.error('Unsupported layer type: ' + layerType)

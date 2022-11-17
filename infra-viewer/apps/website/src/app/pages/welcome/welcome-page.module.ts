@@ -8,8 +8,9 @@ import {SharedModule} from '../../shared/shared.module';
   declarations: [WelcomePageComponent],
   imports: [
     CommonModule,
-    RouterModule.forChild([{ path: '', component: WelcomePageComponent }]),
+    RouterModule.forChild([{path: '', component: WelcomePageComponent}]),
     SharedModule,
   ],
 })
-export class WelcomePageModule {}
+export class WelcomePageModule {
+}

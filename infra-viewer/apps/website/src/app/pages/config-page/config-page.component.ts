@@ -1,13 +1,13 @@
 import {Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {ConfigurationService} from '../../services/configuration/configuration.service';
 import {NgForm} from '@angular/forms';
-import {SystemConfiguration, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
+import {SystemConfiguration} from '@infra-viewer/interfaces';
 import Layer from '@arcgis/core/layers/Layer';
 import UIkit from 'uikit';
 import UniqueValueRenderer from '@arcgis/core/renderers/UniqueValueRenderer';
 import UniqueValueInfo from '@arcgis/core/renderers/support/UniqueValueInfo';
-import FeatureLayerProperties = __esri.FeatureLayerProperties;
 import PointSymbol3D from '@arcgis/core/symbols/PointSymbol3D';
+import FeatureLayerProperties = __esri.FeatureLayerProperties;
 import LayerProperties = __esri.LayerProperties;
 
 

@@ -34,8 +34,10 @@ import {RouterModule} from '@angular/router';
         {
           path: 'login',
           loadChildren: () =>
-            import('./pages/login-page/login-page.module').then((m) => m.LoginPageModule),
-        }
+            import('./pages/login-page/login-page.module').then(
+              (m) => m.LoginPageModule
+            ),
+        },
       ],
       {initialNavigation: 'enabledBlocking'}
     ),
