@@ -1,10 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import WebScene from '@arcgis/core/WebScene';
 import SceneView from '@arcgis/core/views/SceneView';
 import {ConfigurationService} from '../../../services/configuration/configuration.service';
 import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import {QueryService} from '../../../services/query/query.service';
 import {createTablePopup} from '../../../utils/utils';
 import {MapUIBuilderService} from '../../../services/map-uibuilder/map-uibuilder.service';
 import {MapEventHandlerService} from '../../../services/map-event-handler/map-event-handler.service';
@@ -13,8 +12,10 @@ import TileLayer from '@arcgis/core/layers/TileLayer';
 import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
 import FeatureLayerView from '@arcgis/core/views/layers/FeatureLayerView';
 import {HighlightStyleOptions} from 'ag-grid-community';
-import {SystemConfiguration, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
+import {QueriedFeatures, SystemConfiguration, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
 import {LayerFactoryService} from '../../../services/layer-factory/layer-factory.service';
+import {SketchQueryWidgetComponent} from './widgets/SketchQueryWidget/sketch-query-widget.component';
+import SceneLayer from '@arcgis/core/layers/SceneLayer';
 
 @Component({
   selector: 'app-arcgis-map',
@@ -22,6 +23,8 @@ import {LayerFactoryService} from '../../../services/layer-factory/layer-factory
   styleUrls: ['./arcgis-map.component.scss'],
 })
 export class ArcgisMapComponent implements OnInit {
+  @ViewChild(SketchQueryWidgetComponent) private sketchWidget!: SketchQueryWidgetComponent
+  @Output() query: EventEmitter<QueriedFeatures[]> = new EventEmitter<QueriedFeatures[]>();
   private map!: WebScene;
   view!: SceneView;
   private activeHighlight: __esri.Handle | undefined;
@@ -29,19 +32,28 @@ export class ArcgisMapComponent implements OnInit {
 
   constructor(
     private readonly configService: ConfigurationService,
-    private readonly queryService: QueryService,
     private readonly uiBuilder: MapUIBuilderService,
     private readonly eventHandler: MapEventHandlerService,
     private readonly layerFactory: LayerFactoryService) {
   }
 
   ngOnInit(): void {
-    this.createMap()
+    this.initialize().then()
+  }
+
+  /**
+   * Perform the necessary steps to initialize Arcgis
+   * @returns {Promise<void>}
+   * @private
+   */
+  private async initialize(): Promise<void> {
+    this.configuration = await this.configService.getConfiguration();
+    this.createMap();
     this.createView();
-    this.configService.getConfiguration().then((config) => {
-      this.configuration = config
-      return this.applyConfig();
-    }).then(() => this.uiBuilder.buildUI(this.view)).then(() => this.eventHandler.registerEvents(this.view));
+    this.applyConfig();
+    await this.uiBuilder.buildUI(this.view);
+    this.eventHandler.registerEvents(this.view);
+    this.sketchWidget.initialize(this.view)
   }
 
   /**
@@ -111,10 +123,8 @@ export class ArcgisMapComponent implements OnInit {
    * @returns {Promise<void>}
    * @private
    */
-  private async applyConfig(): Promise<void> {
-    const config = await this.configService.getConfiguration();
-
-    for (const layerConfig of config.layers) {
+  private applyConfig(): void {
+    for (const layerConfig of this.configuration.layers) {
       const layer = this.layerFactory.constructLayer(layerConfig)
       if ((layerConfig.type as SystemConfigurationLayerTypes) === 'elevation') {
         this.map.ground.layers.add(layer as ElevationLayer)
@@ -158,5 +168,9 @@ export class ArcgisMapComponent implements OnInit {
       }
       this.activeHighlight = layerView.highlight(graphic);
     });
+  }
+
+  onFeatureGridFilterChange($event: __esri.Graphic[], layer: FeatureLayer | SceneLayer) {
+    this.sketchWidget.onExternalFilterChange($event, layer)
   }
 }

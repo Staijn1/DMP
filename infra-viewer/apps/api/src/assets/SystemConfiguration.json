@@ -807,7 +807,14 @@
     }
   ],
   "view": {
-    "camera": {},
+    "camera": {
+      "spatialReference": {
+        "wkid": 28992
+      },
+      "x": 190871.79970213366,
+      "y": 443752.26031690626,
+      "z": 5966.512190682592
+    },
     "qualityProfile": "low",
     "environment": {
       "lighting": {

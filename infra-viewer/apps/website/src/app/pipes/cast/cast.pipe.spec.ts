@@ -1,4 +1,4 @@
-import { CastPipe } from './cast.pipe';
+import {CastPipe} from './cast.pipe';
 
 describe('CastPipe', () => {
   it('create an instance', () => {
