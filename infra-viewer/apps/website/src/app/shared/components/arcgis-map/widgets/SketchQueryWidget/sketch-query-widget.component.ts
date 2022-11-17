@@ -157,7 +157,7 @@ export class SketchQueryWidgetComponent {
   /**
    * Set the geometry filter on the visible FeatureLayerView
    */
-  updateFilter = () => {
+  updateFilter() {
     this.updateFilterGeometry();
     const featureFilter: FeatureFilter = new FeatureFilter({
       // autocasts to FeatureFilter
