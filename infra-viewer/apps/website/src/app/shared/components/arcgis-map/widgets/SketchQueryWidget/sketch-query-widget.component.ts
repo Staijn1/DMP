@@ -283,10 +283,18 @@ export class SketchQueryWidgetComponent {
     }
   }
 
+  /**
+   * Fired while the user is sliding the buffer slider
+   * We do not query the server because that would be too much traffic which would slow down the application enormously
+   */
   onSliderUserChange() {
     this.queryByClientsideFilter();
   }
 
+  /**
+   * Fired when the user has stopped changing the slider.
+   * Now we query the server to get all the features that are within the geometry
+   */
   onSliderUserChangeEnd() {
     this.queryByClientsideFilter();
     this.queryByServersideFilter();
