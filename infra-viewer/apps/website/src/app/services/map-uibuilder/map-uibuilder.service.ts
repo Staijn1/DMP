@@ -7,12 +7,11 @@ import Daylight from '@arcgis/core/widgets/Daylight';
 import ShadowCast from '@arcgis/core/widgets/ShadowCast';
 import Legend from '@arcgis/core/widgets/Legend';
 import Editor from '@arcgis/core/widgets/Editor';
-import Sketch from '@arcgis/core/widgets/Sketch';
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
-import WebScene from '@arcgis/core/WebScene';
-import LayerView from '@arcgis/core/views/layers/LayerView';
-import Slider from '@arcgis/core/widgets/Slider';
-import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
+import CoordinateConversion from '@arcgis/core/widgets/CoordinateConversion';
+import {environment} from '../../../environments/environment';
+import AreaMeasurement3D from '@arcgis/core/widgets/AreaMeasurement3D';
+import DirectLineMeasurement3D from '@arcgis/core/widgets/DirectLineMeasurement3D';
+import Fullscreen from '@arcgis/core/widgets/Fullscreen';
 
 @Injectable({
   providedIn: 'root'
@@ -97,9 +96,38 @@ export class MapUIBuilderService implements OnDestroy {
     const editor = await this.createEditorWidget(view);
     // const sketchExpand = this.createSketchWidget(view);
 
-    view.ui.add([legendExpand], 'bottom-right');
+    const areaMeasurement = new Expand({
+      view: view,
+      content: new AreaMeasurement3D({
+        view: view,
+      }),
+      group: 'top-right'
+    });
+
+    const directLineMeasurement = new Expand({
+      view: view,
+      content: new DirectLineMeasurement3D({
+        view: view,
+      }),
+      group: 'top-right'
+    });
+    const fullScreen = new Fullscreen({
+      view: view
+    });
+    // If in development mode, add the coordinate conversion widget
+    if (!environment.production) {
+      const coordinateConversion = new Expand({
+        view: view,
+        content: new CoordinateConversion({
+          view: view
+        }),
+        group: 'bottom-left'
+      });
+      view.ui.add(coordinateConversion, 'bottom-left');
+    }
+    view.ui.add([legendExpand, fullScreen], 'bottom-right');
     view.ui.add([elevationProfileExpand, layerlistExpand], 'top-left');
-    view.ui.add([this.searchWidget, daylightExpand, shadowWidget, editor], 'top-right');
+    view.ui.add([this.searchWidget, daylightExpand, shadowWidget, editor, directLineMeasurement, areaMeasurement], 'top-right');
   }
 
   /**
