@@ -16,6 +16,7 @@ import {HighlightStyleOptions} from 'ag-grid-community';
 import {QueriedFeatures, SystemConfiguration, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
 import {LayerFactoryService} from '../../../services/layer-factory/layer-factory.service';
 import {SketchQueryWidgetComponent} from './widgets/SketchQueryWidget/sketch-query-widget.component';
+import SceneLayer from '@arcgis/core/layers/SceneLayer';
 
 @Component({
   selector: 'app-arcgis-map',
@@ -169,5 +170,9 @@ export class ArcgisMapComponent implements OnInit {
       }
       this.activeHighlight = layerView.highlight(graphic);
     });
+  }
+
+  onFeatureGridFilterChange($event: __esri.Graphic[], layer: FeatureLayer | SceneLayer) {
+    this.sketchWidget.onExternalFilterChange($event, layer)
   }
 }

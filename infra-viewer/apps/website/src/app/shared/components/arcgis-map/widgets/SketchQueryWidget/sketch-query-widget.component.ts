@@ -276,13 +276,13 @@ export class SketchQueryWidgetComponent {
    * @param {__esri.Layer} layer - The layer that was filtered
    */
   onExternalFilterChange(graphics: __esri.Graphic[], layer: __esri.FeatureLayer | __esri.SceneLayer) {
-   /* // Find the layerview that matches the layer that was filtered
+    // Find the layerview that matches the layer that was filtered
     const layerView = this.layerViews.find((layerView) => layerView.layer.id === layer.id);
     if (layerView) {
       // Change the filter to only show the graphics that are in the graphics array
       layerView.filter = new FeatureFilter({
         objectIds: graphics.map((graphic) => graphic.attributes[layer.objectIdField])
       });
-    }*/
+    }
   }
 }

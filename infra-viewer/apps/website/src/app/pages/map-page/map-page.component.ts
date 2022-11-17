@@ -4,6 +4,8 @@ import {QueriedFeatures} from '@infra-viewer/interfaces';
 import {ArcgisMapComponent} from '../../shared/components/arcgis-map/arcgis-map.component';
 import UIkit from 'uikit';
 import Layer from '@arcgis/core/layers/Layer';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import SceneLayer from '@arcgis/core/layers/SceneLayer';
 
 
 @Component({
@@ -34,9 +36,10 @@ export class MapPageComponent {
    * This method is called when the user changes the filtering in the grid that appears after a query.
    * This function calls the eventhandler that will deal with it further
    * @param {__esri.Graphic[]} $event
+   * @param layer
    */
-  onGridFilterChange($event: __esri.Graphic[], layer: Layer) {
-    this.eventHandler.onFilterChange($event, layer, this.map.view);
+  onGridFilterChange($event: __esri.Graphic[], layer: FeatureLayer | SceneLayer) {
+    this.map.onFeatureGridFilterChange($event, layer);
   }
 
   onQuery($event: QueriedFeatures[]) {
