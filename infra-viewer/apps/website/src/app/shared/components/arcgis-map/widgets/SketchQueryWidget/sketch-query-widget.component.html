@@ -26,10 +26,9 @@
   </div>
   <br/>
   <label for="relationship-select">Spatial relationship:</label>
-  <select id="relationship-select" class="options" [(ngModel)]="selectedFilter" (change)="updateFilter()">
-    <option value="intersects">intersects</option>
-    <option value="contains">contains</option>
-    <option value="disjoint">disjoint</option>
+  <select id="relationship-select" class="options" [(ngModel)]="selectedSpatialRelationship" (change)="updateFilter()">
+    <!--    Create an option for all possible spatial relationships-->
+    <option *ngFor="let relationship of spatialRelationships" [ngValue]="relationship">{{relationship}}</option>
   </select
   ><br/><br/>
   <label for="bufferNum">Set a geometry buffer size:</label>

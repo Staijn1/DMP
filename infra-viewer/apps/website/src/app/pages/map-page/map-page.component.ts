@@ -1,6 +1,5 @@
-import {Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {MapEventHandlerService} from '../../services/map-event-handler/map-event-handler.service';
-import {Subscription} from 'rxjs';
 import {QueriedFeatures} from '@infra-viewer/interfaces';
 import {ArcgisMapComponent} from '../../shared/components/arcgis-map/arcgis-map.component';
 import UIkit from 'uikit';
@@ -16,7 +15,7 @@ export class MapPageComponent {
   @ViewChild(ArcgisMapComponent) map!: ArcgisMapComponent;
   @ViewChild('switcher') switcher!: ElementRef;
 
-  results: QueriedFeatures[] | null = null;
+  results: QueriedFeatures[] = [];
 
   constructor(private readonly eventHandler: MapEventHandlerService) {
   }

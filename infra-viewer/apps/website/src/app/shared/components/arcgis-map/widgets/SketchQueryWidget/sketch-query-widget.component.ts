@@ -12,7 +12,8 @@ import * as geometryEngine from '@arcgis/core/geometry/geometryEngine';
 import Graphic from '@arcgis/core/Graphic';
 import Expand from '@arcgis/core/widgets/Expand';
 import SceneView from '@arcgis/core/views/SceneView';
-import {QueriedFeatures} from '@infra-viewer/interfaces';
+import {QueriedFeatures, SpatialRelationship} from '@infra-viewer/interfaces';
+import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
 
 @Component({
   selector: 'app-sketch-query-widget',
@@ -22,19 +23,22 @@ import {QueriedFeatures} from '@infra-viewer/interfaces';
 export class SketchQueryWidgetComponent {
   @ViewChild('infoDiv') infoDiv!: ElementRef<HTMLDivElement>
   @Output() query: EventEmitter<QueriedFeatures[]> = new EventEmitter<QueriedFeatures[]>();
-  view!: SceneView;
   private sceneLayerViews: SceneLayerView[] = [];
   private featureLayerViews: FeatureLayerView[] = [];
   private queriedFeatures: QueriedFeatures[] = [];
   private sketchViewModel!: __esri.SketchViewModel;
+  private featureFilter: __esri.FeatureFilter = new FeatureFilter();
+
+  view!: SceneView;
   // Contains the geometry that the user has drawn. This geometry is used to filter the layers
   sketchGeometry: Geometry | null = null;
   // update the filter geometry depending on bufferSize
   filterGeometry: Geometry | null = null;
   sketchLayer: GraphicsLayer = new GraphicsLayer({listMode: 'hide'});
   bufferLayer: GraphicsLayer = new GraphicsLayer({listMode: 'hide'});
-  selectedFilter = 'intersects';
+  selectedSpatialRelationship: SpatialRelationship = 'intersects';
   bufferSize = 0;
+  spatialRelationships = ['intersects', 'contains'];
 
   private createSketchWidget() {
     this.view.map.addMany([this.bufferLayer, this.sketchLayer]);
@@ -105,7 +109,7 @@ export class SketchQueryWidgetComponent {
           {
             type: 'fill',
             material: {
-              color: [255, 255, 255, 0.8]
+              color: [255, 255, 255, 0.4]
             },
             outline: {
               color: [211, 132, 80, 0.7],
@@ -158,34 +162,42 @@ export class SketchQueryWidgetComponent {
    * Set the geometry filter on the visible FeatureLayerView
    */
   updateFilter() {
+    this.featureLayerViews.forEach((layerView) => layerView.layer.visible = true)
     this.updateFilterGeometry();
-    const featureFilter: FeatureFilter = new FeatureFilter({
+
+    this.featureFilter = new FeatureFilter({
       // autocasts to FeatureFilter
       geometry: this.filterGeometry as Geometry,
-      spatialRelationship: this.selectedFilter
+      spatialRelationship: this.selectedSpatialRelationship
     });
+    // Reset the queriedFeatures array otherwise the old features will still be in the list, but they might be outside the filter
     this.queriedFeatures = [];
-    const filterHandler = (layerView: FeatureLayerView | SceneLayerView) => {
-      layerView.filter = featureFilter;
-    };
-    // Apply the filter to the FeatureLayerViews and SceneLayerViews
-    this.featureLayerViews.forEach(filterHandler);
-    this.sceneLayerViews.forEach(filterHandler)
-    // Query the featurelayerViews and sceneLayerViews to get the features that are within the filter
+
+    // Apply filter for all layerviews
+    this.applyFilter(this.sceneLayerViews);
+    this.applyFilter(this.featureLayerViews);
+
+    // Now query the layer views to get the features that are within the filter
     this.queryFeatures(this.featureLayerViews).then((queriedFeatures) => {
       this.queriedFeatures = this.queriedFeatures.concat(queriedFeatures);
       return this.queryFeatures(this.sceneLayerViews)
     }).then((queriedFeatures) => {
       this.queriedFeatures = this.queriedFeatures.concat(queriedFeatures);
+      // We have collected all the features that are within the filter, now we can emit them to notify other components
       this.query.emit(this.queriedFeatures);
     });
   }
 
+  /**
+   * If the user is using the buffer tool, we need to create a buffer around the sketchGeometry
+   * This buffer is then used as the filterGeometry
+   * If the user is not using the buffer tool, we just use the sketchGeometry as the filterGeometry,
+   */
   updateFilterGeometry() {
     // add a polygon graphic for the bufferSize
     if (this.sketchGeometry) {
       if (this.bufferSize > 0) {
-        const bufferGeometry = geometryEngine.geodesicBuffer(this.sketchGeometry, this.bufferSize, 'meters') as Geometry;
+        const bufferGeometry = geometryEngine.buffer(this.sketchGeometry, this.bufferSize, 'meters') as Geometry;
         if (this.bufferLayer.graphics.length === 0) {
           this.bufferLayer.add(
             new Graphic({
@@ -214,8 +226,9 @@ export class SketchQueryWidgetComponent {
     this.bufferLayer.removeAll();
     this.queriedFeatures = [];
     this.query.emit(this.queriedFeatures);
-    this.sceneLayerViews.forEach((layerView: SceneLayerView) => layerView.filter = new FeatureFilter());
-    this.featureLayerViews.forEach((layerView: FeatureLayerView) => layerView.filter = new FeatureFilter());
+    this.featureFilter = new FeatureFilter();
+    this.applyFilter(this.sceneLayerViews);
+    this.applyFilter(this.featureLayerViews);
   }
 
   /**
@@ -235,8 +248,29 @@ export class SketchQueryWidgetComponent {
    */
   private queryFeatures(layerViews: SceneLayerView[] | FeatureLayerView[]): Promise<QueriedFeatures[]> {
     return Promise.all(layerViews.map(async (layerView: SceneLayerView | FeatureLayerView) => {
-      const featureSet = await layerView.queryFeatures();
-      return {featureSet, layer: layerView.layer};
+      try {
+        // If the layerviews are sceneLayerViews, we need to use the queryFeatures method on the layerView
+        // Otherwise, we will query the server which cannot be done on scene layers without an associated feature layer
+        let featureSet;
+        if (layerView.layer.type === 'scene') {
+          featureSet = await layerView.queryFeatures();
+        } else {
+          featureSet = await layerView.layer.queryFeatures();
+        }
+        return {featureSet, layer: layerView.layer};
+      } catch (e) {
+        console.error(`Query failed for layer: ${layerView.layer.title} id: ${layerView.layer.id}`, e);
+        return {featureSet: new FeatureSet(), layer: layerView.layer};
+      }
     }));
+  }
+
+  /**
+   * A helper function to apply the current featureFilter to a layerView
+   * @param {__esri.FeatureLayerView[] | __esri.SceneLayerView[]} layerViews
+   * @private
+   */
+  private applyFilter(layerViews: FeatureLayerView[] | SceneLayerView[]) {
+    layerViews.forEach((layerView: FeatureLayerView | SceneLayerView) => layerView.filter = this.featureFilter);
   }
 }

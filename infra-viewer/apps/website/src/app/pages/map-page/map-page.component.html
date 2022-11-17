@@ -2,7 +2,7 @@
   <app-arcgis-map (query)="onQuery($event)"></app-arcgis-map>
 </div>
 
-<div *ngIf="results">
+<div *ngIf="results.length > 0">
   <div class="uk-card uk-card-default uk-card-body">
     <ul uk-tab>
       <li *ngFor="let result of results | slice:0:4">

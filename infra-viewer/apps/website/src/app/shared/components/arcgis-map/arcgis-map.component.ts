@@ -45,7 +45,8 @@ export class ArcgisMapComponent implements OnInit {
       this.createView();
       this.applyConfig();
       this.sketchWidget.initialize(this.view)
-    }).then(() => this.uiBuilder.buildUI(this.view)).then(() => this.eventHandler.registerEvents(this.view));
+    }).then(() => this.uiBuilder.buildUI(this.view))
+      .then(() => this.eventHandler.registerEvents(this.view));
   }
 
   /**
