@@ -39,14 +39,22 @@ export class ArcgisMapComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.configService.getConfiguration().then((config) => {
-      this.configuration = config
-      this.createMap()
-      this.createView();
-      this.applyConfig();
-      this.sketchWidget.initialize(this.view)
-    }).then(() => this.uiBuilder.buildUI(this.view))
-      .then(() => this.eventHandler.registerEvents(this.view));
+    this.initialize().then()
+  }
+
+  /**
+   * Perform the necessary steps to initialize Arcgis
+   * @returns {Promise<void>}
+   * @private
+   */
+  private async initialize(): Promise<void> {
+    this.configuration = await this.configService.getConfiguration();
+    this.createMap();
+    this.createView();
+    this.applyConfig();
+    await this.uiBuilder.buildUI(this.view);
+    this.eventHandler.registerEvents(this.view);
+    this.sketchWidget.initialize(this.view)
   }
 
   /**
