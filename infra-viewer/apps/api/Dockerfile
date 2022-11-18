@@ -1,8 +1,12 @@
 FROM staijn/infraviewer:nx-base AS builder
 
-ARG NODE_ENV
-ARG BUILD_FLAG
+RUN npx nx build api
 
-RUN npx nx build api ${BUILD_FLAG}
+FROM node:lts-alpine3.15
+WORKDIR /app
 
-CMD ["node", "./dist/apps/api/main.js"]
+COPY --from=builder /app/dist/apps/api /app
+COPY --from=builder /app/package*.json /app
+RUN npm install --omit=dev --ignore-scripts
+
+CMD ["node", "main.js"]
