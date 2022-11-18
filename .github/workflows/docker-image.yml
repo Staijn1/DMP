@@ -29,7 +29,7 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    - name: Create customer buildx builder
+    - name: Create custom buildx builder
       run: docker buildx create --name mybuilder
     - name: Use the created builder
       run: docker buildx use mybuilder
