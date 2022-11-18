@@ -37,7 +37,7 @@ jobs:
       run: docker buildx inspect --bootstrap
       
       
-    - name: Build and push base image
-      run: docker buildx build --platform=linux/amd64,linux/arm64,linux/arm/v7 -t ${{ secrets.USERNAME }}/infraviewer:nx-base --push .
+#    - name: Build and push base image
+#      run: docker buildx build --platform=linux/amd64,linux/arm64,linux/arm/v7 -t ${{ secrets.USERNAME }}/infraviewer:nx-base --push .
     - name: Build sub-application images
       run: docker buildx bake --push --set *.platform=linux/amd64,linux/arm64,linux/arm/v7
