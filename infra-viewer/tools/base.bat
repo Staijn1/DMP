@@ -3,7 +3,7 @@
 
 echo "Building base image"
 cd ../
-docker build . -t staijn/infraviewer:nx-base
+docker build . -t staijn/infraviewer:nx-base --platform linux/arm64
 
 echo "Uploading base image"
 docker push staijn/infraviewer:nx-base
