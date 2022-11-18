@@ -29,7 +29,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.TOKEN }}
     - name: Build base image
-      run: docker build . --tag ${{ secrets.USERNAME }}/infraviewer:nx-base
+      run: docker buildx build --platform=linux/amd64,linux/arm64 . --tag ${{ secrets.USERNAME }}/infraviewer:nx-base
     - name: Build sub-application images
       run: docker-compose build
     - name: Publish base image
