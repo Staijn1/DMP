@@ -41,7 +41,3 @@ jobs:
       run: docker buildx build --platform=linux/amd64,linux/arm64,linux/arm/v7 -t ${{ secrets.USERNAME }}/infraviewer:nx-base --push .
     - name: Build sub-application images
       run: docker buildx bake --push --set *.platform=linux/amd64,linux/arm64,linux/arm/v7
-    - name: Publish api image
-      run: docker push ${{ secrets.USERNAME }}/infraviewer:api
-    - name: Publish website image
-      run: docker push ${{ secrets.USERNAME }}/infraviewer:website
