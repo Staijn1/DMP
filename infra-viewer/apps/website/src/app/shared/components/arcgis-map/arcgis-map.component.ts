@@ -1,10 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import WebScene from '@arcgis/core/WebScene';
 import SceneView from '@arcgis/core/views/SceneView';
 import {ConfigurationService} from '../../../services/configuration/configuration.service';
 import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import {QueryService} from '../../../services/query/query.service';
 import {createTablePopup} from '../../../utils/utils';
 import {MapUIBuilderService} from '../../../services/map-uibuilder/map-uibuilder.service';
 import {MapEventHandlerService} from '../../../services/map-event-handler/map-event-handler.service';
@@ -13,7 +12,7 @@ import TileLayer from '@arcgis/core/layers/TileLayer';
 import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
 import FeatureLayerView from '@arcgis/core/views/layers/FeatureLayerView';
 import {HighlightStyleOptions} from 'ag-grid-community';
-import {SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
+import {QueriedFeatures, SystemConfiguration, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
 import {LayerFactoryService} from '../../../services/layer-factory/layer-factory.service';
 import Point from '@arcgis/core/geometry/Point';
 import Mesh from '@arcgis/core/geometry/Mesh';
@@ -22,6 +21,8 @@ import MeshSymbol3DConstructor = __esri.MeshSymbol3DConstructor;
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SceneLayer from '@arcgis/core/layers/SceneLayer';
 import Editor from '@arcgis/core/widgets/Editor';
+import {SketchQueryWidgetComponent} from './widgets/SketchQueryWidget/sketch-query-widget.component';
+import SceneLayer from '@arcgis/core/layers/SceneLayer';
 
 @Component({
   selector: 'app-arcgis-map',
@@ -29,27 +30,44 @@ import Editor from '@arcgis/core/widgets/Editor';
   styleUrls: ['./arcgis-map.component.scss'],
 })
 export class ArcgisMapComponent implements OnInit {
+  @ViewChild(SketchQueryWidgetComponent) private sketchWidget!: SketchQueryWidgetComponent
+  @Output() query: EventEmitter<QueriedFeatures[]> = new EventEmitter<QueriedFeatures[]>();
   private map!: WebScene;
   view!: SceneView;
   private activeHighlight: __esri.Handle | undefined;
+  private configuration!: SystemConfiguration;
 
   constructor(
     private readonly configService: ConfigurationService,
-    private readonly queryService: QueryService,
     private readonly uiBuilder: MapUIBuilderService,
     private readonly eventHandler: MapEventHandlerService,
     private readonly layerFactory: LayerFactoryService) {
   }
 
   ngOnInit(): void {
-    this.createMap()
+    this.initialize().then()
+  }
+
+  /**
+   * Perform the necessary steps to initialize Arcgis
+   * @returns {Promise<void>}
+   * @private
+   */
+  private async initialize(): Promise<void> {
+    this.configuration = await this.configService.getConfiguration();
+    this.createMap();
     this.createView();
-    this.uiBuilder.buildUI(this.view);
-    this.applyConfig().then();
+    this.applyConfig();
+    await this.uiBuilder.buildUI(this.view);
     this.eventHandler.registerEvents(this.view);
+    this.sketchWidget.initialize(this.view)
     this.createMeshes()
   }
 
+  /**
+   * Create the map with base layers in the RD projection. Because there is no hybrid RD layer we create one by combining a vector tile layer and a tile layer
+   * @private
+   */
   private createMap(): void {
     this.map = new WebScene({
       basemap: new Basemap({
@@ -67,7 +85,10 @@ export class ArcgisMapComponent implements OnInit {
     });
   }
 
-
+  /**
+   * Initialise the view by adding it to the dom and configuring it with options
+   * @private
+   */
   private createView(): void {
     const extent = {
       // autocasts as new Extent()
@@ -79,9 +100,8 @@ export class ArcgisMapComponent implements OnInit {
         wkid: 28992,
       }
     };
-
-    // Create the view
-    this.view = new SceneView({
+    const sceneConfig = {
+      ...this.configuration.view,
       highlightOptions: {
         color: [255, 255, 0, 1],
         haloColor: 'white',
@@ -90,29 +110,13 @@ export class ArcgisMapComponent implements OnInit {
         shadowColor: 'black',
         shadowOpacity: 0.5
       } as HighlightStyleOptions,
-      spatialReference: {wkid: 28992},
-      qualityProfile: 'low',
       clippingArea: extent,
       container: 'map',
       viewingMode: 'local',
       map: this.map,
-      environment: {
-        lighting: {
-          type: 'sun',
-          directShadowsEnabled: true,
-          ambientOcclusionEnabled: true
-        }
-      },
-      camera: {
-        // The spatial reference is not in the type but does make it work, so we cast it to any
-        spatialReference: {
-          wkid: 28992
-        },
-        x: 190871.79970213366,
-        y: 443752.26031690626,
-        z: 5966.512190682592
-      } as any
-    });
+    } as any
+    // Create the view
+    this.view = new SceneView(sceneConfig);
 
     // When a feature is clicked reset the highlight and zoom to the feature
     this.view.on('click', (event) => {
@@ -122,17 +126,20 @@ export class ArcgisMapComponent implements OnInit {
     });
   }
 
-  private async applyConfig(): Promise<void> {
-    const config = await this.configService.getConfiguration();
-
-    for (const layerConfig of config.layers) {
+  /**
+   * Get the configuration from the API and create layers based on the configuration, and add them to the map
+   * @returns {Promise<void>}
+   * @private
+   */
+  private applyConfig(): void {
+    for (const layerConfig of this.configuration.layers) {
       const layer = this.layerFactory.constructLayer(layerConfig)
       if ((layerConfig.type as SystemConfigurationLayerTypes) === 'elevation') {
         this.map.ground.layers.add(layer as ElevationLayer)
+        continue;
       }
 
       if (layer.type !== 'scene') {
-        this.uiBuilder.addLayerToLegend(layer);
         layer.when(() => {
           (layer as FeatureLayer).popupTemplate = createTablePopup(layer as FeatureLayer);
         });
@@ -146,6 +153,10 @@ export class ArcgisMapComponent implements OnInit {
     this.map.ground.opacity = 0.4;
   }
 
+  /**
+   * Zoom and highlight the selected feature
+   * @param {__esri.Graphic} graphic
+   */
   highlightAndZoomTo(graphic: __esri.Graphic) {
     // If the layer the graphic is in is hidden, show it
     if (!graphic.layer.visible) {
@@ -212,5 +223,9 @@ export class ArcgisMapComponent implements OnInit {
       view: this.view,
     });
     this.view.ui.add(editor, 'top-right');
+  }
+
+  onFeatureGridFilterChange($event: __esri.Graphic[], layer: FeatureLayer | SceneLayer) {
+    this.sketchWidget.onExternalFilterChange($event, layer)
   }
 }

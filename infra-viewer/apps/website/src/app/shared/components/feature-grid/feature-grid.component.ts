@@ -45,7 +45,7 @@ export class FeatureGridComponent {
   onGridReady(params: GridReadyEvent) {
     if (!this.input) return;
 
-    this.createColumnDefs(this.input.featureSet.fields);
+    this.createColumnDefs(this.input.layer.fields);
     this.createRowData(this.input.featureSet.features);
   }
 

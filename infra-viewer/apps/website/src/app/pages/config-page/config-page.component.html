@@ -150,9 +150,9 @@
   <div class="uk-flex uk-flex-between">
     <div uk-toggle="target: #details-pane" class="uk-width-1-1" (click)="selectLayer(layer)">
       <ng-container [ngSwitch]="type">
-        <span *ngSwitchCase="'scenelayers'" uk-icon="icon: world"></span>
-        <span *ngSwitchCase="'geoJSONLayers'" uk-icon="icon: code"></span>
-        <span *ngSwitchCase="'featurelayers'" uk-icon="icon: location"></span>
+        <span *ngSwitchCase="'scene'" uk-icon="icon: world"></span>
+        <span *ngSwitchCase="'geoJSON'" uk-icon="icon: code"></span>
+        <span *ngSwitchCase="'feature'" uk-icon="icon: location"></span>
         <span *ngSwitchDefault uk-icon="icon: question"></span>
       </ng-container>
       <span class="uk-margin-small-left"
