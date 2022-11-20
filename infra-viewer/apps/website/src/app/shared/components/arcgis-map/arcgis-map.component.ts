@@ -17,12 +17,9 @@ import {LayerFactoryService} from '../../../services/layer-factory/layer-factory
 import Point from '@arcgis/core/geometry/Point';
 import Mesh from '@arcgis/core/geometry/Mesh';
 import Graphic from '@arcgis/core/Graphic';
-import MeshSymbol3DConstructor = __esri.MeshSymbol3DConstructor;
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import SceneLayer from '@arcgis/core/layers/SceneLayer';
 import Editor from '@arcgis/core/widgets/Editor';
 import {SketchQueryWidgetComponent} from './widgets/SketchQueryWidget/sketch-query-widget.component';
-import SceneLayer from '@arcgis/core/layers/SceneLayer';
 
 @Component({
   selector: 'app-arcgis-map',
