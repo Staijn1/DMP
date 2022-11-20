@@ -1,0 +1,14 @@
+@startuml
+abstract class Strategy {
+  protected view: SceneView;
+
+  abstract execute(event: FeatureLayerEditsEvent, editedFeatures: QueriedFeatures, affectedLayers: CustomFeatureLayer): Promise<void>;
+}
+
+class 300RuleStrategy extends Strategy {
+}
+
+class SomeOtherStrategy extends Strategy {
+}
+
+@enduml

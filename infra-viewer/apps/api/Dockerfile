@@ -1,8 +1,5 @@
 FROM staijn/infraviewer:nx-base AS builder
 
-ARG NODE_ENV
-ARG BUILD_FLAG
-
-RUN npx nx build api ${BUILD_FLAG}
+RUN set NX_DAEMON=false && npx nx build api --verbose
 
 CMD ["node", "./dist/apps/api/main.js"]

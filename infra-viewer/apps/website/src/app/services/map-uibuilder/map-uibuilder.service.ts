@@ -6,6 +6,12 @@ import ElevationProfile from '@arcgis/core/widgets/ElevationProfile';
 import Daylight from '@arcgis/core/widgets/Daylight';
 import ShadowCast from '@arcgis/core/widgets/ShadowCast';
 import Legend from '@arcgis/core/widgets/Legend';
+import Editor from '@arcgis/core/widgets/Editor';
+import CoordinateConversion from '@arcgis/core/widgets/CoordinateConversion';
+import {environment} from '../../../environments/environment';
+import AreaMeasurement3D from '@arcgis/core/widgets/AreaMeasurement3D';
+import DirectLineMeasurement3D from '@arcgis/core/widgets/DirectLineMeasurement3D';
+import Fullscreen from '@arcgis/core/widgets/Fullscreen';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +21,21 @@ export class MapUIBuilderService implements OnDestroy {
   public legend!: __esri.Legend;
 
 
-  buildUI(view: __esri.SceneView): void {
+  async buildUI(view: __esri.SceneView): Promise<void> {
+    const layersToViewInLegend = view.map.layers.filter(layer => layer.type !== 'group' && layer.type !== 'elevation').map((layer) => {
+      return {
+        layer: layer,
+      }
+    });
+
     this.legend = new Legend({
-      view
+        view: view
+      }
+    );
+    this.legend.layerInfos.push(...layersToViewInLegend);
+    const legendExpand = new Expand({
+      view: view,
+      content: this.legend
     });
 
     this.searchWidget = new Search({
@@ -75,9 +93,67 @@ export class MapUIBuilderService implements OnDestroy {
       }
     });
 
-    view.ui.add(this.legend, 'bottom-right');
+    const editor = await this.createEditorWidget(view);
+    // const sketchExpand = this.createSketchWidget(view);
+
+    const areaMeasurement = new Expand({
+      view: view,
+      content: new AreaMeasurement3D({
+        view: view,
+      }),
+      group: 'top-right'
+    });
+
+    const directLineMeasurement = new Expand({
+      view: view,
+      content: new DirectLineMeasurement3D({
+        view: view,
+      }),
+      group: 'top-right'
+    });
+    const fullScreen = new Fullscreen({
+      view: view
+    });
+    // If in development mode, add the coordinate conversion widget
+    if (!environment.production) {
+      const coordinateConversion = new Expand({
+        view: view,
+        content: new CoordinateConversion({
+          view: view
+        }),
+        group: 'bottom-left'
+      });
+      view.ui.add(coordinateConversion, 'bottom-left');
+    }
+    view.ui.add([legendExpand, fullScreen], 'bottom-right');
     view.ui.add([elevationProfileExpand, layerlistExpand], 'top-left');
-    view.ui.add([this.searchWidget, daylightExpand, shadowWidget], 'top-right');
+    view.ui.add([this.searchWidget, daylightExpand, shadowWidget, editor, directLineMeasurement, areaMeasurement], 'top-right');
+  }
+
+  /**
+   * Create a widget to edit features.
+   * Disable editing for all layers, even if they are marked as editable, except for the layers that have an id that starts with 'editable'
+   * @param {__esri.SceneView} view
+   * @returns {__esri.Expand | __esri.Expand}
+   * @private
+   */
+  private async createEditorWidget(view: __esri.SceneView) {
+    const layerInfos = view.map.layers.map((layer) => {
+      const editable = layer.id.startsWith('editable');
+      return {
+        layer: layer,
+        addEnabled: editable,
+      }
+    });
+
+    return new Expand({
+      view: view,
+      group: 'editor',
+      content: new Editor({
+        view: view,
+        layerInfos: layerInfos as any,
+      })
+    });
   }
 
   /**
@@ -88,18 +164,7 @@ export class MapUIBuilderService implements OnDestroy {
     this.searchWidget.sources.add(source);
   }
 
-  /**
-   * Adds a layer to the legend
-   * @param {__esri.Layer} layer
-   */
-  addLayerToLegend(layer: __esri.Layer): void {
-    this.legend.layerInfos.push({
-      layer: layer,
-    });
-  }
-
   ngOnDestroy(): void {
     this.searchWidget.destroy();
-    this.legend.destroy();
   }
 }
