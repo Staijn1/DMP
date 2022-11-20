@@ -17,7 +17,6 @@ services:
       dockerfile: ./apps/api/Dockerfile
       args:
         NODE_ENV: 'development'
-        BUILD_FLAG: ''
     image: staijn/infraviewer:api
     ports:
       - 4939:3333
@@ -35,9 +34,6 @@ services:
       cache_from:
         - nginx:1.19.2
       dockerfile: ./apps/website/Dockerfile
-      args:
-        NODE_ENV: 'development'
-        BUILD_FLAG: ''
     image: staijn/infraviewer:website
     ports:
       - 4900:80
