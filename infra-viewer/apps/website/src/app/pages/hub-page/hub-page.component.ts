@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {HubService} from '../../services/hub/hub.service';
 import {environment} from '../../../environments/environment';
 import {AuthenticationService} from '../../services/authentication/authentication.service';
-import {HubItem} from '@infra-viewer/interfaces';
+import {HubItem, SystemConfiguration} from '@infra-viewer/interfaces';
 import {ConfigurationService} from '../../services/configuration/configuration.service';
 
 @Component({
@@ -46,14 +46,13 @@ export class HubPageComponent implements OnInit {
   removeLayerFromConfiguration(hubItem: HubItem) {
     this.configurationService.removeLayer(hubItem).then();
   }
+
   /**
    * If the layer with the given url is already in the configuration, return true.
    * @param {HubItem} hubItem
    * @returns {Promise<boolean>}
    */
   layerAlreadyInConfiguration(hubItem: HubItem) {
-    return this.configurationService.getConfiguration().then(configuration => {
-      return configuration.layers.some(l => l.url === hubItem.url);
-    });
+    return ConfigurationService.configuration?.layers.some(l => l.url.includes(hubItem.url) || hubItem.url.includes(l.url));
   }
 }

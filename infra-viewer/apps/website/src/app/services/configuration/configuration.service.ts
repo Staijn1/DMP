@@ -7,12 +7,14 @@ import {HubItem, SystemConfiguration} from '@infra-viewer/interfaces';
   providedIn: 'root',
 })
 export class ConfigurationService extends HTTPService implements OnDestroy {
-  private static configuration: SystemConfiguration | null = null;
+  public static configuration: SystemConfiguration | null = null;
 
   async getConfiguration(force?: boolean): Promise<SystemConfiguration> {
     if (ConfigurationService.configuration && !force) return ConfigurationService.configuration;
 
-    return this.request(`${environment.api}/System/Configuration`, {});
+    const config = await this.request(`${environment.api}/System/Configuration`, {});
+    ConfigurationService.configuration = config;
+    return config;
   }
 
   async setConfiguration(configuration: SystemConfiguration | string): Promise<void> {

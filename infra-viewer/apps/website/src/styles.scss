@@ -4,6 +4,7 @@ $global-primary-background: #02357c;
   align-items: center;
 }
 
+
 // 1. Your custom variables and variable overwrites.
 @import "theme/text.scss";
 @import "theme/forms.scss";
@@ -20,3 +21,15 @@ $global-primary-background: #02357c;
 @import "uikit/src/scss/uikit.scss";
 @import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-alpine.css';
+
+.uk-background-danger {
+  background: $global-danger-background;
+}
+
+.uk-background-warning {
+  background: $global-warning-background;
+}
+
+.uk-background-success {
+  background: $global-success-background;
+}

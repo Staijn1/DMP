@@ -10,7 +10,7 @@
       <div class="uk-card-body uk-flex uk-flex-column uk-flex-between uk-align-left">
         <div>
           <h3 class="uk-card-title">{{transformTitle(hubItem)}}</h3>
-          <a class="uk-link" [href]="createUrlToPortalItem(hubItem)">Go to portal</a>
+          <a class="uk-link" target="_blank" [href]="createUrlToPortalItem(hubItem)">Go to portal</a>
         </div>
         <!--        Toolbar-->
         <div class="uk-flex uk-flex-between">
@@ -19,10 +19,10 @@
           </div>
           <div>
             <ng-container *ngIf="layerAlreadyInConfiguration(hubItem); else notInConfig">
-              <span class="uk-badge uk-badge-danger" (click)="removeLayerFromConfiguration(hubItem)">Remove</span>
+              <span class="uk-badge uk-background-danger" (click)="removeLayerFromConfiguration(hubItem)">Remove</span>
             </ng-container>
             <ng-template #notInConfig>
-              <span class="uk-badge uk-badge-success" (click)="addLayerToConfiguration(hubItem)">Add</span>
+              <span class="uk-badge uk-background-success" (click)="addLayerToConfiguration(hubItem)">Add</span>
             </ng-template>
           </div>
         </div>
