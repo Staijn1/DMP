@@ -1,31 +1,28 @@
 <div class="uk-container uk-container-xlarge" uk-grid *ngIf="hubItems">
   <!--  Create a column with a search bar and options to filter on-->
   <div class="uk-width-1-4 uk-height-1-1 uk-background-muted">
-    <div class="uk-card uk-card-default uk-card-body uk-position-z-index"
+    <form #form="ngForm" (ngSubmit)="filterItems()" class="uk-card uk-card-default uk-card-body uk-position-z-index"
          uk-sticky="animation: uk-animation-slide-top">
       <h3 class="uk-card-title">Search</h3>
       <div class="uk-margin">
         <div class="uk-inline">
           <span class="uk-form-icon" uk-icon="icon: search"></span>
-          <input class="uk-input" type="text" placeholder="Search" [(ngModel)]="filter.search">
-        </div>
-      </div>
-      <div class="uk-margin">
-        <div class="uk-inline">
-          <span class="uk-form-icon" uk-icon="icon: tag"></span>
-          <input class="uk-input" type="text" placeholder="Tags" [(ngModel)]="filter.tags">
+          <input name="search" class="uk-input" type="text" placeholder="Search" [(ngModel)]="filter.search">
         </div>
       </div>
       <div class="uk-margin">
         <div class="uk-inline">
           <span class="uk-form-icon" uk-icon="icon: user"></span>
-          <input class="uk-input" type="text" placeholder="Author" [(ngModel)]="filter.author">
+          <input name="owner" class="uk-input" type="text" placeholder="Owner" [(ngModel)]="filter.owner">
         </div>
       </div>
-    </div>
+      <div class="uk-margin uk-flex uk-flex-right">
+        <button name="filterbutton" type="submit" class="uk-button uk-button-primary" (click)="filterItems()">Filter</button>
+      </div>
+    </form>
   </div>
   <!--Create rows with four columns iterating over the hubitems, showing it's information-->
-  <div class="uk-width-3-4 uk-grid-match uk-grid-small" uk-grid>
+  <div class="uk-width-3-4 uk-grid-match uk-grid-small" appScrollTracker (scrollingFinished)="getItems()" uk-grid>
     <div class="uk-width-1-4" *ngFor="let hubItem of hubItems">
       <div class="uk-card uk-card-default uk-card-hover uk-flex uk-flex-column uk-flex-between">
         <div class="uk-card-media-top">
@@ -52,9 +49,8 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <div class="uk-flex uk-flex-center">
-    <button class="uk-button uk-button-default" (click)="getItems()">Load more</button>
+    <div class="uk-flex uk-flex-center uk-width-1-1" *ngIf="hasMoreItems">
+      <button type="button" class="uk-button uk-button-default" (click)="getItems()">Load more</button>
+    </div>
   </div>
 </div>

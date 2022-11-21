@@ -3,6 +3,7 @@ import {CommonModule} from '@angular/common';
 import {RouterModule} from '@angular/router';
 import {HubPageComponent} from './hub-page.component';
 import {FormsModule} from '@angular/forms';
+import {SharedModule} from '../../shared/shared.module';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import {FormsModule} from '@angular/forms';
         component: HubPageComponent,
       }]),
     CommonModule,
-    FormsModule
+    FormsModule,
+    SharedModule
   ]
 })
 export class HubPageModule {

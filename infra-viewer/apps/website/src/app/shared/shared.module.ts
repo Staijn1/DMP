@@ -11,6 +11,7 @@ import {
 } from './components/arcgis-map/widgets/SketchQueryWidget/sketch-query-widget.component';
 import {FormsModule} from '@angular/forms';
 import {NgxSliderModule} from '@angular-slider/ngx-slider';
+import { ScrollTrackerDirective } from './directives/scrolling/scroll-tracker.directive';
 
 @NgModule({
   declarations: [
@@ -18,8 +19,9 @@ import {NgxSliderModule} from '@angular-slider/ngx-slider';
     ArcgisMapComponent,
     FeatureGridComponent,
     ZoomToFeatureRendererComponent,
+    ScrollTrackerDirective,
   ],
-  exports: [ArcgisMapComponent, FeatureGridComponent],
+  exports: [ArcgisMapComponent, FeatureGridComponent, ScrollTrackerDirective],
   imports: [AgGridModule, CommonModule, FormsModule, NgxSliderModule],
   providers: [],
 })

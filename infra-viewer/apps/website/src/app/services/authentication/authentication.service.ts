@@ -59,5 +59,6 @@ export class AuthenticationService {
       token: token,
       expires: isNaN(Number(expiration)) ? new Date().getTime() + (3600 * 1000) : Number(expiration)
     });
+    esriId.checkSignInStatus(this.portalSharingUrl).then().catch(e => this.login());
   }
 }

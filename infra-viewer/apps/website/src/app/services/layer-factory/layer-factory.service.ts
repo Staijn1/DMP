@@ -9,6 +9,8 @@ import SceneLayerProperties = __esri.SceneLayerProperties;
 import ElevationLayerProperties = __esri.ElevationLayerProperties;
 import GeoJSONLayerProperties = __esri.GeoJSONLayerProperties;
 import FeatureLayerProperties = __esri.FeatureLayerProperties;
+import MapImageLayerProperties = __esri.MapImageLayerProperties;
+import MapImageLayer from '@arcgis/core/layers/MapImageLayer';
 
 @Injectable({
   providedIn: 'root'
@@ -18,15 +20,16 @@ export class LayerFactoryService {
   constructLayer(layerConfig: LayerConfig): Layer {
     // Create a copy of the layer config
     const layerConfigCopy = {...layerConfig};
-
     const layerType = layerConfig.type as SystemConfigurationLayerTypes;
     // Remove layer type from config
     delete (layerConfigCopy as any).type;
+
     const constructList: LayerConstructor = {
       'scene': () => new SceneLayer(layerConfigCopy as SceneLayerProperties),
       'elevation': () => new ElevationLayer(layerConfigCopy as ElevationLayerProperties),
       'geoJSON': () => new GeoJSONLayer(layerConfigCopy as GeoJSONLayerProperties),
-      'feature': () => new FeatureLayer(layerConfigCopy as FeatureLayerProperties)
+      'feature': () => new FeatureLayer(layerConfigCopy as FeatureLayerProperties),
+      'map-image': () => new MapImageLayer(layerConfigCopy as MapImageLayerProperties)
     }
     const constructedLayer = constructList[layerType as SystemConfigurationLayerTypes];
     if (!constructedLayer) console.error('Unsupported layer type: ' + layerType)

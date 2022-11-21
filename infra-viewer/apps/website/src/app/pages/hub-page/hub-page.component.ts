@@ -2,8 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {HubService} from '../../services/hub/hub.service';
 import {environment} from '../../../environments/environment';
 import {AuthenticationService} from '../../services/authentication/authentication.service';
-import {HubItem, SystemConfiguration} from '@infra-viewer/interfaces';
+import {HubItem} from '@infra-viewer/interfaces';
 import {ConfigurationService} from '../../services/configuration/configuration.service';
+import PortalQueryParams from '@arcgis/core/portal/PortalQueryParams';
 
 @Component({
   selector: 'app-hub-page',
@@ -14,9 +15,12 @@ export class HubPageComponent implements OnInit {
   hubItems: HubItem[] = [];
   filter = {
     search: undefined,
-    tags: undefined,
-    author: undefined,
+    owner: 'GeoPortaal',
+    start: 1
   };
+
+  query!: PortalQueryParams;
+  hasMoreItems = false;
 
   constructor(private readonly hubService: HubService, private authService: AuthenticationService, private readonly configurationService: ConfigurationService) {
   }
@@ -34,7 +38,10 @@ export class HubPageComponent implements OnInit {
   }
 
   getItems() {
-    this.hubService.queryItems({start: this.hubItems.length + 1}).then(r => {
+    this.query = this.hubService.buildQuery(this.filter);
+    this.hubService.queryItems(this.query).then(r => {
+      this.hasMoreItems = r.nextQueryParams.start > 0;
+      this.filter.start = r.nextQueryParams.start;
       this.hubItems = this.hubItems.concat(r.results);
     });
   }
@@ -47,7 +54,6 @@ export class HubPageComponent implements OnInit {
     this.configurationService.addLayer(hubItem).then();
   }
 
-
   removeLayerFromConfiguration(hubItem: HubItem) {
     this.configurationService.removeLayer(hubItem).then();
   }
@@ -58,6 +64,11 @@ export class HubPageComponent implements OnInit {
    * @returns {Promise<boolean>}
    */
   layerAlreadyInConfiguration(hubItem: HubItem) {
-    return ConfigurationService.configuration?.layers.some(l => l.url.includes(hubItem.url) || hubItem.url.includes(l.url));
+    return ConfigurationService.configuration?.layers.some(l => l.url?.includes(hubItem.url) || hubItem.url?.includes(l.url));
+  }
+
+  filterItems() {
+    this.hubItems = [];
+    this.getItems();
   }
 }
