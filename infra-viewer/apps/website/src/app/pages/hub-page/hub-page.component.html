@@ -1,12 +1,36 @@
 <div class="uk-container" *ngIf="hubItems">
   <!--Create rows with four columns iterating over the hubitems, showing it's information-->
-  <div class="uk-flex">
-    <div class="uk-width-1-4" *ngFor="let hubItem of hubItems">
-      <div class="uk-card uk-card-default uk-card-body">
-        <h3 class="uk-card-title">{{hubItem.title}}</h3>
-        <p>{{hubItem.description}}</p>
-        <a class="uk-button uk-button-text" [href]="hubItem.link">Read more</a>
+  <div class="uk-grid-match" uk-grid>
+    <div class="uk-width-1-3 uk-card uk-card-default" *ngFor="let hubItem of hubItems">
+      <div class="uk-card-media-top">
+        <a target="_blank" [href]="createUrlToPortalItem(hubItem)">
+          <img [src]="createImageUrl(hubItem)" alt="Thumbnail" class="uk-width-1-1">
+        </a>
+      </div>
+      <div class="uk-card-body uk-flex uk-flex-column uk-flex-between uk-align-left">
+        <div>
+          <h3 class="uk-card-title">{{transformTitle(hubItem)}}</h3>
+          <a class="uk-link" [href]="createUrlToPortalItem(hubItem)">Go to portal</a>
+        </div>
+        <!--        Toolbar-->
+        <div class="uk-flex uk-flex-between">
+          <div>
+            <span class="uk-badge">{{hubItem.type}}</span>
+          </div>
+          <div>
+            <ng-container *ngIf="layerAlreadyInConfiguration(hubItem); else notInConfig">
+              <span class="uk-badge uk-badge-danger" (click)="removeLayerFromConfiguration(hubItem)">Remove</span>
+            </ng-container>
+            <ng-template #notInConfig>
+              <span class="uk-badge uk-badge-success" (click)="addLayerToConfiguration(hubItem)">Add</span>
+            </ng-template>
+          </div>
+        </div>
       </div>
     </div>
+  </div>
+
+  <div class="uk-flex uk-flex-center">
+    <button class="uk-button uk-button-default" (click)="getItems()">Load more</button>
   </div>
 </div>
