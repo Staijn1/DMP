@@ -12,6 +12,11 @@ import {ConfigurationService} from '../../services/configuration/configuration.s
 })
 export class HubPageComponent implements OnInit {
   hubItems: HubItem[] = [];
+  filter = {
+    search: undefined,
+    tags: undefined,
+    author: undefined,
+  };
 
   constructor(private readonly hubService: HubService, private authService: AuthenticationService, private readonly configurationService: ConfigurationService) {
   }

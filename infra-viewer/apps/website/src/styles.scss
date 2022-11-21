@@ -33,3 +33,7 @@ $global-primary-background: #02357c;
 .uk-background-success {
   background: $global-success-background;
 }
+
+.uk-card-default{
+  box-shadow: $global-small-box-shadow;
+}
