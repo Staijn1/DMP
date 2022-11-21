@@ -71,4 +71,9 @@ export class HubPageComponent implements OnInit {
     this.hubItems = [];
     this.getItems();
   }
+
+  onThumbnailImageError($event: ErrorEvent) {
+    const target = $event.target as HTMLImageElement;
+    target.src = 'assets/empty_world.png';
+  }
 }
