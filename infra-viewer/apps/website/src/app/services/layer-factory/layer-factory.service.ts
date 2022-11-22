@@ -43,7 +43,7 @@ export class LayerFactoryService {
     const parent = new GroupLayer({title: layerConfig.title});
     const serviceInfo = await this.hubService.getServiceInfo(layerConfig.url as string);
     const prefix = layerConfig.title + ' - ';
-    debugger;
+
     for (const sublayer of serviceInfo.layers) {
       const prefixedId = prefix + sublayer.id.toString();
       if (sublayer.type === 'Group Layer') {
