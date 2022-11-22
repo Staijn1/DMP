@@ -4,7 +4,6 @@ import SceneView from '@arcgis/core/views/SceneView';
 import {ConfigurationService} from '../../../services/configuration/configuration.service';
 import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import {createTablePopup} from '../../../utils/utils';
 import {MapUIBuilderService} from '../../../services/map-uibuilder/map-uibuilder.service';
 import {MapEventHandlerService} from '../../../services/map-event-handler/map-event-handler.service';
 import Basemap from '@arcgis/core/Basemap';
