@@ -43,6 +43,7 @@ export class LayerFactoryService {
     const parent = new GroupLayer({title: layerConfig.title});
     const serviceInfo = await this.hubService.getServiceInfo(layerConfig.url as string);
     const prefix = layerConfig.title + ' - ';
+    debugger;
     for (const sublayer of serviceInfo.layers) {
       const prefixedId = prefix + sublayer.id.toString();
       if (sublayer.type === 'Group Layer') {
@@ -53,11 +54,8 @@ export class LayerFactoryService {
 
       // Each sublayer has a parent layer id. Find the parent layer and add the sublayer to it
       const sublayerParent = parent.layers.find(layer => layer.id === prefix + sublayer.parentLayerId.toString()) as GroupLayer;
-      if (!sublayerParent) {
-        console.error('Could not find parent layer for sublayer: ' + sublayer.name);
-        continue;
-      }
-      sublayerParent.add(this.constructLayer({
+      const parentLayer = sublayerParent || parent;
+      parentLayer.add(this.constructLayer({
         title: sublayer.name,
         url: layerConfig.url + '/' + sublayer.id,
         type: 'feature',
