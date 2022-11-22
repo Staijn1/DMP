@@ -204,23 +204,24 @@
                 "axis": "width",
                 "field": "BREEDTE",
                 "valueUnit": "millimeters"
+              },
+              {
+                "type": "size",
+                "axis": "height",
+                "field": "PUTDEKSELHOOGTE",
+                "valueUnit": "millimeters"
+              },
+              {
+                "type": "size",
+                "axis": "depth",
+                "field": "LENGTE",
+                "valueUnit": "millimeters"
               }
             ],
             "symbol": {
-              "type": "point-3d",
-              "symbolLayers": [
-                {
-                  "type": "object",
-                  "resource": {
-                    "primitive": "cylinder"
-                  },
-                  "height": 3,
-                  "depth": 5,
-                  "material": {
-                    "color": "red"
-                  }
-                }
-              ]
+              "type": "web-style",
+              "name": "Sewer_Grate",
+              "styleName": "EsriRealisticStreetSceneStyle"
             }
           }
         },
