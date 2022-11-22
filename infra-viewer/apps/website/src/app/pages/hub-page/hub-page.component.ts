@@ -40,6 +40,7 @@ export class HubPageComponent implements OnInit {
   getItems() {
     this.query = this.hubService.buildQuery(this.filter);
     this.hubService.queryItems(this.query).then(r => {
+      // When there are no more results the start property is set to -1
       this.hasMoreItems = r.nextQueryParams.start > 0;
       this.filter.start = r.nextQueryParams.start;
       this.hubItems = this.hubItems.concat(r.results);

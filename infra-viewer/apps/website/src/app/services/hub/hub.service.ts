@@ -4,11 +4,17 @@ import PortalQueryResult from '@arcgis/core/portal/PortalQueryResult';
 import {environment} from '../../../environments/environment';
 import PortalQueryParams from '@arcgis/core/portal/PortalQueryParams';
 import {HTTPService} from '../HTTP/http.service';
+import {AuthenticationService} from '../authentication/authentication.service';
+import {ServiceInfo} from '@infra-viewer/interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HubService extends HTTPService {
+  constructor(private readonly authService: AuthenticationService) {
+    super();
+  }
+
   queryItems(options: PortalQueryParams): Promise<PortalQueryResult> {
     const portal = new Portal({url: environment.portalURL});
     portal.authMode = 'immediate';
@@ -31,5 +37,18 @@ export class HubService extends HTTPService {
     });
 
     return query
+  }
+
+  /**
+   * Get information of the service, like drawingInfo, sublayers and capabilities
+   * @param {string} serviceUrl
+   * @returns {Promise<any>}
+   */
+  async getServiceInfo(serviceUrl: string): Promise<ServiceInfo> {
+    let url = `${serviceUrl}?f=json`;
+    if (serviceUrl.includes('geo.arnhem.nl')) {
+      url += '&token=' + this.authService.token;
+    }
+    return this.request(url, {method: 'GET'});
   }
 }

@@ -1,5 +1,8 @@
 import FL from '@arcgis/core/layers/FeatureLayer';
 import Query from '@arcgis/core/rest/support/Query';
+import SpatialReference from '@arcgis/core/geometry/SpatialReference';
+import Layer from '@arcgis/core/layers/Layer';
+import Extent from '@arcgis/core/geometry/Extent';
 
 export interface CustomFeatureLayer extends FL {
   affects?: { id: string, strategy: string }[];
@@ -32,3 +35,69 @@ export interface HubItem {
   toJSON(): any;
 }
 
+
+export interface DocumentInfo {
+  Title: string;
+  Author: string;
+  Comments: string;
+  Subject: string;
+  Category: string;
+  AntialiasingMode: string;
+  TextAntialiasingMode: string;
+  Version: string;
+  Keywords: string;
+}
+
+export interface ArchivingInfo {
+  supportsHistoricMoment: boolean;
+}
+
+export interface ServiceInfoLayer {
+  id: string;
+  name: string;
+  parentLayerId: string;
+  defaultVisibility: boolean;
+  subLayerIds: number[];
+  minScale: number;
+  maxScale: number;
+  type: string;
+  supportsDynamicLegends: boolean;
+  geometryType: string;
+}
+
+export interface ServiceInfo {
+  currentVersion: number;
+  cimVersion: string;
+  serviceDescription: string;
+  mapName: string;
+  description: string;
+  copyrightText: string;
+  supportsDynamicLayers: boolean;
+  layers: ServiceInfoLayer[];
+  tables: any[];
+  spatialReference: SpatialReference;
+  singleFusedMapCache: boolean;
+  initialExtent: Extent;
+  fullExtent: Extent;
+  datesInUnknownTimezone: boolean;
+  minScale: number;
+  maxScale: number;
+  units: string;
+  supportedImageFormatTypes: string;
+  documentInfo: DocumentInfo;
+  capabilities: string;
+  supportedQueryFormats: string;
+  exportTilesAllowed: boolean;
+  referenceScale: number;
+  supportsDatumTransformation: boolean;
+  archivingInfo: ArchivingInfo;
+  supportsClipping: boolean;
+  supportsSpatialFilter: boolean;
+  supportsTimeRelation: boolean;
+  supportsQueryDataElements: boolean;
+  maxRecordCount: number;
+  maxImageHeight: number;
+  maxImageWidth: number;
+  supportedExtensions: string;
+  serviceItemId: string;
+}
