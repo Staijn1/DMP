@@ -3,6 +3,7 @@ import Query from '@arcgis/core/rest/support/Query';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
 import Layer from '@arcgis/core/layers/Layer';
 import Extent from '@arcgis/core/geometry/Extent';
+import Field from '@arcgis/core/layers/support/Field';
 
 export interface CustomFeatureLayer extends FL {
   affects?: { id: string, strategy: string }[];
@@ -68,6 +69,7 @@ export interface ServiceInfoLayer {
 export interface ServiceInfo {
   currentVersion: number;
   cimVersion: string;
+  fields: Field[];
   serviceDescription: string;
   mapName: string;
   description: string;

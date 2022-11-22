@@ -131,12 +131,6 @@ export class ArcgisMapComponent implements OnInit {
         continue;
       }
 
-      if (layer.type !== 'scene') {
-        layer.when(() => {
-          (layer as FeatureLayer).popupTemplate = createTablePopup(layer as FeatureLayer);
-        });
-      }
-
       this.map.layers.add(layer)
     }
 
