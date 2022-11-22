@@ -1,18 +1,20 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HTTPService} from '../HTTP/http.service';
 import {environment} from '../../../environments/environment';
-import {SystemConfiguration} from '@infra-viewer/interfaces';
+import {HubItem, SystemConfiguration, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ConfigurationService extends HTTPService implements OnDestroy {
-  private static configuration: SystemConfiguration | null = null;
+  public static configuration: SystemConfiguration | null = null;
 
   async getConfiguration(force?: boolean): Promise<SystemConfiguration> {
     if (ConfigurationService.configuration && !force) return ConfigurationService.configuration;
 
-    return this.request(`${environment.api}/System/Configuration`, {});
+    const config = await this.request(`${environment.api}/System/Configuration`, {});
+    ConfigurationService.configuration = config;
+    return config;
   }
 
   async setConfiguration(configuration: SystemConfiguration | string): Promise<void> {
@@ -27,5 +29,37 @@ export class ConfigurationService extends HTTPService implements OnDestroy {
 
   ngOnDestroy(): void {
     ConfigurationService.configuration = null;
+  }
+
+  async addLayer(hubItem: HubItem): Promise<void> {
+    const configuration = await this.getConfiguration();
+
+    const layer: any = {
+      url: hubItem.url,
+      title: hubItem.title.replace(/_/g, ' '),
+      type: this.getTypeForHubItem(hubItem),
+    }
+    configuration.layers.push(layer);
+
+    await this.setConfiguration(configuration);
+  }
+
+  private getTypeForHubItem(hubItem: HubItem): SystemConfigurationLayerTypes {
+    switch (hubItem.type) {
+      case 'Scene Service':
+        return 'scene';
+      case 'Map Service':
+        return 'map-image'
+      default:
+        return 'feature';
+    }
+  }
+
+  async removeLayer(hubItem: HubItem) {
+    const configuration = await this.getConfiguration();
+
+    configuration.layers = configuration.layers.filter(l => l.url !== hubItem.url);
+
+    await this.setConfiguration(configuration);
   }
 }

@@ -10,8 +10,9 @@ import {QueriedFeatures} from '@infra-viewer/interfaces';
  * @param layer
  */
 export const createTablePopup = (layer: GeoJSONLayer | FeatureLayer): PopupTemplate => {
-  if (!layer.fields) return new PopupTemplate({content: 'No fields to show'});
-
+  if (!layer.fields) {
+    return new PopupTemplate({content: 'No fields to show'});
+  }
   const table = document.createElement('table');
   table.classList.add('esri-widget__table');
 
@@ -49,7 +50,6 @@ export const createTablePopup = (layer: GeoJSONLayer | FeatureLayer): PopupTempl
  * @private
  */
 export const createFeatureLayerFromFeatureLayer = (result: QueriedFeatures) => {
-  console.log(result.layer.title, 'Queried features in layer: ' + result.featureSet.features.length);
   return new FeatureLayer(
     {
       popupTemplate: result.layer.popupTemplate,

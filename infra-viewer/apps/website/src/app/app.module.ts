@@ -1,8 +1,8 @@
-import {NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 
-import {AppComponent} from './main/app.component';
-import {RouterModule} from '@angular/router';
+import { AppComponent } from './main/app.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [AppComponent],
@@ -38,12 +38,18 @@ import {RouterModule} from '@angular/router';
               (m) => m.LoginPageModule
             ),
         },
+        {
+          path: 'hub',
+          loadChildren: () =>
+            import('./pages/hub-page/hub-page.module').then(
+              (m) => m.HubPageModule
+            ),
+        }
       ],
-      {initialNavigation: 'enabledBlocking'}
+      { initialNavigation: 'enabledBlocking' }
     ),
   ],
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule {
-}
+export class AppModule {}
