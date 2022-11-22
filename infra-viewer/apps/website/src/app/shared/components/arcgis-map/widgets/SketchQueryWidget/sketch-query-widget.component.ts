@@ -15,6 +15,8 @@ import {QueriedFeatures, SpatialRelationship} from '@infra-viewer/interfaces';
 import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
 import Query from '@arcgis/core/rest/support/Query';
 import {Options} from '@angular-slider/ngx-slider';
+import GroupLayer from '@arcgis/core/layers/GroupLayer';
+import Layer from '@arcgis/core/layers/Layer';
 
 @Component({
   selector: 'app-sketch-query-widget',
@@ -54,8 +56,15 @@ export class SketchQueryWidgetComponent {
 
     // create the layerView's to add the filter
     (this.view.map as WebScene).load().then(() => {
-      // loop through the map scene and feature layers and add them to the layerViews array
-      this.view.map.layers.filter(layer => ['scene', 'feature'].includes(layer.type)).forEach((layer) => {
+      let layersToAdd = this.view.map.layers.filter(layer => ['scene', 'feature'].includes(layer.type))
+
+      // Loop through any group layers and add their sublayers to the layerViews array
+      this.view.map.layers.filter(layer => layer.type === 'group').forEach((groupLayer) => {
+        // Get all feature or scene layers that are in this group layer, even the layers that are nested more than one level deep
+        layersToAdd = layersToAdd.concat((groupLayer as GroupLayer).allLayers.filter(layer => ['scene', 'feature'].includes(layer.type)))
+      });
+      // loop through all layers we want to query and add them to the layerViews array
+      layersToAdd.forEach((layer) => {
         this.view
           .whenLayerView(layer)
           .then((layerView: LayerView) => {

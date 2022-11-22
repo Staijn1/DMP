@@ -4,7 +4,6 @@ import SceneView from '@arcgis/core/views/SceneView';
 import {ConfigurationService} from '../../../services/configuration/configuration.service';
 import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import {createTablePopup} from '../../../utils/utils';
 import {MapUIBuilderService} from '../../../services/map-uibuilder/map-uibuilder.service';
 import {MapEventHandlerService} from '../../../services/map-event-handler/map-event-handler.service';
 import Basemap from '@arcgis/core/Basemap';
@@ -50,7 +49,7 @@ export class ArcgisMapComponent implements OnInit {
     this.configuration = await this.configService.getConfiguration();
     this.createMap();
     this.createView();
-    this.applyConfig();
+    await this.applyConfig();
     await this.uiBuilder.buildUI(this.view);
     this.eventHandler.registerEvents(this.view);
     this.sketchWidget.initialize(this.view)
@@ -123,18 +122,12 @@ export class ArcgisMapComponent implements OnInit {
    * @returns {Promise<void>}
    * @private
    */
-  private applyConfig(): void {
+  private async applyConfig(): Promise<void> {
     for (const layerConfig of this.configuration.layers) {
-      const layer = this.layerFactory.constructLayer(layerConfig)
+      const layer = await this.layerFactory.constructLayer(layerConfig)
       if ((layerConfig.type as SystemConfigurationLayerTypes) === 'elevation') {
         this.map.ground.layers.add(layer as ElevationLayer)
         continue;
-      }
-
-      if (layer.type !== 'scene') {
-        layer.when(() => {
-          (layer as FeatureLayer).popupTemplate = createTablePopup(layer as FeatureLayer);
-        });
       }
 
       this.map.layers.add(layer)

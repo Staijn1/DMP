@@ -22,7 +22,7 @@ export class MapUIBuilderService implements OnDestroy {
 
 
   async buildUI(view: __esri.SceneView): Promise<void> {
-    const layersToViewInLegend = view.map.layers.filter(layer => layer.type !== 'group' && layer.type !== 'elevation').map((layer) => {
+    const layersToViewInLegend = view.map.layers.filter(layer => layer.type !== 'elevation').map((layer) => {
       return {
         layer: layer,
       }
@@ -35,6 +35,8 @@ export class MapUIBuilderService implements OnDestroy {
     this.legend.layerInfos.push(...layersToViewInLegend);
     const legendExpand = new Expand({
       view: view,
+      expandTooltip: 'Show legend',
+      collapseTooltip: 'Hide legend',
       content: this.legend
     });
 
@@ -49,6 +51,8 @@ export class MapUIBuilderService implements OnDestroy {
 
     const layerlistExpand = new Expand({
       view: view,
+      expandTooltip: 'Show layer list',
+      collapseTooltip: 'Hide layer list',
       content: layerList,
     });
 
@@ -72,18 +76,28 @@ export class MapUIBuilderService implements OnDestroy {
 
     const elevationProfileExpand = new Expand({
       view: view,
+      expandTooltip: 'Show elevation profile',
+      collapseTooltip: 'Hide elevation profile',
       content: elevationProfile,
     });
 
     const daylightExpand = new Expand({
       view: view,
+      expandTooltip: 'Show time of day',
+      collapseTooltip: 'Hide time of day',
       content: new Daylight({
         view: view
       }),
       group: 'top-right'
     });
 
-    const shadowWidget = new Expand({view: view, content: new ShadowCast({view: view}), group: 'top-right'});
+    const shadowWidget = new Expand({
+      view: view,
+      content: new ShadowCast({view: view}),
+      group: 'top-right',
+      expandTooltip: 'Show shadow cast',
+      collapseTooltip: 'Hide shadow cast',
+    });
     (shadowWidget.content as ShadowCast).viewModel.stop();
     shadowWidget.watch('expanded', (expanded) => {
       if (expanded) {
@@ -98,6 +112,8 @@ export class MapUIBuilderService implements OnDestroy {
 
     const areaMeasurement = new Expand({
       view: view,
+      expandTooltip: 'Show area measurement',
+      collapseTooltip: 'Hide area measurement',
       content: new AreaMeasurement3D({
         view: view,
       }),
@@ -106,6 +122,8 @@ export class MapUIBuilderService implements OnDestroy {
 
     const directLineMeasurement = new Expand({
       view: view,
+      expandTooltip: 'Show direct line measurement',
+      collapseTooltip: 'Hide direct line measurement',
       content: new DirectLineMeasurement3D({
         view: view,
       }),
@@ -149,19 +167,13 @@ export class MapUIBuilderService implements OnDestroy {
     return new Expand({
       view: view,
       group: 'editor',
+      expandTooltip: 'Show editor',
+      collapseTooltip: 'Hide editor',
       content: new Editor({
         view: view,
         layerInfos: layerInfos as any,
       })
     });
-  }
-
-  /**
-   * Add the ability to search for features in a layer
-   * @param {__esri.SearchSource} source
-   */
-  addSearch(source: __esri.SearchSource): void {
-    this.searchWidget.sources.add(source);
   }
 
   ngOnDestroy(): void {

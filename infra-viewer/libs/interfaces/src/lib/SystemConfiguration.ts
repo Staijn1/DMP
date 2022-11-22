@@ -22,6 +22,7 @@ export type SystemConfigurationLayerTypes =
   | 'feature'
   | 'geoJSON'
   | 'elevation'
+  | 'map-image'
 
 export type LayerConstructor = {
   [key in SystemConfigurationLayerTypes]: () => Layer

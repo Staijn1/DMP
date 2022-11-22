@@ -57,682 +57,6 @@
       "visible": true
     },
     {
-      "type": "scene",
-      "title": "3D Windturbines",
-      "id": "windTurbines",
-      "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/3D_Windturbines/SceneServer",
-      "visible": true
-    },
-    {
-      "type": "feature",
-      "id": "ondergrondse_tanks",
-      "title": "Ondergrondse tanks",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_Bodem/MapServer/4",
-      "minScale": 3000,
-      "visible": false,
-      "elevationInfo": {
-        "mode": "relative-to-scene",
-        "offset": 3
-      }
-    },
-    {
-      "type": "feature",
-      "id": "VRI_kasten",
-      "title": "VRI kasten",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/72",
-      "minScale": 3000,
-      "visible": false
-    },
-    {
-      "type": "feature",
-      "id": "VRI_masten",
-      "title": "VRI masten",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/71",
-      "minScale": 3000,
-      "visible": false
-    },
-    {
-      "type": "feature",
-      "id": "kabels_laagspanning",
-      "title": "Kabels laagspanning",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/Buitendienst/Buitendienst/MapServer/70",
-      "minScale": 3000,
-      "renderer": {
-        "type": "simple",
-        "symbol": {
-          "type": "line-3d",
-          "symbolLayers": [
-            {
-              "type": "path",
-              "profile": "quad",
-              "material": {
-                "color": "#0818c4"
-              },
-              "width": 0.2,
-              "height": 0.1,
-              "anchor": "bottom",
-              "profileRotation": "heading"
-            }
-          ]
-        }
-      },
-      "elevationInfo": {
-        "mode": "relative-to-ground",
-        "offset": -3
-      },
-      "visible": false
-    },
-    {
-      "type": "feature",
-      "id": "mantelbuis",
-      "title": "Mantelbuis",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/31",
-      "minScale": 3000,
-      "renderer": {
-        "type": "simple",
-        "symbol": {
-          "type": "line-3d",
-          "symbolLayers": [
-            {
-              "type": "path",
-              "profile": "circle",
-              "material": {
-                "color": "#089bc4"
-              },
-              "width": 0.2,
-              "height": 0.2,
-              "anchor": "bottom",
-              "profileRotation": "heading"
-            }
-          ]
-        }
-      },
-      "elevationInfo": {
-        "mode": "relative-to-ground",
-        "offset": -3
-      },
-      "visible": false
-    },
-    {
-      "type": "feature",
-      "id": "masten",
-      "title": "Licht masten",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/27",
-      "minScale": 3000,
-      "visible": false,
-      "renderer": {
-        "type": "simple",
-        "symbol": {
-          "type": "picture-marker",
-          "url": "https://static.arcgis.com/images/Symbols/Basic/GreenSphere.png",
-          "width": "32px",
-          "height": "32px"
-        }
-      }
-    },
-    {
-      "type": "feature",
-      "id": "putten",
-      "title": "Putten",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/13",
-      "minScale": 3000,
-      "visible": false,
-      "renderer": {
-        "type": "simple",
-        "symbol": {
-          "type": "point-3d",
-          "symbolLayers": [
-            {
-              "type": "object",
-              "width": 2,
-              "height": 1,
-              "depth": 2,
-              "resource": {
-                "primitive": "cylinder"
-              },
-              "material": {
-                "color": "red"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "type": "feature",
-      "id": "kabels",
-      "title": "Kabels",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/30",
-      "minScale": 3000,
-      "renderer": {
-        "type": "simple",
-        "symbol": {
-          "type": "line-3d",
-          "symbolLayers": [
-            {
-              "type": "path",
-              "profile": "circle",
-              "material": {
-                "color": "#aec408"
-              },
-              "width": 0.2,
-              "height": 0.2,
-              "anchor": "bottom",
-              "profileRotation": "heading"
-            }
-          ]
-        }
-      },
-      "elevationInfo": {
-        "mode": "relative-to-ground",
-        "offset": -3
-      },
-      "visible": false
-    },
-    {
-      "type": "feature",
-      "id": "meldingen_or",
-      "title": "Meldingen OR",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Meldingen_OR/FeatureServer/0",
-      "minScale": 68600,
-      "featureReduction": {
-        "type": "selection"
-      },
-      "renderer": {
-        "type": "unique-value",
-        "field": "CATEGORIE",
-        "defaultSymbol": {
-          "verticalOffset": {
-            "screenLength": 40,
-            "maxWorldLength": 200,
-            "minWorldLength": 35
-          },
-          "callout": {
-            "type": "line",
-            "color": "white",
-            "size": 1,
-            "border": {
-              "color": "black"
-            }
-          },
-          "type": "point-3d",
-          "symbolLayers": [
-            {
-              "type": "icon",
-              "outline": {
-                "color": "#000000"
-              },
-              "material": {
-                "color": "#ffffff"
-              }
-            }
-          ]
-        },
-        "uniqueValueInfos": [
-          {
-            "value": "Afval",
-            "symbol": {
-              "verticalOffset": {
-                "screenLength": 40,
-                "maxWorldLength": 200,
-                "minWorldLength": 35
-              },
-              "callout": {
-                "type": "line",
-                "color": "white",
-                "size": 1,
-                "border": {
-                  "color": "black"
-                }
-              },
-              "type": "point-3d",
-              "symbolLayers": [
-                {
-                  "outline": {
-                    "color": "black",
-                    "size": 1
-                  },
-                  "type": "icon",
-                  "material": {
-                    "color": "#ae9973"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "value": "Water en riolering",
-            "symbol": {
-              "verticalOffset": {
-                "screenLength": 40,
-                "maxWorldLength": 200,
-                "minWorldLength": 35
-              },
-              "callout": {
-                "type": "line",
-                "color": "white",
-                "size": 1,
-                "border": {
-                  "color": "black"
-                }
-              },
-              "type": "point-3d",
-              "symbolLayers": [
-                {
-                  "outline": {
-                    "color": "black",
-                    "size": 1
-                  },
-                  "type": "icon",
-                  "material": {
-                    "color": "#bddaff"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "value": "Groen",
-            "symbol": {
-              "verticalOffset": {
-                "screenLength": 40,
-                "maxWorldLength": 200,
-                "minWorldLength": 35
-              },
-              "callout": {
-                "type": "line",
-                "color": "white",
-                "size": 1,
-                "border": {
-                  "color": "black"
-                }
-              },
-              "type": "point-3d",
-              "symbolLayers": [
-                {
-                  "outline": {
-                    "color": "black",
-                    "size": 1
-                  },
-                  "type": "icon",
-                  "material": {
-                    "color": "#28b01e"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "value": "Overlast en handhaving",
-            "symbol": {
-              "verticalOffset": {
-                "screenLength": 40,
-                "maxWorldLength": 200,
-                "minWorldLength": 35
-              },
-              "callout": {
-                "type": "line",
-                "color": "white",
-                "size": 1,
-                "border": {
-                  "color": "black"
-                }
-              },
-              "type": "point-3d",
-              "symbolLayers": [
-                {
-                  "outline": {
-                    "color": "black",
-                    "size": 1
-                  },
-                  "type": "icon",
-                  "material": {
-                    "color": "#267eeb"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "value": "Straatmeubilair",
-            "symbol": {
-              "verticalOffset": {
-                "screenLength": 40,
-                "maxWorldLength": 200,
-                "minWorldLength": 35
-              },
-              "callout": {
-                "type": "line",
-                "color": "white",
-                "size": 1,
-                "border": {
-                  "color": "black"
-                }
-              },
-              "type": "point-3d",
-              "symbolLayers": [
-                {
-                  "outline": {
-                    "color": "black",
-                    "size": 1
-                  },
-                  "type": "icon",
-                  "material": {
-                    "color": "#ababab"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "value": "Wegen en stoepen",
-            "symbol": {
-              "verticalOffset": {
-                "screenLength": 40,
-                "maxWorldLength": 200,
-                "minWorldLength": 35
-              },
-              "callout": {
-                "type": "line",
-                "color": "white",
-                "size": 1,
-                "border": {
-                  "color": "black"
-                }
-              },
-              "type": "point-3d",
-              "symbolLayers": [
-                {
-                  "outline": {
-                    "color": "black",
-                    "size": 1
-                  },
-                  "type": "icon",
-                  "material": {
-                    "color": "#c51d34"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "value": "Openbare verlichting",
-            "symbol": {
-              "verticalOffset": {
-                "screenLength": 40,
-                "maxWorldLength": 200,
-                "minWorldLength": 35
-              },
-              "callout": {
-                "type": "line",
-                "color": "white",
-                "size": 1,
-                "border": {
-                  "color": "black"
-                }
-              },
-              "type": "point-3d",
-              "symbolLayers": [
-                {
-                  "outline": {
-                    "color": "black",
-                    "size": 1
-                  },
-                  "type": "icon",
-                  "material": {
-                    "color": "#FFDD6F"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "value": "Parkeren",
-            "symbol": {
-              "verticalOffset": {
-                "screenLength": 40,
-                "maxWorldLength": 200,
-                "minWorldLength": 35
-              },
-              "callout": {
-                "type": "line",
-                "color": "white",
-                "size": 1,
-                "border": {
-                  "color": "black"
-                }
-              },
-              "type": "point-3d",
-              "symbolLayers": [
-                {
-                  "outline": {
-                    "color": "black",
-                    "size": 1
-                  },
-                  "type": "icon",
-                  "material": {
-                    "color": "#3fd4c7"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "value": "Dieren",
-            "symbol": {
-              "verticalOffset": {
-                "screenLength": 40,
-                "maxWorldLength": 200,
-                "minWorldLength": 35
-              },
-              "callout": {
-                "type": "line",
-                "color": "white",
-                "size": 1,
-                "border": {
-                  "color": "black"
-                }
-              },
-              "type": "point-3d",
-              "symbolLayers": [
-                {
-                  "outline": {
-                    "color": "black",
-                    "size": 1
-                  },
-                  "type": "icon",
-                  "material": {
-                    "color": "#f09c16"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "value": "Verkeer",
-            "symbol": {
-              "verticalOffset": {
-                "screenLength": 40,
-                "maxWorldLength": 200,
-                "minWorldLength": 35
-              },
-              "callout": {
-                "type": "line",
-                "color": "white",
-                "size": 1,
-                "border": {
-                  "color": "black"
-                }
-              },
-              "type": "point-3d",
-              "symbolLayers": [
-                {
-                  "outline": {
-                    "color": "black",
-                    "size": 1
-                  },
-                  "type": "icon",
-                  "material": {
-                    "color": "#06070E"
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      },
-      "elevationInfo": {
-        "mode": "relative-to-scene",
-        "unit": "meters",
-        "offset": 5
-      },
-      "visible": false
-    },
-    {
-      "type": "feature",
-      "id": "strengen",
-      "title": "Strengen",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/14",
-      "featureReduction": {
-        "type": "selection"
-      },
-      "elevationInfo": {
-        "mode": "relative-to-ground",
-        "offset": -1
-      },
-      "minScale": 3000,
-      "renderer": {
-        "visualVariables": [
-          {
-            "type": "size",
-            "field": "DIAMETER",
-            "axis": "height",
-            "valueUnit": "millimeters",
-            "valueRepresentation": "diameter"
-          }
-        ],
-        "type": "simple",
-        "symbol": {
-          "type": "line-3d",
-          "symbolLayers": [
-            {
-              "type": "path",
-              "profile": "circle",
-              "material": {
-                "color": "#808080"
-              },
-              "anchor": "bottom",
-              "profileRotation": "heading"
-            }
-          ]
-        }
-      },
-      "visible": false
-    },
-    {
-      "type": "feature",
-      "id": "trafficSigns",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer/70",
-      "screenSizePerspectiveEnabled": true,
-      "featureReduction": {
-        "type": "selection"
-      },
-      "minScale": 3000,
-      "visible": false,
-      "title": "Verkeersborden"
-    },
-    {
-      "type": "feature",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Banken/MapServer/0",
-      "title": "Banken",
-      "id": "banken",
-      "minScale": 3000,
-      "visible": false
-    },
-    {
-      "type": "feature",
-      "id": "speeltoestellen",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Spelenkaart/MapServer/1",
-      "title": "Speeltoestellen",
-      "minScale": 3000,
-      "visible": false
-    },
-    {
-      "type": "feature",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Wegbeheer/MapServer/0",
-      "title": "Wegbeheer",
-      "minScale": 3000,
-      "visible": false
-    },
-    {
-      "type": "feature",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Trolleymasten/MapServer/0",
-      "title": "Trolleymasten",
-      "minScale": 3000,
-      "visible": false
-    },
-    {
-      "type": "feature",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Afvalbakken/MapServer/0",
-      "id": "afvalbakken",
-      "title": "Afvalbakken",
-      "minScale": 3000,
-      "visible": false
-    },
-    {
-      "type": "feature",
-      "url": "https://geo.arnhem.nl/arcgis/rest/services/OpenData/Afvalcontainers/MapServer/0/",
-      "id": "afvalcontainers",
-      "title": "Afvalcontainers",
-      "minScale": 3000,
-      "visible": false
-    },
-    {
-      "type": "feature",
-      "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Ziekenhuizen2/FeatureServer/0",
-      "id": "ziekenhuizen",
-      "title": "Ziekenhuizen",
-      "minScale": 100000,
-      "elevationInfo": {
-        "mode": "relative-to-scene",
-        "offset": 3
-      },
-      "visible": true
-    },
-    {
-      "type": "feature",
-      "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Politiebureaus/FeatureServer",
-      "id": "politiebureaus",
-      "title": "Politiebureaus",
-      "minScale": 100000,
-      "elevationInfo": {
-        "mode": "relative-to-scene",
-        "offset": 3
-      },
-      "renderer": {
-        "type": "simple",
-        "symbol": {
-          "type": "picture-marker",
-          "url": "https://api.infraviewer.steinjonker.nl/politie.png",
-          "width": "32px",
-          "height": "32px"
-        }
-      },
-      "visible": true
-    },
-    {
-      "type": "feature",
-      "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Brandweerkazernes/FeatureServer/0",
-      "title": "Brandweerkazernes",
-      "minScale": 100000,
-      "mode": "relative-to-scene",
-      "elevationInfo": {
-        "mode": "relative-to-scene",
-        "offset": 3
-      },
-      "visible": true
-    },
-    {
       "type": "feature",
       "id": "editabletrees",
       "affects": [
@@ -786,7 +110,7 @@
           }
         ]
       },
-      "visible": true
+      "visible": false
     },
     {
       "title": "Energielabels",
@@ -795,7 +119,7 @@
         "mode": "relative-to-scene",
         "offset": 1
       },
-      "visible": true,
+      "visible": false,
       "type": "feature",
       "url": "https://services.arcgis.com/nSZVuSZjHpEZZbRo/arcgis/rest/services/Energielabels/FeatureServer/1",
       "maxScale": 0
@@ -804,6 +128,127 @@
       "type": "elevation",
       "url": "https://tiles.arcgis.com/tiles/nSZVuSZjHpEZZbRo/arcgis/rest/services/Elevation_3D_RD/ImageServer",
       "id": "elevation"
+    },
+    {
+      "url": "https://geo.arnhem.nl/arcgis/rest/services/Geoweb/Arnhem_BOR/MapServer",
+      "title": "Arnhem BOR",
+      "type": "map-image",
+      "sublayers": [
+        {
+          "id": 14,
+          "elevationInfo": {
+            "mode": "relative-to-ground",
+            "offset": -1
+          },
+          "renderer": {
+            "visualVariables": [
+              {
+                "type": "size",
+                "field": "DIAMETER",
+                "axis": "height",
+                "valueUnit": "millimeters",
+                "valueRepresentation": "diameter"
+              }
+            ],
+            "type": "simple",
+            "symbol": {
+              "type": "line-3d",
+              "symbolLayers": [
+                {
+                  "type": "path",
+                  "profile": "circle",
+                  "material": {
+                    "color": "#808080"
+                  },
+                  "anchor": "bottom",
+                  "profileRotation": "heading"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": 30,
+          "renderer": {
+            "type": "simple",
+            "symbol": {
+              "type": "line-3d",
+              "symbolLayers": [
+                {
+                  "type": "path",
+                  "profile": "circle",
+                  "material": {
+                    "color": "#aec408"
+                  },
+                  "width": 0.2,
+                  "height": 0.2,
+                  "anchor": "bottom",
+                  "profileRotation": "heading"
+                }
+              ]
+            }
+          },
+          "elevationInfo": {
+            "mode": "relative-to-ground",
+            "offset": -3
+          }
+        },
+        {
+          "id": 13,
+          "visible": true,
+          "renderer": {
+            "type": "simple",
+            "visualVariables": [
+              {
+                "type": "size",
+                "axis": "width",
+                "field": "BREEDTE",
+                "valueUnit": "millimeters"
+              },
+              {
+                "type": "size",
+                "axis": "height",
+                "field": "PUTDEKSELHOOGTE",
+                "valueUnit": "millimeters"
+              },
+              {
+                "type": "size",
+                "axis": "depth",
+                "field": "LENGTE",
+                "valueUnit": "millimeters"
+              }
+            ],
+            "symbol": {
+              "type": "web-style",
+              "name": "Sewer_Grate",
+              "styleName": "EsriRealisticStreetSceneStyle"
+            }
+          }
+        },
+        {
+          "visible": false,
+          "id": 31,
+          "renderer": {
+            "type": "simple",
+            "symbol": {
+              "type": "polygon-3d",
+              "symbolLayers": [
+                {
+                  "type": "extrude",
+                  "size": 0.2,
+                  "material": {
+                    "color": "red"
+                  }
+                }
+              ]
+            }
+          },
+          "elevationInfo": {
+            "mode": "relative-to-ground",
+            "offset": -0.6
+          }
+        }
+      ]
     }
   ],
   "view": {
@@ -820,7 +265,7 @@
       "lighting": {
         "type": "sun",
         "directShadowsEnabled": true,
-        "amóbientOcclusionEnabled": true
+        "ambientOcclusionEnabled": true
       }
     },
     "spatialReference": {
