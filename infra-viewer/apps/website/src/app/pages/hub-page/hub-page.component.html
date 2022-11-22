@@ -1,0 +1,56 @@
+<div class="uk-container uk-container-xlarge" uk-grid *ngIf="hubItems">
+  <!--  Create a column with a search bar and options to filter on-->
+  <div class="uk-width-1-4 uk-height-1-1 uk-background-muted">
+    <form #form="ngForm" (ngSubmit)="filterItems()" class="uk-card uk-card-default uk-card-body uk-position-z-index"
+         uk-sticky="animation: uk-animation-slide-top">
+      <h3 class="uk-card-title">Search</h3>
+      <div class="uk-margin">
+        <div class="uk-inline">
+          <span class="uk-form-icon" uk-icon="icon: search"></span>
+          <input name="search" class="uk-input" type="text" placeholder="Search" [(ngModel)]="filter.search">
+        </div>
+      </div>
+      <div class="uk-margin">
+        <div class="uk-inline">
+          <span class="uk-form-icon" uk-icon="icon: user"></span>
+          <input name="owner" class="uk-input" type="text" placeholder="Owner" [(ngModel)]="filter.owner">
+        </div>
+      </div>
+      <div class="uk-margin uk-flex uk-flex-right">
+        <button name="filterbutton" type="submit" class="uk-button uk-button-primary" (click)="filterItems()">Filter</button>
+      </div>
+    </form>
+  </div>
+  <!--Create rows with four columns iterating over the hubitems, showing it's information-->
+  <div class="uk-width-3-4 uk-grid-match uk-grid-small" appScrollTracker (scrollingFinished)="getItems()" uk-grid>
+    <div class="uk-width-1-4" *ngFor="let hubItem of hubItems">
+      <div class="uk-card uk-card-default uk-card-hover uk-flex uk-flex-column uk-flex-between" data-aos="fade-up">
+        <div class="uk-card-media-top">
+          <a target="_blank" [href]="createUrlToPortalItem(hubItem)">
+            <img [src]="createImageUrl(hubItem)" alt="Thumbnail" class="uk-width-1-1" (error)="onThumbnailImageError($event)">
+          </a>
+        </div>
+        <div class="uk-card-badge uk-label no-background">
+          <span class="uk-badge uk-background-primary">{{hubItem.type}}</span>
+          <ng-container *ngIf="layerAlreadyInConfiguration(hubItem); else notInConfig">
+                <span class="uk-badge uk-background-danger"
+                      (click)="removeLayerFromConfiguration(hubItem)">Remove</span>
+          </ng-container>
+          <ng-template #notInConfig>
+            <span class="uk-badge uk-background-success"
+                  (click)="addLayerToConfiguration(hubItem)">Add</span>
+          </ng-template>
+        </div>
+        <div class="uk-card-header">
+          <h3 class="uk-card-title">{{transformTitle(hubItem)}}</h3>
+        </div>
+        <div class="uk-card-body">
+            <a class="uk-link" target="_blank" [href]="createUrlToPortalItem(hubItem)">Go to portal</a>
+        </div>
+      </div>
+    </div>
+    <div class="uk-flex uk-flex-center uk-width-1-1" *ngIf="hasMoreItems">
+      <button type="button" class="uk-button uk-button-default" (click)="getItems()">Load more</button>
+    </div>
+  </div>
+</div>

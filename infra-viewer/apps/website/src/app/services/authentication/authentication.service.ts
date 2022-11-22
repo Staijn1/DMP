@@ -8,7 +8,7 @@ import {environment} from '../../../environments/environment';
 })
 export class AuthenticationService {
   private readonly appId = 'jpL480B69UHL0NWO';
-  private readonly portalURL = 'https://geo.arnhem.nl/portal';
+  private readonly portalURL = environment.portalURL;
   private readonly portalSharingUrl = this.portalURL + '/sharing/';
   private _token!: string;
 
@@ -59,5 +59,6 @@ export class AuthenticationService {
       token: token,
       expires: isNaN(Number(expiration)) ? new Date().getTime() + (3600 * 1000) : Number(expiration)
     });
+    esriId.checkSignInStatus(this.portalSharingUrl).then().catch(e => this.login());
   }
 }
