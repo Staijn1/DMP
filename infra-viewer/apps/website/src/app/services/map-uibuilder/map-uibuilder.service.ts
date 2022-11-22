@@ -22,7 +22,7 @@ export class MapUIBuilderService implements OnDestroy {
 
 
   async buildUI(view: __esri.SceneView): Promise<void> {
-    const layersToViewInLegend = view.map.layers.filter(layer => layer.type !== 'group' && layer.type !== 'elevation').map((layer) => {
+    const layersToViewInLegend = view.map.layers.filter(layer => layer.type !== 'elevation').map((layer) => {
       return {
         layer: layer,
       }
