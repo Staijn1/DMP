@@ -1,5 +1,4 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
-import {MapEventHandlerService} from '../../services/map-event-handler/map-event-handler.service';
 import {QueriedFeatures} from '@infra-viewer/interfaces';
 import {ArcgisMapComponent} from '../../shared/components/arcgis-map/arcgis-map.component';
 import UIkit from 'uikit';
@@ -16,11 +15,15 @@ export class MapPageComponent {
   @ViewChild(ArcgisMapComponent) map!: ArcgisMapComponent;
   @ViewChild('switcher') switcher!: ElementRef;
 
-  results: QueriedFeatures[] = [];
+  _results: QueriedFeatures[] = [];
 
-  constructor(private readonly eventHandler: MapEventHandlerService) {
+  get results(): QueriedFeatures[] {
+    return this._results.filter((result) => result.featureSet.features.length > 0);
   }
 
+  set results(value: QueriedFeatures[]) {
+    this._results = value;
+  }
 
   showTab(result: QueriedFeatures) {
     // Find the index of the result in the results array
