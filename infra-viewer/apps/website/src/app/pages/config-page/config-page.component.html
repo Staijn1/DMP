@@ -37,103 +37,120 @@
   </ul>
 </div>
 
-<div id="details-pane" #modal class="uk-modal-container" uk-modal="esc-close:false;bg-close:false;">
-  <div class="uk-modal-dialog">
-    <button class="uk-modal-close-default" type="button" uk-close (click)="cancelEdit()"></button>
+<div id="details-pane" #modal class="uk-modal-full" uk-modal="esc-close:false;bg-close:false;">
+  <div class="uk-modal-dialog uk-height-1-1" *ngIf="selectedLayer">
+    <button class="uk-modal-close-full uk-close-large" type="button" uk-close (click)="cancelEdit()"></button>
 
     <div class="uk-modal-header">
       <h2 class="uk-modal-title">Layer Details</h2>
       <p>Configure a (new) layer here.</p>
     </div>
-
-    <form #layerConfig="ngForm" (ngSubmit)="onLayerConfigSave()" *ngIf="selectedLayer">
-      <div class="uk-modal-body">
-        <div class="uk-margin">
-          <label class="uk-form-label">Title</label>
-          <div class="uk-form-controls">
-            <input class="uk-input" type="text" name="title" [(ngModel)]="selectedLayer.title" required>
-          </div>
-        </div>
-        <div class="uk-margin">
-          <label class="uk-form-label" for="url">URL</label>
-          <div class="uk-form-controls">
-            <input class="uk-input" id="url" name="url" type="text" [(ngModel)]="selectedLayer.url" required>
-          </div>
-        </div>
-        <div class="uk-margin">
-          <label class="uk-form-label" for="minScale">Min Scale</label>
-          <div class="uk-form-controls">
-            <input class="uk-input" id="minScale" name="minScale" type="number" step="100"
-                   [(ngModel)]="selectedLayer.minScale">
-          </div>
-        </div>
-        <div class="uk-margin uk-grid uk-child-width-expand" *ngIf="selectedLayer.elevationInfo;else noElevationInfo">
-          <div>
-            <label class="uk-form-label" for="elevationMode">Elevation Mode</label>
-            <div class="uk-form-controls">
-              <select class="uk-select" id="elevationMode" name="elevationMode"
-                      [(ngModel)]="selectedLayer.elevationInfo.mode">
-                <option value="on-the-ground">On the ground</option>
-                <option value="relative-to-ground">Relative to ground</option>
-                <option value="relative-to-scene">Relative to scene</option>
-                <option value="absolute-height">Absolute height</option>
-              </select>
-            </div>
-          </div>
-          <div>
-            <label class="uk-form-label" for="units">Units</label>
-            <div class="uk-form-controls">
-              <select class="uk-select" id="units" name="units"
-                      [(ngModel)]="selectedLayer.elevationInfo.unit">
-                <option value="centimeters">Centimeters</option>
-                <option value="meters">Meters</option>
-                <option value="kilometers">Kilometers</option>
-                <option value="us-feet">US Feet</option>
-                <option value="feet">Feet</option>
-                <option value="miles">Miles</option>
-                <option value="yards">Yards</option>
-              </select>
-            </div>
-          </div>
-          <div>
-            <label class="uk-form-label" for="offset">Offset</label>
-            <div class="uk-form-controls">
-              <input class="uk-input" id="offset" name="offset" type="number" step="0.1"
-                     [(ngModel)]="selectedLayer.elevationInfo.offset">
-            </div>
-          </div>
-        </div>
-
-        <div class="uk-flex uk-flex-between uk-border-bottom">
-          <h3>Renderer</h3>
-          <button type="button" class="uk-button uk-button-default uk-button-small" (click)="addUniqueValue()">
-            <span uk-icon="icon: plus"></span>
-          </button>
-        </div>
-        <div class="uk-margin" *ngIf="selectedLayer.renderer;else noRenderer">
-          <ul uk-accordion>
-            <li
-              *ngFor="let uniqueValueInfo of (selectedLayer.renderer | cast: UniqueValueRenderer).uniqueValueInfos; let i = index">
-              <a class="uk-accordion-title">Symbol layer no. {{i + 1}}</a>
-              <hr class="uk-divider-small">
-              <div class="uk-accordion-content">
-                <label class="uk-form-label" for="value">Value</label>
+    <div class="uk-modal-body uk-container" uk-grid>
+      <div class="uk-width-1-3">
+        <ul class="uk-tab-left" uk-tab="connect: #component-tab-left;">
+          <li><a href="#">General Settings</a></li>
+          <li><a href="#">Renderer</a></li>
+        </ul>
+      </div>
+      <div class="uk-width-2-3">
+        <ul id="component-tab-left" class="uk-switcher">
+          <li>
+            <form #layerConfig="ngForm" (ngSubmit)="onLayerConfigSave()">
+              <div class="uk-margin">
+                <label class="uk-form-label">Title</label>
                 <div class="uk-form-controls">
-                  <input class="uk-input" id="value" name="value" type="text" [(ngModel)]="uniqueValueInfo.value">
+                  <input class="uk-input" type="text" name="title" [(ngModel)]="selectedLayer.title" required>
                 </div>
-                <ng-template *ngTemplateOutlet="symboleditor; context: {symbol: uniqueValueInfo.symbol} "></ng-template>
               </div>
+              <div class="uk-margin">
+                <label class="uk-form-label" for="url">URL</label>
+                <div class="uk-form-controls">
+                  <input class="uk-input" id="url" name="url" type="text" [(ngModel)]="selectedLayer.url" required>
+                </div>
+              </div>
+              <div class="uk-margin">
+                <label class="uk-form-label" for="minScale">Min Scale</label>
+                <div class="uk-form-controls">
+                  <input class="uk-input" id="minScale" name="minScale" type="number" step="100"
+                         [(ngModel)]="selectedLayer.minScale">
+                </div>
+              </div>
+              <div class="uk-margin uk-grid uk-child-width-expand"
+                   *ngIf="selectedLayer.elevationInfo;else noElevationInfo">
+                <div>
+                  <label class="uk-form-label" for="elevationMode">Elevation Mode</label>
+                  <div class="uk-form-controls">
+                    <select class="uk-select" id="elevationMode" name="elevationMode"
+                            [(ngModel)]="selectedLayer.elevationInfo.mode">
+                      <option value="on-the-ground">On the ground</option>
+                      <option value="relative-to-ground">Relative to ground</option>
+                      <option value="relative-to-scene">Relative to scene</option>
+                      <option value="absolute-height">Absolute height</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label class="uk-form-label" for="units">Units</label>
+                  <div class="uk-form-controls">
+                    <select class="uk-select" id="units" name="units"
+                            [(ngModel)]="selectedLayer.elevationInfo.unit">
+                      <option value="centimeters">Centimeters</option>
+                      <option value="meters">Meters</option>
+                      <option value="kilometers">Kilometers</option>
+                      <option value="us-feet">US Feet</option>
+                      <option value="feet">Feet</option>
+                      <option value="miles">Miles</option>
+                      <option value="yards">Yards</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label class="uk-form-label" for="offset">Offset</label>
+                  <div class="uk-form-controls">
+                    <input class="uk-input" id="offset" name="offset" type="number" step="0.1"
+                           [(ngModel)]="selectedLayer.elevationInfo.offset">
+                  </div>
+                </div>
+              </div>
+            </form>
+          </li>
+          <li>
+            <div class="uk-flex uk-flex-between uk-border-bottom">
+              <h3>Renderer</h3>
+              <button type="button" class="uk-button uk-button-default uk-button-small" (click)="addUniqueValue()">
+                <span uk-icon="icon: plus"></span>
+              </button>
+            </div>
+            <div class="uk-margin" *ngIf="selectedLayer.renderer;else noRenderer">
+              <ul uk-accordion>
+                <li
+                  *ngFor="let uniqueValueInfo of (selectedLayer.renderer | cast: UniqueValueRenderer).uniqueValueInfos; let i = index">
+                  <a class="uk-accordion-title">Symbol layer no. {{i + 1}}</a>
+                  <hr class="uk-divider-small">
+                  <div class="uk-accordion-content">
+                    <label class="uk-form-label" for="value">Value</label>
+                    <div class="uk-form-controls">
+                      <input class="uk-input" id="value" name="value" type="text" [(ngModel)]="uniqueValueInfo.value">
+                    </div>
+                    <ng-template
+                      *ngTemplateOutlet="symboleditor; context: {symbol: uniqueValueInfo.symbol} "></ng-template>
+                  </div>
 
-            </li>
-          </ul>
-        </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur,
+            sed do eiusmod.
+          </li>
+        </ul>
       </div>
+    </div>
 
-      <div class="uk-modal-footer uk-text-right">
-        <button class="uk-button uk-button-default uk-modal-close" type="button" (click)="cancelEdit()">Cancel</button>
-        <button class="uk-button uk-button-primary" type="submit">Save</button>
-      </div>
-    </form>
+    <div class="uk-modal-footer uk-text-right">
+      <button class="uk-button uk-button-default uk-modal-close" type="button" (click)="cancelEdit()">Cancel</button>
+      <button class="uk-button uk-button-primary" type="submit">Save</button>
+    </div>
   </div>
 </div>
 
