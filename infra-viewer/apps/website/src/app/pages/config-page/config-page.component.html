@@ -10,7 +10,7 @@
         <section class="layers">
           <h3 class="uk-heading-divider">Layers</h3>
           <ul class="uk-list uk-list-disc uk-list-primary uk-list-divider">
-            <li *ngFor="let layer of configuration.layers">
+            <li @swipeLeft *ngFor="let layer of configuration.layers">
               <ng-template *ngTemplateOutlet="layerTemplate; context: {layer: layer, type: layer.type} "></ng-template>
             </li>
           </ul>
@@ -37,132 +37,6 @@
   </ul>
 </div>
 
-<div id="details-pane" #modal class="uk-modal-full" uk-modal="esc-close:false;bg-close:false;">
-  <div class="uk-modal-dialog uk-height-1-1" *ngIf="selectedLayer">
-    <button class="uk-modal-close-full uk-close-large" type="button" uk-close (click)="cancelEdit()"></button>
-
-    <div class="uk-modal-header">
-      <h2 class="uk-modal-title">Layer Details</h2>
-      <p>Configure a (new) layer here.</p>
-    </div>
-    <div class="uk-modal-body uk-container" uk-grid>
-      <div class="uk-width-1-3">
-        <ul class="uk-tab-left" uk-tab="connect: #component-tab-left;">
-          <li><a href="#">General Settings</a></li>
-          <li><a href="#">Renderer</a></li>
-        </ul>
-      </div>
-      <div class="uk-width-2-3">
-        <ul id="component-tab-left" class="uk-switcher">
-          <li>
-            <form #layerConfig="ngForm" (ngSubmit)="onLayerConfigSave()">
-              <div class="uk-margin">
-                <label class="uk-form-label">Title</label>
-                <div class="uk-form-controls">
-                  <input class="uk-input" type="text" name="title" [(ngModel)]="selectedLayer.title" required>
-                </div>
-              </div>
-              <div class="uk-margin">
-                <label class="uk-form-label" for="url">URL</label>
-                <div class="uk-form-controls">
-                  <input class="uk-input" id="url" name="url" type="text" [(ngModel)]="selectedLayer.url" required>
-                </div>
-              </div>
-              <div class="uk-margin">
-                <label class="uk-form-label" for="minScale">Min Scale</label>
-                <div class="uk-form-controls">
-                  <input class="uk-input" id="minScale" name="minScale" type="number" step="100"
-                         [(ngModel)]="selectedLayer.minScale">
-                </div>
-              </div>
-              <div class="uk-margin uk-grid uk-child-width-expand"
-                   *ngIf="selectedLayer.elevationInfo;else noElevationInfo">
-                <div>
-                  <label class="uk-form-label" for="elevationMode">Elevation Mode</label>
-                  <div class="uk-form-controls">
-                    <select class="uk-select" id="elevationMode" name="elevationMode"
-                            [(ngModel)]="selectedLayer.elevationInfo.mode">
-                      <option value="on-the-ground">On the ground</option>
-                      <option value="relative-to-ground">Relative to ground</option>
-                      <option value="relative-to-scene">Relative to scene</option>
-                      <option value="absolute-height">Absolute height</option>
-                    </select>
-                  </div>
-                </div>
-                <div>
-                  <label class="uk-form-label" for="units">Units</label>
-                  <div class="uk-form-controls">
-                    <select class="uk-select" id="units" name="units"
-                            [(ngModel)]="selectedLayer.elevationInfo.unit">
-                      <option value="centimeters">Centimeters</option>
-                      <option value="meters">Meters</option>
-                      <option value="kilometers">Kilometers</option>
-                      <option value="us-feet">US Feet</option>
-                      <option value="feet">Feet</option>
-                      <option value="miles">Miles</option>
-                      <option value="yards">Yards</option>
-                    </select>
-                  </div>
-                </div>
-                <div>
-                  <label class="uk-form-label" for="offset">Offset</label>
-                  <div class="uk-form-controls">
-                    <input class="uk-input" id="offset" name="offset" type="number" step="0.1"
-                           [(ngModel)]="selectedLayer.elevationInfo.offset">
-                  </div>
-                </div>
-              </div>
-            </form>
-          </li>
-          <li>
-            <div class="uk-flex uk-flex-between uk-border-bottom">
-              <h3>Renderer</h3>
-              <button type="button" class="uk-button uk-button-default uk-button-small" (click)="addUniqueValue()">
-                <span uk-icon="icon: plus"></span>
-              </button>
-            </div>
-            <div class="uk-margin" *ngIf="selectedLayer.renderer;else noRenderer">
-              <ul uk-accordion>
-                <li
-                  *ngFor="let uniqueValueInfo of (selectedLayer.renderer | cast: UniqueValueRenderer).uniqueValueInfos; let i = index">
-                  <a class="uk-accordion-title">Symbol layer no. {{i + 1}}</a>
-                  <hr class="uk-divider-small">
-                  <div class="uk-accordion-content">
-                    <label class="uk-form-label" for="value">Value</label>
-                    <div class="uk-form-controls">
-                      <input class="uk-input" id="value" name="value" type="text" [(ngModel)]="uniqueValueInfo.value">
-                    </div>
-                    <ng-template
-                      *ngTemplateOutlet="symboleditor; context: {symbol: uniqueValueInfo.symbol} "></ng-template>
-                  </div>
-
-                </li>
-              </ul>
-            </div>
-          </li>
-          <li>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur,
-            sed do eiusmod.
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="uk-modal-footer uk-text-right">
-      <button class="uk-button uk-button-default uk-modal-close" type="button" (click)="cancelEdit()">Cancel</button>
-      <button class="uk-button uk-button-primary" type="submit">Save</button>
-    </div>
-  </div>
-</div>
-
-<ng-template #noElevationInfo>
-  <div>
-    <button class="uk-button uk-button-default" (click)="addElevationInfo()">Add elevation info</button>
-  </div>
-</ng-template>
-<ng-template #noRenderer>
-  <button class="uk-button uk-button-primary" type="button" (click)="createRenderer()">Create Renderer</button>
-</ng-template>
-
 <ng-template #layerTemplate let-layer="layer" let-type="type">
   <div class="uk-flex uk-flex-between">
     <div uk-toggle="target: #details-pane" class="uk-width-1-1" (click)="selectLayer(layer)">
@@ -188,52 +62,6 @@
   </div>
 </ng-template>
 
-<ng-template #symboleditor let-symbol="symbol">
-  <!--  Create three input boxes next to each other-->
-  <div class="uk-grid uk-child-width-expand">
-    <div>
-      <label class="uk-form-label" for="screenLength">Screenlength</label>
-      <div class="uk-form-controls">
-        <input class="uk-input" id="screenLength" name="screenLength" type="number"
-               [(ngModel)]="symbol.verticalOffset.screenLength">
-      </div>
-    </div>
-    <div>
-      <label class="uk-form-label" for="maxWorldLength">Max world length</label>
-      <div class="uk-form-controls">
-        <input class="uk-input" id="maxWorldLength" name="maxWorldLength" type="number"
-               [(ngModel)]="symbol.verticalOffset.maxWorldLength">
-      </div>
-    </div>
-    <div>
-      <label class="uk-form-label" for="minWorldLength">Min world length</label>
-      <div class="uk-form-controls">
-        <input class="uk-input" id="minWorldLength" name="minWorldLength" type="number"
-               [(ngModel)]="symbol.verticalOffset.minWorldLength">
-      </div>
-    </div>
-  </div>
-  <div class="uk-margin">
-    <label class="uk-form-label" for="color">Material Color</label>
-    <div class="uk-form-controls">
-      <input class="uk-input" id="color" name="color" type="color"
-             [(ngModel)]="symbol.symbolLayers[0].material.color">
-    </div>
-  </div>
-  <div class="uk-grid uk-child-width-expand">
-    <div>
-      <label class="uk-form-label" for="outlineSize">Outline size</label>
-      <div class="uk-form-controls">
-        <input class="uk-input" id="outlineSize" name="outlineSize" type="number"
-               [(ngModel)]="symbol.symbolLayers[0].outline.size">
-      </div>
-    </div>
-    <div>
-      <label class="uk-form-label" for="outlineColor">Outline color</label>
-      <div class="uk-form-controls">
-        <input class="uk-input" id="outlineColor" name="outlineColor" type="color"
-               [(ngModel)]="symbol.symbolLayers[0].outline.color">
-      </div>
-    </div>
-  </div>
-</ng-template>
+
+<app-layer-editor [layer]="selectedLayer" [configuration]="configuration"
+                  (save)="onLayerConfigSave($event)"></app-layer-editor>

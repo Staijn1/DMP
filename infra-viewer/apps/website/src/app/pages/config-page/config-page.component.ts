@@ -1,18 +1,17 @@
 import {Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {ConfigurationService} from '../../services/configuration/configuration.service';
 import {NgForm} from '@angular/forms';
-import {SystemConfiguration} from '@infra-viewer/interfaces';
+import {LayerConfig, SystemConfiguration} from '@infra-viewer/interfaces';
 import Layer from '@arcgis/core/layers/Layer';
 import UIkit from 'uikit';
-import UniqueValueRenderer from '@arcgis/core/renderers/UniqueValueRenderer';
-import UniqueValueInfo from '@arcgis/core/renderers/support/UniqueValueInfo';
-import PointSymbol3D from '@arcgis/core/symbols/PointSymbol3D';
+import {swipeLeftAnimation} from '@infra-viewer/ui';
 import FeatureLayerProperties = __esri.FeatureLayerProperties;
 import LayerProperties = __esri.LayerProperties;
 
 
 @Component({
   selector: 'app-config-page',
+  animations: [swipeLeftAnimation],
   templateUrl: './config-page.component.html',
   styleUrls: ['./config-page.component.scss'],
 })
@@ -22,7 +21,6 @@ export class ConfigPageComponent implements OnDestroy {
   selectedLayer: FeatureLayerProperties | undefined;
   configuration!: SystemConfiguration;
   private configurationBackup!: SystemConfiguration;
-  UniqueValueRenderer = UniqueValueRenderer;
 
   get configurationString() {
     return JSON.stringify(this.configuration, null, 2);
@@ -59,7 +57,15 @@ export class ConfigPageComponent implements OnDestroy {
   /**
    * When the user clicks on save, we need to
    */
-  onLayerConfigSave() {
+  onLayerConfigSave(layer: FeatureLayerProperties) {
+    // Find the layer in the configuration and replace it with the new one
+    this.configuration.layers = this.configuration.layers.map((l: LayerProperties) => {
+      if (l.id === layer.id) {
+        return layer;
+      }
+      return l;
+    }) as LayerConfig[];
+
     this.onConfigurationSubmit(this.configuration);
     UIkit.modal(this.modalRef.nativeElement).hide();
   }
@@ -71,27 +77,11 @@ export class ConfigPageComponent implements OnDestroy {
     this.configurationBackup = JSON.parse(JSON.stringify(this.configuration));
   }
 
-  /**
-   * When the user clicks on cancel, we need to restore the original configuration
-   */
-  cancelEdit() {
-    this.configuration = this.configurationBackup;
-  }
-
-  addElevationInfo() {
-    if (!this.selectedLayer) return;
-    this.selectedLayer.elevationInfo = {
-      mode: 'on-the-ground',
-      unit: 'meters',
-      offset: 0,
-    };
-  }
-
   deleteLayer(layer: FeatureLayerProperties) {
     // Create a UIKit dialog to confirm the deletion
     UIkit.modal.confirm('Are you sure you want to delete this layer?').then(() => {
       // Remove the layer from the configuration
-      this.configuration.layers = this.configuration.layers.filter((l: LayerProperties) => l.id !== layer.id);
+      this.configuration.layers = this.configuration.layers.filter((l: LayerConfig) => l.url !== layer.url);
       // Save the configuration
       this.onConfigurationSubmit(this.configuration);
     }, () => {
@@ -102,39 +92,7 @@ export class ConfigPageComponent implements OnDestroy {
   toggleVisibility(layer: FeatureLayerProperties) {
     layer.visible = layer.visible === undefined ? true : layer.visible;
     layer.visible = !layer.visible;
-    this.onLayerConfigSave()
-  }
-
-  createRenderer() {
-    if (!this.selectedLayer) return;
-    this.selectedLayer.renderer = new UniqueValueRenderer();
-  }
-
-  addUniqueValue() {
-    if (!this.selectedLayer) return;
-    if (!this.selectedLayer.renderer) return;
-    (this.selectedLayer.renderer as UniqueValueRenderer).uniqueValueInfos.push(new UniqueValueInfo({
-      value: '',
-      symbol: new PointSymbol3D({
-        verticalOffset: {
-          screenLength: undefined,
-          maxWorldLength: undefined,
-          minWorldLength: undefined
-        },
-        symbolLayers: [
-          {
-            type: 'icon',
-            material: {
-              color: '#ff0000'
-            },
-            outline: {
-              color: '#ff0000',
-              size: 1
-            },
-          }
-        ]
-      })
-    }));
+    this.onLayerConfigSave(layer)
   }
 
   ngOnDestroy(): void {
