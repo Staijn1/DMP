@@ -39,7 +39,7 @@
 
 <ng-template #layerTemplate let-layer="layer" let-type="type">
   <div class="uk-flex uk-flex-between">
-    <div uk-toggle="target: #details-pane" class="uk-width-1-1" (click)="selectLayer(layer)">
+    <div class="uk-width-1-1" (click)="startEditingLayer(layer)">
       <ng-container [ngSwitch]="type">
         <span *ngSwitchCase="'scene'" uk-icon="icon: world"></span>
         <span *ngSwitchCase="'geoJSON'" uk-icon="icon: code"></span>
@@ -51,7 +51,7 @@
             [class.uk-text-warning]="!layer.title">{{layer.title || "Unknown Title"}}</span>
     </div>
     <div class="uk-flex">
-      <button class="uk-button uk-button-default uk-button-small" (click)="toggleVisibility(layer)">
+      <button class="uk-button uk-button-default uk-button-small" (click)="toggleLayerVisibility(layer)">
         <span uk-icon="icon: check" *ngIf="layer.visible === undefined || layer.visible === true"></span>
         <span uk-icon="icon: close" *ngIf="layer.visible === false"></span>
       </button>

@@ -1,10 +1,12 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {SystemConfiguration} from '@infra-viewer/interfaces';
-import LayerProperties = __esri.LayerProperties;
-import FeatureLayerProperties = __esri.FeatureLayerProperties;
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {LayerConfig, SystemConfiguration} from '@infra-viewer/interfaces';
 import UniqueValueInfo from '@arcgis/core/renderers/support/UniqueValueInfo';
 import PointSymbol3D from '@arcgis/core/symbols/PointSymbol3D';
 import UniqueValueRenderer from '@arcgis/core/renderers/UniqueValueRenderer';
+import UIkit from 'uikit';
+import LayerProperties = __esri.LayerProperties;
+import {LayerFactoryService} from '../../../services/layer-factory/layer-factory.service';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 
 @Component({
   selector: 'app-layer-editor',
@@ -12,11 +14,13 @@ import UniqueValueRenderer from '@arcgis/core/renderers/UniqueValueRenderer';
   styleUrls: ['./layer-editor.component.scss'],
 })
 export class LayerEditorComponent {
-  @Output() cancel: EventEmitter<void> = new EventEmitter<void>();
+  @ViewChild('modal') modal!: ElementRef<HTMLDivElement>
   @Output() save: EventEmitter<LayerProperties> = new EventEmitter<LayerProperties>();
-  @Input() layer: FeatureLayerProperties | undefined;
+  @Input() layer!: LayerConfig | undefined;
   @Input() configuration!: SystemConfiguration;
   UniqueValueRenderer = UniqueValueRenderer;
+
+
   /**
    * Add elevation info to the layer
    */
@@ -78,7 +82,24 @@ export class LayerEditorComponent {
    * When the user clicks on cancel, we need to restore the original configuration
    */
   cancelEdit() {
-    this.cancel.emit();
+    this.close();
   }
 
+  /**
+   * Start editing by opening the modal and setting some default values if they are not set
+   */
+  startEditing(selectedLayer: LayerConfig) {
+    this.layer = selectedLayer;
+    if (!this.layer) return;
+    if (this.layer.legendEnabled === undefined) this.layer.legendEnabled = true;
+    if (!this.layer.elevationInfo) this.addElevationInfo();
+    UIkit.modal(this.modal.nativeElement).show();
+  }
+
+  /**
+   * Close the modal
+   */
+  close() {
+    UIkit.modal(this.modal.nativeElement).hide();
+  }
 }

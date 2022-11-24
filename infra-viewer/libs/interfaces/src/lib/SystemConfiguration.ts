@@ -1,6 +1,5 @@
 import SceneLayerProperties from '@arcgis/core/layers/SceneLayer';
 import FeatureLayerProperties from '@arcgis/core/layers/FeatureLayer';
-import GeoJSONLayerProperties from '@arcgis/core/layers/GeoJSONLayer';
 import Layer from '@arcgis/core/layers/Layer';
 import SceneView from '@arcgis/core/views/SceneView';
 import CameraProperties = __esri.CameraProperties;
@@ -15,7 +14,7 @@ export class SystemConfiguration {
   };
 }
 
-export type LayerConfig = SceneLayerProperties | FeatureLayerProperties | GeoJSONLayerProperties
+export type LayerConfig = SceneLayerProperties | FeatureLayerProperties
 
 export type SystemConfigurationLayerTypes =
   'scene'

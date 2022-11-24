@@ -1,12 +1,11 @@
-import {Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import {Component, OnDestroy, ViewChild} from '@angular/core';
 import {ConfigurationService} from '../../services/configuration/configuration.service';
 import {NgForm} from '@angular/forms';
 import {LayerConfig, SystemConfiguration} from '@infra-viewer/interfaces';
-import Layer from '@arcgis/core/layers/Layer';
 import UIkit from 'uikit';
 import {swipeLeftAnimation} from '@infra-viewer/ui';
+import {LayerEditorComponent} from '../../shared/components/layer-editor/layer-editor.component';
 import FeatureLayerProperties = __esri.FeatureLayerProperties;
-import LayerProperties = __esri.LayerProperties;
 
 
 @Component({
@@ -16,9 +15,9 @@ import LayerProperties = __esri.LayerProperties;
   styleUrls: ['./config-page.component.scss'],
 })
 export class ConfigPageComponent implements OnDestroy {
-  @ViewChild('modal') modalRef!: ElementRef;
+  @ViewChild(LayerEditorComponent) editor!: LayerEditorComponent;
   @ViewChild('advancedForm') advancedForm!: NgForm;
-  selectedLayer: FeatureLayerProperties | undefined;
+  selectedLayer: LayerConfig | undefined;
   configuration!: SystemConfiguration;
   private configurationBackup!: SystemConfiguration;
 
@@ -47,7 +46,10 @@ export class ConfigPageComponent implements OnDestroy {
    * @param {NgForm | SystemConfiguration} configuration
    */
   onConfigurationSubmit(configuration: SystemConfiguration) {
-    this.configService.setConfiguration(configuration).then(() => this.getInformation());
+    this.configService.setConfiguration(configuration).then(() => {
+      this.editor.close();
+      this.getInformation()
+    });
   }
 
   onAdvancedConfigSubmit() {
@@ -59,22 +61,22 @@ export class ConfigPageComponent implements OnDestroy {
    */
   onLayerConfigSave(layer: FeatureLayerProperties) {
     // Find the layer in the configuration and replace it with the new one
-    this.configuration.layers = this.configuration.layers.map((l: LayerProperties) => {
-      if (l.id === layer.id) {
+    this.configuration.layers = this.configuration.layers.map((l: LayerConfig) => {
+      if (l.url === layer.url) {
         return layer;
       }
       return l;
     }) as LayerConfig[];
 
     this.onConfigurationSubmit(this.configuration);
-    UIkit.modal(this.modalRef.nativeElement).hide();
   }
 
-  selectLayer(layer: Layer) {
+  startEditingLayer(layer: LayerConfig) {
     // DO NOT create a copy of the layer, we need to modify the original object
     this.selectedLayer = layer;
     // DO copy the whole configuration, in case the user cancels we can restore this original copy
     this.configurationBackup = JSON.parse(JSON.stringify(this.configuration));
+    this.editor.startEditing(this.selectedLayer);
   }
 
   deleteLayer(layer: FeatureLayerProperties) {
@@ -89,7 +91,7 @@ export class ConfigPageComponent implements OnDestroy {
     });
   }
 
-  toggleVisibility(layer: FeatureLayerProperties) {
+  toggleLayerVisibility(layer: FeatureLayerProperties) {
     layer.visible = layer.visible === undefined ? true : layer.visible;
     layer.visible = !layer.visible;
     this.onLayerConfigSave(layer)
