@@ -5,6 +5,7 @@
     "api": "apps/api",
     "interfaces": "libs/interfaces",
     "scraper": "apps/scraper",
+    "ui": "libs/ui",
     "website": "apps/website"
   }
 }
