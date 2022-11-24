@@ -22,26 +22,17 @@ import MapImageLayer from '@arcgis/core/layers/MapImageLayer';
 })
 export class MapUIBuilderService implements OnDestroy {
   private searchWidget!: __esri.widgetsSearch;
-  public legend!: __esri.Legend;
 
 
   async buildUI(view: __esri.SceneView): Promise<void> {
-  /*  const layersToViewInLegend = view.map.layers.filter((layer: FeatureLayer | SceneLayer | ElevationLayer | MapImageLayer) => layer.le).map((layer) => {
-      return {
-        layer: layer,
-      }
-    });*/
-
-    this.legend = new Legend({
-        view: view
-      }
-    );
     // this.legend.layerInfos.push(...layersToViewInLegend);
     const legendExpand = new Expand({
       view: view,
       expandTooltip: 'Show legend',
       collapseTooltip: 'Hide legend',
-      content: this.legend
+      content: new Legend({
+        view: view
+      })
     });
 
     this.searchWidget = new Search({
