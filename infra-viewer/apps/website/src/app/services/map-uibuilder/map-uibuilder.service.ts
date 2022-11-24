@@ -12,10 +12,6 @@ import {environment} from '../../../environments/environment';
 import AreaMeasurement3D from '@arcgis/core/widgets/AreaMeasurement3D';
 import DirectLineMeasurement3D from '@arcgis/core/widgets/DirectLineMeasurement3D';
 import Fullscreen from '@arcgis/core/widgets/Fullscreen';
-import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import SceneLayer from '@arcgis/core/layers/SceneLayer';
-import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
-import MapImageLayer from '@arcgis/core/layers/MapImageLayer';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +21,6 @@ export class MapUIBuilderService implements OnDestroy {
 
 
   async buildUI(view: __esri.SceneView): Promise<void> {
-    // this.legend.layerInfos.push(...layersToViewInLegend);
     const legendExpand = new Expand({
       view: view,
       expandTooltip: 'Show legend',
