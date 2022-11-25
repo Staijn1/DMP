@@ -84,8 +84,11 @@ export class LayerEditorComponent {
     if (!this.rootLayerConfig) return;
 
     if (this.rootLayerConfig.legendEnabled === undefined) this.rootLayerConfig.legendEnabled = true;
-    if (this.rootLayerConfig.type !== 'map-image' && this.rootLayerConfig.popupEnabled === undefined) this.rootLayerConfig.popupEnabled = true;
-
+    if (this.rootLayerConfig.type === 'map-image') {
+      if (!this.rootLayerConfig.sublayers) this.rootLayerConfig.sublayers = [];
+    } else {
+      if (this.rootLayerConfig.popupEnabled === undefined) this.rootLayerConfig.popupEnabled = true;
+    }
     this.selectedLayer = this.serviceInfo.layers ? this.createDefaultConfig(this.serviceInfo.layers[0]) : selectedLayer;
     UIkit.modal(this.modal.nativeElement).show();
   }
@@ -97,17 +100,46 @@ export class LayerEditorComponent {
     UIkit.modal(this.modal.nativeElement).hide();
   }
 
+  /**
+   * When selecting a new sublayer, we need to save the old selected layer.
+   *
+   * Then we change the selected layer to the new selected layer
+   * If this new selected layer does not exist in the sublayers array, we create a new default config for it
+   * This function is only called for map-image layers, because the sublayer selection only shows up for map-image layers
+   * @param {number} i
+   */
   selectSublayer(i: number) {
-    const sublayer = this.serviceInfo.layers[i];
-    if (!(this.rootLayerConfig as any).sublayers && this.rootLayerConfig?.type === 'map-image') {
-      (this.rootLayerConfig as any).sublayers = [this.selectedLayer];
+    // Make the compiler aware that only map-image layers come through this function
+    if (this.rootLayerConfig?.type !== 'map-image') return;
+
+    this.saveSublayer();
+    // Select the new selected layer
+    this.selectedLayer = (this.rootLayerConfig?.sublayers as LayerConfig[])[i] || this.createDefaultConfig(this.serviceInfo.layers[i]);
+  }
+
+  /**
+   * Save the current selected layer. If the root layer config is a map-image layer, save the configuration in the sublayers array
+   * If the root layer config is a feature layer, the configuration is already saved because of the ngModel bindings
+   * @private
+   */
+  private saveSublayer() {
+    if (this.rootLayerConfig?.type !== 'map-image' || !this.selectedLayer) return;
+    if (!this.rootLayerConfig.sublayers) this.rootLayerConfig.sublayers = [];
+
+    // Save the old selected layer
+    const oldSelectedLayerIndex = this.rootLayerConfig.sublayers.findIndex(l => l.id === this.selectedLayer?.id);
+    if (oldSelectedLayerIndex !== -1) {
+      (this.rootLayerConfig.sublayers as LayerConfig[])[oldSelectedLayerIndex] = this.selectedLayer;
+    } else {
+      (this.rootLayerConfig.sublayers as LayerConfig[]).push(this.selectedLayer);
     }
-    this.selectedLayer = this.createDefaultConfig(sublayer);
   }
 
   private createDefaultConfig(serviceInfoLayer: ServiceInfoLayer): LayerConfig {
+    const id = this.serviceInfo.layers.indexOf(serviceInfoLayer).toString();
     return {
       type: getTypeForHubItem(serviceInfoLayer),
+      id: id,
       elevationInfo: {
         mode: 'on-the-ground',
         unit: 'meters',

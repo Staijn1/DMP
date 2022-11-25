@@ -7,7 +7,7 @@
       <p>Select a sublayer on the left to start editing it's properties!</p>
     </div>
     <div class="uk-modal-body uk-container" uk-grid>
-      <!--      A list of all sublayers-->
+      <!--      A list of all sublayers, but if there aren't any, just show the editor-->
       <ng-template #noSublayers>
         <ng-template *ngTemplateOutlet="sublayerEditor"></ng-template>
       </ng-template>
@@ -160,6 +160,9 @@
         </li>
       </ul>
     </div>
+
+
+    <pre>{{rootLayerConfig | json}}</pre>
   </div>
 </ng-template>
 
