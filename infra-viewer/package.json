@@ -63,6 +63,7 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.1.2",
+    "@ng-select/ng-select": "^10.0.0",
     "ag-grid-angular": "^28.2.0",
     "ag-grid-community": "^28.2.0",
     "aos": "^2.3.4",

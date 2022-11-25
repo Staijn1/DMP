@@ -22,6 +22,7 @@ $global-primary-background: #02357c;
 @import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-alpine.css';
 @import "aos/dist/aos.css";
+@import "~@ng-select/ng-select/themes/ant.design.theme.css";
 
 .uk-background-danger {
   background: $global-danger-background;

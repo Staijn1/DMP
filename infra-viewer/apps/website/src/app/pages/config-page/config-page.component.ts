@@ -6,6 +6,7 @@ import UIkit from 'uikit';
 import {swipeLeftAnimation} from '@infra-viewer/ui';
 import {LayerEditorComponent} from '../../shared/components/layer-editor/layer-editor.component';
 import FeatureLayerProperties = __esri.FeatureLayerProperties;
+import {HubService} from '../../services/hub/hub.service';
 
 
 @Component({
@@ -33,7 +34,7 @@ export class ConfigPageComponent implements OnDestroy {
     }
   }
 
-  constructor(private readonly configService: ConfigurationService) {
+  constructor(private readonly configService: ConfigurationService, private readonly hubService: HubService) {
     this.getInformation();
   }
 
@@ -76,7 +77,9 @@ export class ConfigPageComponent implements OnDestroy {
     this.selectedLayer = layer;
     // DO copy the whole configuration, in case the user cancels we can restore this original copy
     this.configurationBackup = JSON.parse(JSON.stringify(this.configuration));
-    this.editor.startEditing(this.selectedLayer);
+    this.hubService.getServiceInfo(layer.url as string).then(serviceInfo => {
+      this.editor.startEditing(this.selectedLayer as LayerConfig, serviceInfo);
+    });
   }
 
   deleteLayer(layer: FeatureLayerProperties) {
