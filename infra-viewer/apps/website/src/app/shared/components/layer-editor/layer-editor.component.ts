@@ -22,10 +22,6 @@ export class LayerEditorComponent {
   selectedSublayerIndex = 0;
   selectedLayer: LayerConfig | undefined;
 
-  get isMapImageLayer() {
-    return this.selectedLayer?.type === 'map-image';
-  }
-
   /**
    * Create a new renderer, by default it will be a unique value renderer
    */
