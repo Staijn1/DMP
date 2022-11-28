@@ -49,8 +49,8 @@
         "type": "simple",
         "symbol": {
           "type": "web-style",
-          "name": "Populus",
-          "styleName": "EsriRealisticTreesStyle"
+          "name": "Frangula",
+          "styleName": "EsriThematicTreesStyle"
         }
       },
       "minScale": 3000,
