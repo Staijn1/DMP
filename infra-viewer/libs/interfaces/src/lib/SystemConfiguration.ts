@@ -1,6 +1,5 @@
 import SceneLayerProperties from '@arcgis/core/layers/SceneLayer';
 import FeatureLayerProperties from '@arcgis/core/layers/FeatureLayer';
-import Layer from '@arcgis/core/layers/Layer';
 import SceneView from '@arcgis/core/views/SceneView';
 import CameraProperties = __esri.CameraProperties;
 import MapImageLayerProperties = __esri.MapImageLayerProperties;
@@ -15,7 +14,10 @@ export class SystemConfiguration {
   };
 }
 
-export type LayerConfig = Mutable<SceneLayerProperties> | Mutable<FeatureLayerProperties> | Mutable<MapImageLayerProperties & {type: 'map-image'}>;
+export type LayerConfig =
+  DeepWritable<SceneLayerProperties>
+  | DeepWritable<FeatureLayerProperties>
+  | DeepWritable<MapImageLayerProperties & { type: 'map-image' }>;
 
 export type SystemConfigurationLayerTypes =
   'scene'
@@ -24,4 +26,4 @@ export type SystemConfigurationLayerTypes =
   | 'elevation'
   | 'map-image'
 
-type Mutable<T> = { -readonly [P in keyof T]: T[P] };
+export type DeepWritable<T> = { -readonly [P in keyof T]: DeepWritable<T[P]> };

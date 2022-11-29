@@ -13,6 +13,7 @@ import SceneLayerProperties = __esri.SceneLayerProperties;
 import ElevationLayerProperties = __esri.ElevationLayerProperties;
 import GeoJSONLayerProperties = __esri.GeoJSONLayerProperties;
 import FeatureLayerProperties = __esri.FeatureLayerProperties;
+import MapImageLayerProperties = __esri.MapImageLayerProperties;
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,7 @@ export class LayerFactoryService {
       layer.when(() => layer.popupTemplate = createTablePopup(layer));
       return layer;
     });
-    this.constructors.set('map-image', async (layerConfig: LayerConfig) => this.constructMapImageLayer(layerConfig));
+    this.constructors.set('map-image', async (layerConfig: LayerConfig) => this.constructMapImageLayer(layerConfig as MapImageLayerProperties));
   }
 
   async constructLayer(layerConfig: LayerConfig): Promise<Layer> {

@@ -60,7 +60,7 @@ export class ConfigPageComponent implements OnDestroy {
   /**
    * When the user clicks on save, we need to
    */
-  onLayerConfigSave(layer: FeatureLayerProperties) {
+  onLayerConfigSave(layer: LayerConfig) {
     // Find the layer in the configuration and replace it with the new one
     this.configuration.layers = this.configuration.layers.map((l: LayerConfig) => {
       if (l.url === layer.url) {
@@ -94,7 +94,7 @@ export class ConfigPageComponent implements OnDestroy {
     });
   }
 
-  toggleLayerVisibility(layer: FeatureLayerProperties) {
+  toggleLayerVisibility(layer: LayerConfig) {
     layer.visible = layer.visible === undefined ? true : layer.visible;
     layer.visible = !layer.visible;
     this.onLayerConfigSave(layer)

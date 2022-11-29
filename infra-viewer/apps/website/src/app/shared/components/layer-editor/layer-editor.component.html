@@ -11,11 +11,11 @@
       <ng-template #noSublayers>
         <ng-template *ngTemplateOutlet="sublayerEditor"></ng-template>
       </ng-template>
-      <div class="uk-width-1-3" *ngIf="serviceInfo.layers; else noSublayers">
+      <div class="uk-width-1-3" *ngIf="serviceInfo.layers.length > 1; else noSublayers">
         <ul class="uk-tab-left" uk-tab="connect: #sublayer-list;">
           <li *ngFor="let sublayer of serviceInfo.layers; let i = index"
               [class.uk-active]="i === selectedSublayerIndex">
-            <a (click)="selectSublayer(i)">{{sublayer.name}}</a>
+            <a (click)="selectSublayer(sublayer)">{{sublayer.name}}</a>
           </li>
         </ul>
       </div>
@@ -91,9 +91,9 @@
               </ng-container>
             </div>
             <div class="uk-width-1-2">
-            <!--  <ng-select [(ngModel)]="layerConfig.fields">
-                <ng-option *ngFor="let field of " [value]="field">{{field}}</ng-option>
-              </ng-select>-->
+              <!--  <ng-select [(ngModel)]="layerConfig.fields">
+                  <ng-option *ngFor="let field of " [value]="field">{{field}}</ng-option>
+                </ng-select>-->
             </div>
           </div>
           <div class="uk-margin uk-grid uk-child-width-expand" *ngIf="selectedLayer.type !== 'map-image'">
@@ -136,13 +136,11 @@
         <li *ngIf="selectedLayer.type !== 'map-image'">
           <div class="uk-flex uk-flex-between uk-border-bottom">
             <h3>Renderer</h3>
-            <button type="button" class="uk-button uk-button-default uk-button-small" (click)="addUniqueValue()">
-              <span uk-icon="icon: plus"></span>
-            </button>
           </div>
-          <div class="uk-margin" *ngIf="selectedLayer.renderer;else noRenderer">
+          <div class="uk-margin">
             <ul uk-accordion>
-              <li
+              <ng-template *ngTemplateOutlet="rendererEditor"></ng-template>
+              <!--<li
                 *ngFor="let uniqueValueInfo of (selectedLayer.renderer | cast: UniqueValueRenderer).uniqueValueInfos; let i = index">
                 <a class="uk-accordion-title">Symbol layer no. {{i + 1}}</a>
                 <hr class="uk-divider-small">
@@ -154,7 +152,7 @@
                   <ng-template
                     *ngTemplateOutlet="symboleditor; context: {symbol: uniqueValueInfo.symbol} "></ng-template>
                 </div>
-              </li>
+              </li>-->
             </ul>
           </div>
         </li>
@@ -162,7 +160,7 @@
     </div>
 
 
-    <pre>{{rootLayerConfig | json}}</pre>
+    <pre>{{selectedLayer | json}}</pre>
   </div>
 </ng-template>
 
@@ -216,6 +214,26 @@
   </div>
 </ng-template>
 
-<ng-template #noRenderer>
-  <button class="uk-button uk-button-primary" type="button" (click)="createRenderer()">Create Renderer</button>
+<ng-template #rendererEditor>
+  <ng-container *ngIf="selectedLayer && selectedLayer.type !== 'map-image'; else rendererUnavailable">
+    <ng-container *ngIf="!selectedLayer.renderer; else renderer">
+      <button class="uk-button uk-button-primary" type="button" (click)="createRenderer()">Create Renderer</button>
+    </ng-container>
+    <ng-template #renderer>
+      <!--      Create a selectbox for renderer type-->
+      <div class="uk-margin">
+        <label class="uk-form-label" for="rendererType">Renderer type</label>
+        <div class="uk-form-controls">
+          <select class="uk-select" id="rendererType" name="rendererType"
+                  [(ngModel)]="selectedLayer.renderer.type">
+            <option value="simple">Simple</option>
+            <option value="unique-value">Unique value</option>
+          </select>
+        </div>
+      </div>
+    </ng-template>
+  </ng-container>
+  <ng-template #rendererUnavailable>
+    <p>Renderer is not available for this layer type</p>
+  </ng-template>
 </ng-template>
