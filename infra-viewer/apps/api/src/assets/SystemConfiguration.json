@@ -265,13 +265,15 @@
       "y": 443752.26031690626,
       "z": 5966.512190682592
     },
-    "qualityProfile": "low",
+    "qualityProfile": "medium",
     "environment": {
       "lighting": {
         "type": "sun",
         "directShadowsEnabled": true,
         "ambientOcclusionEnabled": true
-      }
+      },
+      "atmosphereEnabled": true,
+      "starsEnabled": true
     },
     "spatialReference": {
       "wkid": 28992
