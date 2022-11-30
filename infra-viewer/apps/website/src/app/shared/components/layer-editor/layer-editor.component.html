@@ -14,7 +14,7 @@
         </div>
       </ng-template>
       <div class="uk-width-1-3" *ngIf="serviceInfo.layers.length > 1; else noSublayers">
-        <ul class="uk-tab-left" uk-tab="connect: #sublayer-list;">
+        <ul class="uk-tab-left" uk-tab="connect: #sublayer-list; animation: uk-animation-fade">
           <li *ngFor="let sublayer of serviceInfo.layers; let i = index"
               [class.uk-active]="i === selectedSublayerIndex">
             <a (click)="selectSublayer(sublayer)">{{sublayer.name}}</a>
@@ -39,7 +39,7 @@
 
 <ng-template #sublayerEditor>
   <div *ngIf="selectedLayer">
-    <ul uk-tab>
+    <ul uk-tab="animation: uk-animation-fade">
       <li><a href="#">General Settings</a></li>
       <li><a href="#" *ngIf="selectedLayer.type !== 'map-image'">Renderer</a></li>
     </ul>
