@@ -36,129 +36,122 @@
 </div>
 
 <ng-template #sublayerEditor>
-  <div *ngIf="selectedLayer" class="uk-grid">
-    <div class="uk-width-1-3">
-      <ul class="uk-tab-left" uk-tab="connect: #configuration-sections;">
-        <li><a href="#">General Settings</a></li>
-        <li><a href="#" *ngIf="selectedLayer.type !== 'map-image'">Renderer</a></li>
-      </ul>
-    </div>
-    <div class="uk-width-2-3">
-      <ul id="configuration-sections" class="uk-switcher">
-        <li>
-          <div class="uk-margin">
-            <label class="uk-form-label">Title</label>
-            <div class="uk-form-controls">
-              <input class="uk-input" type="text" name="title" [(ngModel)]="selectedLayer.title" required>
-            </div>
-          </div>
-          <div class="uk-margin">
-            <label class="uk-form-label" for="url">URL</label>
-            <div class="uk-form-controls">
-              <input class="uk-input" id="url" name="url" type="text" [(ngModel)]="selectedLayer.url" required>
-            </div>
-          </div>
-          <div class="uk-margin uk-child-width-expand" uk-grid>
-            <div>
-              <label class="uk-form-label" for="minScale">Min Scale</label>
-              <div class="uk-form-controls">
-                <input class="uk-input" id="minScale" name="minScale" type="number" step="100"
-                       [(ngModel)]="selectedLayer.minScale">
-              </div>
-            </div>
-            <div>
-              <label class="uk-form-label" for="maxScale">Max Scale</label>
-              <div class="uk-form-controls">
-                <input class="uk-input" id="maxScale" name="maxScale" type="number" step="100"
-                       [(ngModel)]="selectedLayer.maxScale">
-              </div>
-            </div>
-          </div>
-          <!--           Create a checkbox to show the layer in the legend. -->
-          <div class="uk-margin" uk-grid>
-            <div class="uk-grid uk-width-1-2">
-              <label class="uk-form-label" for="legendEnabled">Show in Legend</label>
-              <div class="uk-form-controls">
-                <input class="uk-checkbox" id="legendEnabled" name="legendEnabled" type="checkbox"
-                       [(ngModel)]="selectedLayer.legendEnabled">
-              </div>
-              <ng-container *ngIf="selectedLayer.type !== 'map-image'">
-                <label class="uk-form-label" for="popupEnabled">Popup enabled</label>
-                <div class="uk-form-controls">
-                  <input class="uk-checkbox" id="popupEnabled" name="popupEnabled" type="checkbox"
-                         [(ngModel)]="selectedLayer.popupEnabled">
-                </div>
-              </ng-container>
-            </div>
-            <div class="uk-width-1-2">
-              <!--  <ng-select [(ngModel)]="layerConfig.fields">
-                  <ng-option *ngFor="let field of " [value]="field">{{field}}</ng-option>
-                </ng-select>-->
-            </div>
-          </div>
-          <div class="uk-margin uk-grid uk-child-width-expand" *ngIf="selectedLayer.type !== 'map-image'">
-            <div>
-              <label class="uk-form-label" for="elevationMode">Elevation Mode</label>
-              <div class="uk-form-controls">
-                <select class="uk-select" id="elevationMode" name="elevationMode"
-                        [(ngModel)]="selectedLayer.elevationInfo.mode">
-                  <option value="on-the-ground">On the ground</option>
-                  <option value="relative-to-ground">Relative to ground</option>
-                  <option value="relative-to-scene">Relative to scene</option>
-                  <option value="absolute-height">Absolute height</option>
-                </select>
-              </div>
-            </div>
-            <div *ngIf="selectedLayer.elevationInfo.mode !== 'on-the-ground'">
-              <label class="uk-form-label" for="units">Units</label>
-              <div class="uk-form-controls">
-                <select class="uk-select" id="units" name="units"
-                        [(ngModel)]="selectedLayer.elevationInfo.unit">
-                  <option value="centimeters">Centimeters</option>
-                  <option value="meters">Meters</option>
-                  <option value="kilometers">Kilometers</option>
-                  <option value="us-feet">US Feet</option>
-                  <option value="feet">Feet</option>
-                  <option value="miles">Miles</option>
-                  <option value="yards">Yards</option>
-                </select>
-              </div>
-            </div>
-            <div *ngIf="selectedLayer.elevationInfo.mode !== 'on-the-ground'">
-              <label class="uk-form-label" for="offset">Offset</label>
-              <div class="uk-form-controls">
-                <input class="uk-input" id="offset" name="offset" type="number" step="0.1"
-                       [(ngModel)]="selectedLayer.elevationInfo.offset">
-              </div>
-            </div>
-          </div>
-        </li>
-        <li *ngIf="selectedLayer.type !== 'map-image'">
-          <div class="uk-flex uk-flex-between uk-border-bottom">
-            <h3>Renderer</h3>
-          </div>
-          <div class="uk-margin">
-            <ul uk-accordion>
-              <ng-template *ngTemplateOutlet="rendererEditor"></ng-template>
-              <!--<li
-                *ngFor="let uniqueValueInfo of (selectedLayer.renderer | cast: UniqueValueRenderer).uniqueValueInfos; let i = index">
-                <a class="uk-accordion-title">Symbol layer no. {{i + 1}}</a>
-                <hr class="uk-divider-small">
-                <div class="uk-accordion-content">
-                  <label class="uk-form-label" for="value">Value</label>
-                  <div class="uk-form-controls">
-                    <input class="uk-input" id="value" name="value" type="text" [(ngModel)]="uniqueValueInfo.value">
-                  </div>
-                  <ng-template
-                    *ngTemplateOutlet="symboleditor; context: {symbol: uniqueValueInfo.symbol} "></ng-template>
-                </div>
-              </li>-->
-            </ul>
-          </div>
-        </li>
-      </ul>
-    </div>
+  <div *ngIf="selectedLayer">
+    <ul uk-tab>
+      <li><a href="#">General Settings</a></li>
+      <li><a href="#" *ngIf="selectedLayer.type !== 'map-image'">Renderer</a></li>
+    </ul>
 
+    <ul class="uk-switcher uk-margin">
+      <li>
+        <div class="uk-margin">
+          <label class="uk-form-label">Title</label>
+          <div class="uk-form-controls">
+            <input class="uk-input" type="text" name="title" [(ngModel)]="selectedLayer.title" required>
+          </div>
+        </div>
+        <div class="uk-margin">
+          <label class="uk-form-label" for="url">URL</label>
+          <div class="uk-form-controls">
+            <input class="uk-input" id="url" name="url" type="text" [(ngModel)]="selectedLayer.url" required>
+          </div>
+        </div>
+        <div class="uk-margin uk-child-width-expand" uk-grid>
+          <div>
+            <label class="uk-form-label" for="minScale">Min Scale</label>
+            <div class="uk-form-controls">
+              <input class="uk-input" id="minScale" name="minScale" type="number" step="100"
+                     [(ngModel)]="selectedLayer.minScale">
+            </div>
+          </div>
+          <div>
+            <label class="uk-form-label" for="maxScale">Max Scale</label>
+            <div class="uk-form-controls">
+              <input class="uk-input" id="maxScale" name="maxScale" type="number" step="100"
+                     [(ngModel)]="selectedLayer.maxScale">
+            </div>
+          </div>
+        </div>
+        <!--           Create a checkbox to show the layer in the legend. -->
+        <div class="uk-margin" uk-grid>
+          <div class="uk-grid uk-width-1-2">
+            <label class="uk-form-label" for="legendEnabled">Show in Legend</label>
+            <div class="uk-form-controls">
+              <input class="uk-checkbox" id="legendEnabled" name="legendEnabled" type="checkbox"
+                     [(ngModel)]="selectedLayer.legendEnabled">
+            </div>
+            <ng-container *ngIf="selectedLayer.type !== 'map-image'">
+              <label class="uk-form-label" for="popupEnabled">Popup enabled</label>
+              <div class="uk-form-controls">
+                <input class="uk-checkbox" id="popupEnabled" name="popupEnabled" type="checkbox"
+                       [(ngModel)]="selectedLayer.popupEnabled">
+              </div>
+            </ng-container>
+          </div>
+          <div class="uk-width-1-2">
+            <!--  <ng-select [(ngModel)]="layerConfig.fields">
+                <ng-option *ngFor="let field of " [value]="field">{{field}}</ng-option>
+              </ng-select>-->
+          </div>
+        </div>
+        <div class="uk-margin uk-grid uk-child-width-expand" *ngIf="selectedLayer.type !== 'map-image'">
+          <div>
+            <label class="uk-form-label" for="elevationMode">Elevation Mode</label>
+            <div class="uk-form-controls">
+              <select class="uk-select" id="elevationMode" name="elevationMode"
+                      [(ngModel)]="selectedLayer.elevationInfo.mode">
+                <option value="on-the-ground">On the ground</option>
+                <option value="relative-to-ground">Relative to ground</option>
+                <option value="relative-to-scene">Relative to scene</option>
+                <option value="absolute-height">Absolute height</option>
+              </select>
+            </div>
+          </div>
+          <div *ngIf="selectedLayer.elevationInfo.mode !== 'on-the-ground'">
+            <label class="uk-form-label" for="units">Units</label>
+            <div class="uk-form-controls">
+              <select class="uk-select" id="units" name="units"
+                      [(ngModel)]="selectedLayer.elevationInfo.unit">
+                <option value="centimeters">Centimeters</option>
+                <option value="meters">Meters</option>
+                <option value="kilometers">Kilometers</option>
+                <option value="us-feet">US Feet</option>
+                <option value="feet">Feet</option>
+                <option value="miles">Miles</option>
+                <option value="yards">Yards</option>
+              </select>
+            </div>
+          </div>
+          <div *ngIf="selectedLayer.elevationInfo.mode !== 'on-the-ground'">
+            <label class="uk-form-label" for="offset">Offset</label>
+            <div class="uk-form-controls">
+              <input class="uk-input" id="offset" name="offset" type="number" step="0.1"
+                     [(ngModel)]="selectedLayer.elevationInfo.offset">
+            </div>
+          </div>
+        </div>
+      </li>
+      <li *ngIf="selectedLayer.type !== 'map-image'">
+        <div class="uk-margin">
+          <ul uk-accordion>
+            <ng-template *ngTemplateOutlet="rendererEditor"></ng-template>
+            <!--<li
+              *ngFor="let uniqueValueInfo of (selectedLayer.renderer | cast: UniqueValueRenderer).uniqueValueInfos; let i = index">
+              <a class="uk-accordion-title">Symbol layer no. {{i + 1}}</a>
+              <hr class="uk-divider-small">
+              <div class="uk-accordion-content">
+                <label class="uk-form-label" for="value">Value</label>
+                <div class="uk-form-controls">
+                  <input class="uk-input" id="value" name="value" type="text" [(ngModel)]="uniqueValueInfo.value">
+                </div>
+                <ng-template
+                  *ngTemplateOutlet="symboleditor; context: {symbol: uniqueValueInfo.symbol} "></ng-template>
+              </div>
+            </li>-->
+          </ul>
+        </div>
+      </li>
+    </ul>
 
     <pre>{{selectedLayer | json}}</pre>
   </div>
@@ -216,22 +209,33 @@
 
 <ng-template #rendererEditor>
   <ng-container *ngIf="selectedLayer && selectedLayer.type !== 'map-image'; else rendererUnavailable">
-    <ng-container *ngIf="!selectedLayer.renderer; else renderer">
-      <button class="uk-button uk-button-primary" type="button" (click)="createRenderer()">Create Renderer</button>
-    </ng-container>
-    <ng-template #renderer>
-      <!--      Create a selectbox for renderer type-->
-      <div class="uk-margin">
-        <label class="uk-form-label" for="rendererType">Renderer type</label>
-        <div class="uk-form-controls">
-          <select class="uk-select" id="rendererType" name="rendererType"
-                  [(ngModel)]="selectedLayer.renderer.type">
-            <option value="simple">Simple</option>
-            <option value="unique-value">Unique value</option>
-          </select>
+    <ul uk-accordion="multiple: true" class="uk-accordion" #accordion>
+      <li>
+        <a class="uk-accordion-title">Simple Renderer</a>
+        <div class="uk-accordion-content">
+          <!--        Show a radio button to make this renderer active -->
+          <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+            <label><input class="uk-checkbox" type="checkbox"
+                          (change)="onRendererChange($event, 'simple')"
+                          [value]="selectedLayer.renderer?.type === 'simple'"> Use this renderer</label>
+          </div>
         </div>
-      </div>
-    </ng-template>
+      </li>
+      <li>
+        <a class="uk-accordion-title">Item 2</a>
+        <div class="uk-accordion-content">
+          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            Duis aute irure dolor reprehenderit.</p>
+        </div>
+      </li>
+      <li>
+        <a class="uk-accordion-title">Item 3</a>
+        <div class="uk-accordion-content">
+          <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+            Excepteur sint occaecat cupidatat proident.</p>
+        </div>
+      </li>
+    </ul>
   </ng-container>
   <ng-template #rendererUnavailable>
     <p>Renderer is not available for this layer type</p>

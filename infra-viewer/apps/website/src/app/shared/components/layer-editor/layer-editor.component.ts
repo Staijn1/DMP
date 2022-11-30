@@ -22,28 +22,6 @@ export class LayerEditorComponent {
   selectedLayer: LayerConfig | undefined;
 
   /**
-   * Create a new renderer, by default it will be a unique value renderer
-   */
-  createRenderer() {
-    if (!this.selectedLayer || this.selectedLayer.type === 'map-image') return;
-    this.selectedLayer.renderer = new SimpleRenderer({
-      symbol: new PointSymbol3D({
-        symbolLayers: [
-          {
-            type: 'icon',
-            material: {
-              color: '#ff0000'
-            },
-            outline: {
-              color: '#ff0000',
-              size: 1
-            },
-          }]
-      })
-    });
-  }
-
-  /**
    * Emit the save event when the user wants to save
    */
   onLayerSave() {
@@ -136,5 +114,29 @@ export class LayerEditorComponent {
         offset: 0,
       }
     } as LayerConfig
+  }
+
+  /**
+   * When the user clicks on the "use this renderer" button, we create a new renderer for the selected layer if it does not exist yet
+   * @param {Event} $event
+   * @param {string} rendererType
+   */
+  onRendererChange($event: Event, rendererType: string) {
+    if (this.selectedLayer?.type === 'feature') {
+      if (rendererType === 'unique-value') {
+        if (!this.selectedLayer?.renderer) {
+          this.selectedLayer.renderer = new UniqueValueRenderer({
+            field: 'OBJECTID',
+            uniqueValueInfos: [],
+          });
+        }
+      } else if (rendererType === 'simple') {
+        if (!this.selectedLayer?.renderer) {
+          this.selectedLayer.renderer = new SimpleRenderer({
+            symbol: new PointSymbol3D(),
+          });
+        }
+      }
+    }
   }
 }
