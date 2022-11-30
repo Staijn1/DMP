@@ -4,6 +4,7 @@ import SceneView from '@arcgis/core/views/SceneView';
 import SimpleRenderer from '@arcgis/core/renderers/SimpleRenderer';
 import CameraProperties = __esri.CameraProperties;
 import MapImageLayerProperties = __esri.MapImageLayerProperties;
+import SceneViewEnvironment = __esri.SceneViewEnvironment;
 
 
 export class SystemConfiguration {
@@ -11,7 +12,7 @@ export class SystemConfiguration {
   view!: {
     camera: CameraProperties;
     qualityProfile: Pick<SceneView, 'qualityProfile'>
-    environment: Pick<SceneView, 'environment'>
+    environment: SceneViewEnvironment
   };
 }
 
