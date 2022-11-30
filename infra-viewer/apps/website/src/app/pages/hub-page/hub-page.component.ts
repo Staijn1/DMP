@@ -2,12 +2,15 @@ import {Component, OnInit} from '@angular/core';
 import {HubService} from '../../services/hub/hub.service';
 import {environment} from '../../../environments/environment';
 import {AuthenticationService} from '../../services/authentication/authentication.service';
-import {HubItem} from '@infra-viewer/interfaces';
+import {HubItem, LayerConfig, SystemConfiguration} from '@infra-viewer/interfaces';
 import {ConfigurationService} from '../../services/configuration/configuration.service';
 import PortalQueryParams from '@arcgis/core/portal/PortalQueryParams';
+import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
+import {swipeLeftAnimation} from '@infra-viewer/ui';
 
 @Component({
   selector: 'app-hub-page',
+  animations: [swipeLeftAnimation],
   templateUrl: './hub-page.component.html',
   styleUrls: ['./hub-page.component.scss'],
 })
@@ -21,13 +24,18 @@ export class HubPageComponent implements OnInit {
 
   query!: PortalQueryParams;
   hasMoreItems = false;
+  configuration: SystemConfiguration | undefined;
 
   constructor(private readonly hubService: HubService, private authService: AuthenticationService, private readonly configurationService: ConfigurationService) {
   }
 
   ngOnInit(): void {
     this.getItems();
+    this.configurationService.getConfiguration().then((config) => {
+      this.configuration = config
+    });
   }
+
 
   createImageUrl(hubItem: HubItem) {
     return `${environment.portalURL}/sharing/rest/content/items/${hubItem.id}/info/${hubItem.thumbnail}?token=${this.authService.token}`;
@@ -55,7 +63,7 @@ export class HubPageComponent implements OnInit {
     this.configurationService.addLayer(hubItem).then();
   }
 
-  removeLayerFromConfiguration(hubItem: HubItem) {
+  removeLayerFromConfiguration(hubItem: HubItem | LayerConfig) {
     this.configurationService.removeLayer(hubItem).then();
   }
 
@@ -64,9 +72,21 @@ export class HubPageComponent implements OnInit {
    * @param {HubItem} hubItem
    * @returns {Promise<boolean>}
    */
-  layerAlreadyInConfiguration(hubItem: HubItem) {
+  layerAlreadyInConfiguration(hubItem: HubItem): boolean | undefined {
     return ConfigurationService.configuration?.layers.some(l => l.url?.includes(hubItem.url) || hubItem.url?.includes(l.url as string));
   }
+
+  /**
+   * A function that checks if the item that is dragged is allowed to be dropped.
+   * It is allowed to be dropped when the layer isn't in the configuration yet, because it does not make sense to load the same layer multiple times.
+   * @param {CdkDrag<HubItem>} item
+   * @returns {boolean}
+   */
+  layerAlreadyInConfigurationPredicate(item: CdkDrag<HubItem>): boolean {
+    const isInConfiguration = this.layerAlreadyInConfiguration(item.data);
+    return !isInConfiguration;
+  }
+
 
   filterItems() {
     this.hubItems = [];
@@ -76,5 +96,9 @@ export class HubPageComponent implements OnInit {
   onThumbnailImageError($event: ErrorEvent) {
     const target = $event.target as HTMLImageElement;
     target.src = 'assets/empty_world.png';
+  }
+
+  drop($event: CdkDragDrop<LayerConfig[], any>) {
+    this.addLayerToConfiguration($event.item.data);
   }
 }
