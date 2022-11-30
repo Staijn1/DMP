@@ -22,15 +22,15 @@ export class LayerFactoryService {
   constructors = new Map();
 
   constructor(private hubService: HubService) {
-    this.constructors.set('scene', (layerConfig: LayerConfig) => new SceneLayer(layerConfig as SceneLayerProperties));
+    this.constructors.set('scene', (layerConfig: LayerConfig) => new SceneLayer(layerConfig as unknown as SceneLayerProperties));
     this.constructors.set('elevation', (layerConfig: LayerConfig) => new ElevationLayer(layerConfig as ElevationLayerProperties));
     this.constructors.set('geojson', (layerConfig: LayerConfig) => {
-      const layer = new GeoJSONLayer(layerConfig as GeoJSONLayerProperties)
+      const layer = new GeoJSONLayer(layerConfig as unknown as GeoJSONLayerProperties)
       layer.when(() => layer.popupTemplate = createTablePopup(layer));
       return layer;
     });
     this.constructors.set('feature', (layerConfig: LayerConfig) => {
-      const layer = new FeatureLayer(layerConfig as FeatureLayerProperties)
+      const layer = new FeatureLayer(layerConfig as unknown as FeatureLayerProperties)
       layer.when(() => layer.popupTemplate = createTablePopup(layer));
       return layer;
     });

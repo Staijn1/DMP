@@ -154,19 +154,14 @@ export class LayerEditorComponent {
       return;
     }
     if (this.selectedLayer?.type === 'feature') {
-      if (rendererType === 'unique-value') {
-        if (!this.selectedLayer?.renderer) {
-          this.selectedLayer.renderer = new UniqueValueRenderer({
-            field: 'OBJECTID',
-            uniqueValueInfos: [],
-          });
-        }
-      } else if (rendererType === 'simple') {
-        if (!this.selectedLayer?.renderer) {
+      switch (rendererType) {
+        case 'simple':
           this.selectedLayer.renderer = new SimpleRenderer({
             symbol: new PointSymbol3D(),
           });
-        }
+          break;
+        default:
+          console.error('Unsupported renderer type', rendererType);
       }
     }
   }

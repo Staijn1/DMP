@@ -130,19 +130,6 @@
         <div class="uk-margin">
           <ul uk-accordion>
             <ng-template *ngTemplateOutlet="rendererEditor"></ng-template>
-            <!--<li
-              *ngFor="let uniqueValueInfo of (selectedLayer.renderer | cast: UniqueValueRenderer).uniqueValueInfos; let i = index">
-              <a class="uk-accordion-title">Symbol layer no. {{i + 1}}</a>
-              <hr class="uk-divider-small">
-              <div class="uk-accordion-content">
-                <label class="uk-form-label" for="value">Value</label>
-                <div class="uk-form-controls">
-                  <input class="uk-input" id="value" name="value" type="text" [(ngModel)]="uniqueValueInfo.value">
-                </div>
-                <ng-template
-                  *ngTemplateOutlet="symboleditor; context: {symbol: uniqueValueInfo.symbol} "></ng-template>
-              </div>
-            </li>-->
           </ul>
         </div>
       </li>
@@ -154,54 +141,67 @@
   </div>
 </ng-template>
 
-<ng-template #symboleditor let-symbol="symbol">
-  <!--  Create three input boxes next to each other-->
-  <div class="uk-grid uk-child-width-expand">
-    <div>
-      <label class="uk-form-label" for="screenLength">Screenlength</label>
+<ng-template #symboleditor>
+  <ng-container *ngIf="selectedLayer && selectedLayer.type !== 'map-image' && selectedLayer.renderer">
+    <!--    Create a selectbox to change the type of symbol-->
+    <div class="uk-margin">
+      <label class="uk-form-label" for="symbolType">Symbol Type</label>
       <div class="uk-form-controls">
-        <input class="uk-input" id="screenLength" name="screenLength" type="number"
-               [(ngModel)]="symbol.verticalOffset.screenLength">
+        <select class="uk-select" id="symbolType" name="symbolType"
+                [(ngModel)]="selectedLayer.renderer.symbol.type">
+          <option value="simple-marker">Simple Marker</option>
+          <option value="simple-line">Simple Line</option>
+          <option value="simple-fill">Simple Fill</option>
+        </select>
       </div>
     </div>
-    <div>
-      <label class="uk-form-label" for="maxWorldLength">Max world length</label>
-      <div class="uk-form-controls">
-        <input class="uk-input" id="maxWorldLength" name="maxWorldLength" type="number"
-               [(ngModel)]="symbol.verticalOffset.maxWorldLength">
-      </div>
-    </div>
-    <div>
-      <label class="uk-form-label" for="minWorldLength">Min world length</label>
-      <div class="uk-form-controls">
-        <input class="uk-input" id="minWorldLength" name="minWorldLength" type="number"
-               [(ngModel)]="symbol.verticalOffset.minWorldLength">
-      </div>
-    </div>
-  </div>
-  <div class="uk-margin">
-    <label class="uk-form-label" for="color">Material Color</label>
-    <div class="uk-form-controls">
-      <input class="uk-input" id="color" name="color" type="color"
-             [(ngModel)]="symbol.symbolLayers[0].material.color">
-    </div>
-  </div>
-  <div class="uk-grid uk-child-width-expand">
-    <div>
-      <label class="uk-form-label" for="outlineSize">Outline size</label>
-      <div class="uk-form-controls">
-        <input class="uk-input" id="outlineSize" name="outlineSize" type="number"
-               [(ngModel)]="symbol.symbolLayers[0].outline.size">
-      </div>
-    </div>
-    <div>
-      <label class="uk-form-label" for="outlineColor">Outline color</label>
-      <div class="uk-form-controls">
-        <input class="uk-input" id="outlineColor" name="outlineColor" type="color"
-               [(ngModel)]="symbol.symbolLayers[0].outline.color">
-      </div>
-    </div>
-  </div>
+    <!--   <div class="uk-grid uk-child-width-expand">
+         <div>
+           <label class="uk-form-label" for="screenLength">Screenlength</label>
+           <div class="uk-form-controls">
+             <input class="uk-input" id="screenLength" name="screenLength" type="number"
+                    [(ngModel)]="symbol.verticalOffset.screenLength">
+           </div>
+         </div>
+         <div>
+           <label class="uk-form-label" for="maxWorldLength">Max world length</label>
+           <div class="uk-form-controls">
+             <input class="uk-input" id="maxWorldLength" name="maxWorldLength" type="number"
+                    [(ngModel)]="symbol.verticalOffset.maxWorldLength">
+           </div>
+         </div>
+         <div>
+           <label class="uk-form-label" for="minWorldLength">Min world length</label>
+           <div class="uk-form-controls">
+             <input class="uk-input" id="minWorldLength" name="minWorldLength" type="number"
+                    [(ngModel)]="symbol.verticalOffset.minWorldLength">
+           </div>
+         </div>
+       </div>
+       <div class="uk-margin">
+         <label class="uk-form-label" for="color">Material Color</label>
+         <div class="uk-form-controls">
+           <input class="uk-input" id="color" name="color" type="color"
+                  [(ngModel)]="symbol.symbolLayers[0].material.color">
+         </div>
+       </div>
+       <div class="uk-grid uk-child-width-expand">
+         <div>
+           <label class="uk-form-label" for="outlineSize">Outline size</label>
+           <div class="uk-form-controls">
+             <input class="uk-input" id="outlineSize" name="outlineSize" type="number"
+                    [(ngModel)]="symbol.symbolLayers[0].outline.size">
+           </div>
+         </div>
+         <div>
+           <label class="uk-form-label" for="outlineColor">Outline color</label>
+           <div class="uk-form-controls">
+             <input class="uk-input" id="outlineColor" name="outlineColor" type="color"
+                    [(ngModel)]="symbol.symbolLayers[0].outline.color">
+           </div>
+         </div>
+       </div>-->
+  </ng-container>
 </ng-template>
 
 <ng-template #rendererEditor>
@@ -216,6 +216,7 @@
                           (change)="onRendererChange($event, 'simple')"
                           [checked]="selectedLayer.renderer?.type === 'simple'"> Use this renderer</label>
           </div>
+          <ng-template *ngTemplateOutlet="symboleditor"></ng-template>
         </div>
       </li>
     </ul>

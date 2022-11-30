@@ -1,6 +1,7 @@
 import SceneLayerProperties from '@arcgis/core/layers/SceneLayer';
 import FeatureLayerProperties from '@arcgis/core/layers/FeatureLayer';
 import SceneView from '@arcgis/core/views/SceneView';
+import SimpleRenderer from '@arcgis/core/renderers/SimpleRenderer';
 import CameraProperties = __esri.CameraProperties;
 import MapImageLayerProperties = __esri.MapImageLayerProperties;
 
@@ -15,9 +16,9 @@ export class SystemConfiguration {
 }
 
 export type LayerConfig =
-  DeepWritable<SceneLayerProperties>
-  | DeepWritable<FeatureLayerProperties>
-  | DeepWritable<MapImageLayerProperties & { type: 'map-image' }>;
+  CustomLayerConfig<SceneLayerProperties>
+  | CustomLayerConfig<FeatureLayerProperties>
+  | CustomLayerConfig<MapImageLayerProperties & { type: 'map-image' }>;
 
 export type SystemConfigurationLayerTypes =
   'scene'
@@ -27,3 +28,7 @@ export type SystemConfigurationLayerTypes =
   | 'map-image'
 
 export type DeepWritable<T> = { -readonly [P in keyof T]: DeepWritable<T[P]> };
+
+export type CustomLayerConfig<T> = DeepWritable<T> & {
+  renderer: DeepWritable<SimpleRenderer>
+}
