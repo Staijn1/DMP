@@ -146,6 +146,13 @@ export class LayerEditorComponent {
    * @param {string} rendererType
    */
   onRendererChange($event: Event, rendererType: string) {
+    if (this.selectedLayer?.type === 'map-image') return;
+
+    const isOn = ($event.target as HTMLInputElement).checked;
+    if (!isOn) {
+      (this.selectedLayer as any).renderer = undefined;
+      return;
+    }
     if (this.selectedLayer?.type === 'feature') {
       if (rendererType === 'unique-value') {
         if (!this.selectedLayer?.renderer) {
