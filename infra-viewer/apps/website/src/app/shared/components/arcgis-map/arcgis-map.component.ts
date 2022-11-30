@@ -72,7 +72,7 @@ export class ArcgisMapComponent implements OnInit {
           }),
         ],
       }),
-      layers: [],
+      layers: []
     });
   }
 
@@ -108,13 +108,16 @@ export class ArcgisMapComponent implements OnInit {
     } as any
     // Create the view
     this.view = new SceneView(sceneConfig);
-
     // When a feature is clicked reset the highlight and zoom to the feature
     this.view.on('click', (event) => {
       if (this.activeHighlight) {
         this.activeHighlight.remove();
       }
     });
+    this.view.watch('updating', (isUpdating) => {
+      // Set the cursor to a loading indicator when the view is updating
+      this.view.container.style.cursor = isUpdating ? 'progress' : 'default';
+    })
   }
 
   /**

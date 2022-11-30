@@ -1,0 +1,18 @@
+$global-primary-background: #02357c;
+
+@import "forms.scss";
+
+
+// 2. Import default variables and available mixins.
+@import "uikit/src/scss/variables-theme";
+@import "uikit/src/scss/mixins-theme";
+
+// This mixin is used to create the border on an active tab. It is extended to make the border thicker and the font bold
+@mixin hook-tab-item-active {
+  border-color: $global-primary-background;
+  border-width: 4px;
+  font-weight: bold;
+}
+
+// 4. Import UIkit
+@import "uikit/src/scss/uikit-theme.scss";

@@ -65,7 +65,7 @@ export class HubPageComponent implements OnInit {
    * @returns {Promise<boolean>}
    */
   layerAlreadyInConfiguration(hubItem: HubItem) {
-    return ConfigurationService.configuration?.layers.some(l => l.url?.includes(hubItem.url) || hubItem.url?.includes(l.url));
+    return ConfigurationService.configuration?.layers.some(l => l.url?.includes(hubItem.url) || hubItem.url?.includes(l.url as string));
   }
 
   filterItems() {

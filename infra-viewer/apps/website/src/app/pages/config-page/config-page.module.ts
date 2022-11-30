@@ -4,6 +4,7 @@ import {RouterModule} from '@angular/router';
 import {ConfigPageComponent} from './config-page.component';
 import {FormsModule} from '@angular/forms';
 import {PipesModule} from '../../pipes/pipes.module';
+import {SharedModule} from '../../shared/shared.module';
 
 
 @NgModule({
@@ -12,7 +13,8 @@ import {PipesModule} from '../../pipes/pipes.module';
     CommonModule,
     RouterModule.forChild([{path: '', component: ConfigPageComponent}]),
     FormsModule,
-    PipesModule
+    PipesModule,
+    SharedModule
   ]
 })
 export class ConfigPageModule {

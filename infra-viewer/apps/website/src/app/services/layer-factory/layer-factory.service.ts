@@ -8,11 +8,11 @@ import Layer from '@arcgis/core/layers/Layer';
 import GroupLayer from '@arcgis/core/layers/GroupLayer';
 import {HubService} from '../hub/hub.service';
 import {createTablePopup} from '../../utils/utils';
-import PopupTemplate from '@arcgis/core/PopupTemplate';
 import SceneLayerProperties = __esri.SceneLayerProperties;
 import ElevationLayerProperties = __esri.ElevationLayerProperties;
 import GeoJSONLayerProperties = __esri.GeoJSONLayerProperties;
 import FeatureLayerProperties = __esri.FeatureLayerProperties;
+import MapImageLayerProperties = __esri.MapImageLayerProperties;
 
 @Injectable({
   providedIn: 'root'
@@ -21,19 +21,23 @@ export class LayerFactoryService {
   constructors = new Map();
 
   constructor(private hubService: HubService) {
-    this.constructors.set('scene', (layerConfig: LayerConfig) => new SceneLayer(layerConfig as SceneLayerProperties));
+    this.constructors.set('scene', (layerConfig: LayerConfig) => new SceneLayer(layerConfig as unknown as SceneLayerProperties));
     this.constructors.set('elevation', (layerConfig: LayerConfig) => new ElevationLayer(layerConfig as ElevationLayerProperties));
     this.constructors.set('geojson', (layerConfig: LayerConfig) => {
-      const layer = new GeoJSONLayer(layerConfig as GeoJSONLayerProperties)
-      layer.when(() => layer.popupTemplate = createTablePopup(layer));
+      const layer = new GeoJSONLayer(layerConfig as unknown as GeoJSONLayerProperties)
+      if (layer.popupEnabled) {
+        layer.when(() => layer.popupTemplate = createTablePopup(layer));
+      }
       return layer;
     });
     this.constructors.set('feature', (layerConfig: LayerConfig) => {
-      const layer = new FeatureLayer(layerConfig as FeatureLayerProperties)
-      layer.when(() => layer.popupTemplate = createTablePopup(layer));
+      const layer = new FeatureLayer(layerConfig as unknown as FeatureLayerProperties)
+      if (layer.popupEnabled) {
+        layer.when(() => layer.popupTemplate = createTablePopup(layer));
+      }
       return layer;
     });
-    this.constructors.set('map-image', async (layerConfig: LayerConfig) => this.constructMapImageLayer(layerConfig));
+    this.constructors.set('map-image', async (layerConfig: LayerConfig) => this.constructMapImageLayer(layerConfig as MapImageLayerProperties));
   }
 
   async constructLayer(layerConfig: LayerConfig): Promise<Layer> {

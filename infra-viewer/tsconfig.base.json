@@ -16,7 +16,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@infra-viewer/interfaces": ["libs/interfaces/src/index.ts"]
+      "@infra-viewer/interfaces": ["libs/interfaces/src/index.ts"],
+      "@infra-viewer/ui": ["libs/ui/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
