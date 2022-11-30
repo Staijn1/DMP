@@ -1,7 +1,7 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HTTPService} from '../HTTP/http.service';
 import {environment} from '../../../environments/environment';
-import {HubItem, SystemConfiguration, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
+import {HubItem, LayerConfig, SystemConfiguration, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
 import {getTypeForHubItem} from '../../utils/utils';
 
 @Injectable({
@@ -45,7 +45,7 @@ export class ConfigurationService extends HTTPService implements OnDestroy {
     await this.setConfiguration(configuration);
   }
 
-  async removeLayer(hubItem: HubItem) {
+  async removeLayer(hubItem: HubItem | LayerConfig) {
     const configuration = await this.getConfiguration();
 
     configuration.layers = configuration.layers.filter(l => l.url !== hubItem.url);

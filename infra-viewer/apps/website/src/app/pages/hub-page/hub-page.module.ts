@@ -4,6 +4,7 @@ import {RouterModule} from '@angular/router';
 import {HubPageComponent} from './hub-page.component';
 import {FormsModule} from '@angular/forms';
 import {SharedModule} from '../../shared/shared.module';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import {SharedModule} from '../../shared/shared.module';
       }]),
     CommonModule,
     FormsModule,
-    SharedModule
+    SharedModule,
+    DragDropModule
   ]
 })
 export class HubPageModule {
