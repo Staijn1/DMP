@@ -26,12 +26,16 @@ export class LayerFactoryService {
     this.constructors.set('elevation', (layerConfig: LayerConfig) => new ElevationLayer(layerConfig as ElevationLayerProperties));
     this.constructors.set('geojson', (layerConfig: LayerConfig) => {
       const layer = new GeoJSONLayer(layerConfig as unknown as GeoJSONLayerProperties)
-      layer.when(() => layer.popupTemplate = createTablePopup(layer));
+      if (layer.popupEnabled) {
+        layer.when(() => layer.popupTemplate = createTablePopup(layer));
+      }
       return layer;
     });
     this.constructors.set('feature', (layerConfig: LayerConfig) => {
       const layer = new FeatureLayer(layerConfig as unknown as FeatureLayerProperties)
-      layer.when(() => layer.popupTemplate = createTablePopup(layer));
+      if (layer.popupEnabled) {
+        layer.when(() => layer.popupTemplate = createTablePopup(layer));
+      }
       return layer;
     });
     this.constructors.set('map-image', async (layerConfig: LayerConfig) => this.constructMapImageLayer(layerConfig as MapImageLayerProperties));
