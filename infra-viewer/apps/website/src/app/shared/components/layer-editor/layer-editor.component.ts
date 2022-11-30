@@ -1,11 +1,7 @@
 import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {LayerConfig, ServiceInfo, ServiceInfoLayer, SystemConfiguration} from '@infra-viewer/interfaces';
-import PointSymbol3D from '@arcgis/core/symbols/PointSymbol3D';
-import UniqueValueRenderer from '@arcgis/core/renderers/UniqueValueRenderer';
 import UIkit from 'uikit';
 import {getTypeForHubItem} from '../../../utils/utils';
-import SimpleRenderer from '@arcgis/core/renderers/SimpleRenderer';
-import Collection from '@arcgis/core/core/Collection';
 
 @Component({
   selector: 'app-layer-editor',
@@ -20,20 +16,6 @@ export class LayerEditorComponent {
   serviceInfo!: ServiceInfo;
   selectedSublayerIndex = 0;
   selectedLayer: LayerConfig | undefined;
-  selectedServiceInfoLayer: ServiceInfoLayer | undefined;
-
-  get compatibleSymbolTypes() {
-    if (!this.selectedLayer || this.selectedLayer.type === 'map-image' || !this.selectedLayer.renderer) return [];
-
-    switch (this.selectedServiceInfoLayer?.geometryType) {
-      case undefined:
-        return []
-      case 'esriGeometryPoint':
-        return ['point-3d'];
-      default:
-        return []
-    }
-  }
 
   /**
    * Emit the save event when the user wants to save
@@ -89,7 +71,6 @@ export class LayerEditorComponent {
     }
 
     if (!this.selectedLayer) this.selectedLayer = this.rootLayerConfig;
-    this.selectedServiceInfoLayer = this.serviceInfo.layers.find(layer => layer.id === this.selectedLayer?.id);
     UIkit.modal(this.modal.nativeElement).show();
   }
 
@@ -123,7 +104,6 @@ export class LayerEditorComponent {
     } else {
       this.selectedLayer = this.createDefaultConfig(serviceInfoLayer);
     }
-    this.selectedServiceInfoLayer = serviceInfoLayer;
   }
 
   /**
@@ -154,31 +134,5 @@ export class LayerEditorComponent {
         offset: 0,
       }
     } as LayerConfig
-  }
-
-  /**
-   * When the user clicks on the "use this renderer" button, we create a new renderer for the selected layer if it does not exist yet
-   * @param {Event} $event
-   * @param {string} rendererType
-   */
-  onRendererChange($event: Event, rendererType: string) {
-    if (this.selectedLayer?.type === 'map-image') return;
-
-    const isOn = ($event.target as HTMLInputElement).checked;
-    if (!isOn) {
-      (this.selectedLayer as any).renderer = undefined;
-      return;
-    }
-    if (this.selectedLayer?.type === 'feature') {
-      switch (rendererType) {
-        case 'simple':
-          this.selectedLayer.renderer = new SimpleRenderer({
-            symbol: new PointSymbol3D(),
-          });
-          break;
-        default:
-          console.error('Unsupported renderer type', rendererType);
-      }
-    }
   }
 }

@@ -1,5 +1,5 @@
 <div #modal class="uk-modal-full uk-overflow-auto" uk-modal>
-  <div class="uk-modal-dialog uk-height-1-1" *ngIf="rootLayerConfig && serviceInfo">
+  <div class="uk-modal-dialog" *ngIf="rootLayerConfig && serviceInfo">
     <button class="uk-modal-close-full uk-close-large" type="button" uk-close (click)="cancelEdit()"></button>
 
     <div class="uk-modal-header">
@@ -41,7 +41,6 @@
   <div *ngIf="selectedLayer">
     <ul uk-tab="animation: uk-animation-fade">
       <li><a href="#">General Settings</a></li>
-      <li><a href="#" *ngIf="selectedLayer.type !== 'map-image'">Renderer</a></li>
     </ul>
 
     <ul class="uk-switcher uk-margin">
@@ -126,102 +125,6 @@
           </div>
         </div>
       </li>
-      <li *ngIf="selectedLayer.type !== 'map-image'">
-        <div class="uk-margin">
-          <ul uk-accordion>
-            <ng-template *ngTemplateOutlet="rendererEditor"></ng-template>
-          </ul>
-        </div>
-      </li>
     </ul>
-    <div class="uk-grid uk-child-width-expand">
-      <pre>{{selectedLayer | json}}</pre>
-      <pre>{{rootLayerConfig | json}}</pre>
-    </div>
   </div>
-</ng-template>
-
-<ng-template #symboleditor>
-  <ng-container *ngIf="selectedLayer && selectedLayer.type !== 'map-image' && selectedLayer.renderer">
-    <!--    Create a selectbox to change the type of symbol-->
-    <div class="uk-margin">
-      <label class="uk-form-label" for="symbolType">Symbol Type</label>
-      <div class="uk-form-controls">
-        <select class="uk-select" id="symbolType" name="symbolType"
-                [(ngModel)]="selectedLayer.renderer.symbol.type">
-          <option value="simple-marker" *ngFor="let symbolType of compatibleSymbolTypes">Simple Marker</option>
-          <option value="simple-line">Simple Line</option>
-          <option value="simple-fill">Simple Fill</option>
-        </select>
-      </div>
-    </div>
-    <!--   <div class="uk-grid uk-child-width-expand">
-         <div>
-           <label class="uk-form-label" for="screenLength">Screenlength</label>
-           <div class="uk-form-controls">
-             <input class="uk-input" id="screenLength" name="screenLength" type="number"
-                    [(ngModel)]="symbol.verticalOffset.screenLength">
-           </div>
-         </div>
-         <div>
-           <label class="uk-form-label" for="maxWorldLength">Max world length</label>
-           <div class="uk-form-controls">
-             <input class="uk-input" id="maxWorldLength" name="maxWorldLength" type="number"
-                    [(ngModel)]="symbol.verticalOffset.maxWorldLength">
-           </div>
-         </div>
-         <div>
-           <label class="uk-form-label" for="minWorldLength">Min world length</label>
-           <div class="uk-form-controls">
-             <input class="uk-input" id="minWorldLength" name="minWorldLength" type="number"
-                    [(ngModel)]="symbol.verticalOffset.minWorldLength">
-           </div>
-         </div>
-       </div>
-       <div class="uk-margin">
-         <label class="uk-form-label" for="color">Material Color</label>
-         <div class="uk-form-controls">
-           <input class="uk-input" id="color" name="color" type="color"
-                  [(ngModel)]="symbol.symbolLayers[0].material.color">
-         </div>
-       </div>
-       <div class="uk-grid uk-child-width-expand">
-         <div>
-           <label class="uk-form-label" for="outlineSize">Outline size</label>
-           <div class="uk-form-controls">
-             <input class="uk-input" id="outlineSize" name="outlineSize" type="number"
-                    [(ngModel)]="symbol.symbolLayers[0].outline.size">
-           </div>
-         </div>
-         <div>
-           <label class="uk-form-label" for="outlineColor">Outline color</label>
-           <div class="uk-form-controls">
-             <input class="uk-input" id="outlineColor" name="outlineColor" type="color"
-                    [(ngModel)]="symbol.symbolLayers[0].outline.color">
-           </div>
-         </div>
-       </div>-->
-  </ng-container>
-</ng-template>
-
-<ng-template #rendererEditor>
-  <ng-container *ngIf="selectedLayer && selectedLayer.type !== 'map-image'; else rendererUnavailable">
-    <ul uk-accordion="multiple: true" class="uk-accordion" #accordion>
-      <li>
-        <a class="uk-accordion-title">Simple Renderer</a>
-        <div class="uk-accordion-content">
-          <!--        Show a radio button to make this renderer active -->
-          <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-            <label><input class="uk-checkbox" type="checkbox"
-                          (change)="onRendererChange($event, 'simple')"
-                          [checked]="selectedLayer.renderer?.type === 'simple'"> Use this renderer</label>
-          </div>
-          <ng-template *ngTemplateOutlet="symboleditor"></ng-template>
-        </div>
-      </li>
-    </ul>
-  </ng-container>
-  <ng-template #rendererUnavailable>
-    <p>Renderer is not available for this layer type</p>
-  </ng-template>
 </ng-template>
