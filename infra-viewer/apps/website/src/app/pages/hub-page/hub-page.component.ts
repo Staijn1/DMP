@@ -25,6 +25,7 @@ export class HubPageComponent implements OnInit {
   query!: PortalQueryParams;
   hasMoreItems = false;
   configuration: SystemConfiguration | undefined;
+  private readonly backupImageUrl = 'assets/empty_world.png';
 
   constructor(private readonly hubService: HubService, private authService: AuthenticationService, private readonly configurationService: ConfigurationService) {
   }
@@ -38,6 +39,7 @@ export class HubPageComponent implements OnInit {
 
 
   createImageUrl(hubItem: HubItem) {
+    if (!hubItem.thumbnail) return this.backupImageUrl
     return `${environment.portalURL}/sharing/rest/content/items/${hubItem.id}/info/${hubItem.thumbnail}?token=${this.authService.token}`;
   }
 
@@ -95,7 +97,7 @@ export class HubPageComponent implements OnInit {
 
   onThumbnailImageError($event: ErrorEvent) {
     const target = $event.target as HTMLImageElement;
-    target.src = 'assets/empty_world.png';
+    target.src = this.backupImageUrl;
   }
 
   drop($event: CdkDragDrop<LayerConfig[], any>) {
