@@ -39,18 +39,42 @@ export class LayerEditorComponent {
    * Start editing by opening the modal and setting some default values if they are not set
    */
   startEditing(selectedLayer: LayerConfig, serviceInfo: ServiceInfo) {
+    this.selectedLayer = undefined;
     this.rootLayerConfig = selectedLayer;
     // Insert the selected layer config in the first position of the layers array in the service info
     this.serviceInfo = serviceInfo;
     if (!this.rootLayerConfig) return;
 
+    // Enable the legend if the property does not exist, regardless of the type of layer
     if (this.rootLayerConfig.legendEnabled === undefined) this.rootLayerConfig.legendEnabled = true;
+
+    // If the layer is a map-image layer, there are most likely sublayers
+    // Select the first sublayer by default. If the sublayer is already in the sublayers array, use that one
+    // If the sublayers array (holding overrides) does not exist at all, create it.
     if (this.rootLayerConfig.type === 'map-image') {
-      if (!this.rootLayerConfig.sublayers) this.rootLayerConfig.sublayers = [];
+      // Create the sublayers array where we store overrides for sublayers
+      if (!this.rootLayerConfig.sublayers) {
+        this.rootLayerConfig.sublayers = []
+      }
+
+      if (this.rootLayerConfig.sublayers.length > 1) {
+        const firstSublayer = this.serviceInfo.layers[0];
+        const existingSublayerConfig = (this.rootLayerConfig.sublayers as LayerConfig[]).find(sublayer => sublayer.id === firstSublayer.id);
+
+        if (existingSublayerConfig) {
+          this.selectedLayer = existingSublayerConfig;
+        } else {
+          this.selectedLayer = this.createDefaultConfig(firstSublayer);
+        }
+      } else {
+        this.selectedLayer = this.rootLayerConfig;
+      }
     } else {
+      // We can only enable popups (by default) for non map-image layers
       if (this.rootLayerConfig.popupEnabled === undefined) this.rootLayerConfig.popupEnabled = true;
     }
-    this.selectedLayer = this.serviceInfo.layers.length > 1 ? this.createDefaultConfig(this.serviceInfo.layers[0]) : selectedLayer;
+
+    if (!this.selectedLayer) this.selectedLayer = this.rootLayerConfig;
     UIkit.modal(this.modal.nativeElement).show();
   }
 
