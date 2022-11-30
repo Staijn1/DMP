@@ -2,7 +2,7 @@ import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import PopupTemplate from '@arcgis/core/PopupTemplate';
 import Field from '@arcgis/core/layers/support/Field';
-import {QueriedFeatures} from '@infra-viewer/interfaces';
+import {HubItem, QueriedFeatures, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
 
 /**
  * Create an HTML table from an object
@@ -61,4 +61,15 @@ export const createFeatureLayerFromFeatureLayer = (result: QueriedFeatures) => {
       elevationInfo: result.layer.elevationInfo,
     }
   );
+}
+
+export const getTypeForHubItem = (hubItem: { type: string }): SystemConfigurationLayerTypes => {
+  switch (hubItem.type) {
+    case 'Scene Service':
+      return 'scene';
+    case 'Map Service':
+      return 'map-image'
+    default:
+      return 'feature';
+  }
 }

@@ -196,6 +196,11 @@
         {
           "id": 13,
           "visible": true,
+          "elevationInfo": {
+            "mode": "on-the-ground",
+            "unit": "meters",
+            "offset": 0
+          },
           "renderer": {
             "type": "simple",
             "visualVariables": [

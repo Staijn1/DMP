@@ -1,7 +1,6 @@
 import FL from '@arcgis/core/layers/FeatureLayer';
 import Query from '@arcgis/core/rest/support/Query';
 import SpatialReference from '@arcgis/core/geometry/SpatialReference';
-import Layer from '@arcgis/core/layers/Layer';
 import Extent from '@arcgis/core/geometry/Extent';
 import Field from '@arcgis/core/layers/support/Field';
 

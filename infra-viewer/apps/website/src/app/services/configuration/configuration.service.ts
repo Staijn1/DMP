@@ -2,6 +2,7 @@ import {Injectable, OnDestroy} from '@angular/core';
 import {HTTPService} from '../HTTP/http.service';
 import {environment} from '../../../environments/environment';
 import {HubItem, SystemConfiguration, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
+import {getTypeForHubItem} from '../../utils/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -37,22 +38,11 @@ export class ConfigurationService extends HTTPService implements OnDestroy {
     const layer: any = {
       url: hubItem.url,
       title: hubItem.title.replace(/_/g, ' '),
-      type: this.getTypeForHubItem(hubItem),
+      type: getTypeForHubItem(hubItem),
     }
     configuration.layers.push(layer);
 
     await this.setConfiguration(configuration);
-  }
-
-  private getTypeForHubItem(hubItem: HubItem): SystemConfigurationLayerTypes {
-    switch (hubItem.type) {
-      case 'Scene Service':
-        return 'scene';
-      case 'Map Service':
-        return 'map-image'
-      default:
-        return 'feature';
-    }
   }
 
   async removeLayer(hubItem: HubItem) {
