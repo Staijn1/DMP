@@ -14,6 +14,11 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
       [
         {
           path: '',
+          redirectTo: 'home',
+          pathMatch: 'full',
+        },
+        {
+          path: 'home',
           loadChildren: () =>
             import('./pages/welcome/welcome-page.module').then(
               (m) => m.WelcomePageModule

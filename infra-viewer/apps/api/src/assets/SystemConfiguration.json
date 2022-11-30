@@ -195,7 +195,7 @@
         },
         {
           "id": 13,
-          "visible": true,
+          "visible": false,
           "elevationInfo": {
             "mode": "on-the-ground",
             "unit": "meters",
