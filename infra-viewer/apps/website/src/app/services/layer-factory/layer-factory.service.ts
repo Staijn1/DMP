@@ -8,7 +8,6 @@ import Layer from '@arcgis/core/layers/Layer';
 import GroupLayer from '@arcgis/core/layers/GroupLayer';
 import {HubService} from '../hub/hub.service';
 import {createTablePopup} from '../../utils/utils';
-import PopupTemplate from '@arcgis/core/PopupTemplate';
 import SceneLayerProperties = __esri.SceneLayerProperties;
 import ElevationLayerProperties = __esri.ElevationLayerProperties;
 import GeoJSONLayerProperties = __esri.GeoJSONLayerProperties;
