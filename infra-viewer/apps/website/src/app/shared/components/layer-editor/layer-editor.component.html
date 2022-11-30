@@ -147,8 +147,10 @@
         </div>
       </li>
     </ul>
-
-    <pre>{{selectedLayer | json}}</pre>
+    <div class="uk-grid uk-child-width-expand">
+      <pre>{{selectedLayer | json}}</pre>
+      <pre>{{rootLayerConfig | json}}</pre>
+    </div>
   </div>
 </ng-template>
 
@@ -212,22 +214,8 @@
           <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
             <label><input class="uk-checkbox" type="checkbox"
                           (change)="onRendererChange($event, 'simple')"
-                          [value]="selectedLayer.renderer?.type === 'simple'"> Use this renderer</label>
+                          [checked]="selectedLayer.renderer?.type === 'simple'"> Use this renderer</label>
           </div>
-        </div>
-      </li>
-      <li>
-        <a class="uk-accordion-title">Item 2</a>
-        <div class="uk-accordion-content">
-          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-            Duis aute irure dolor reprehenderit.</p>
-        </div>
-      </li>
-      <li>
-        <a class="uk-accordion-title">Item 3</a>
-        <div class="uk-accordion-content">
-          <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-            Excepteur sint occaecat cupidatat proident.</p>
         </div>
       </li>
     </ul>
