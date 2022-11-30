@@ -1,29 +1,32 @@
 <div #modal class="uk-modal-full uk-overflow-auto" uk-modal>
-  <div class="uk-modal-dialog" *ngIf="rootLayerConfig && serviceInfo">
+  <div class="uk-modal-dialog h-100vh" *ngIf="rootLayerConfig && serviceInfo">
     <button class="uk-modal-close-full uk-close-large" type="button" uk-close (click)="cancelEdit()"></button>
 
     <div class="uk-modal-header">
       <h2 class="uk-modal-title">Layer Configuration</h2>
       <p>Select a sublayer on the left to start editing it's properties!</p>
     </div>
-    <div class="uk-modal-body uk-container" uk-grid>
+    <div class="uk-modal-body uk-container uk-child-width-expand" uk-grid>
       <!--      A list of all sublayers, but if there aren't any, just show the editor-->
       <ng-template #noSublayers>
-        <div class="uk-padding-large uk-padding-remove-vertical">
+        <div class="uk-padding-large uk-padding-remove-vertical uk-width-1-1">
           <ng-template *ngTemplateOutlet="sublayerEditor"></ng-template>
         </div>
       </ng-template>
-      <div class="uk-width-1-3" *ngIf="serviceInfo.layers.length > 1; else noSublayers">
-        <ul class="uk-tab-left" uk-tab="connect: #sublayer-list; animation: uk-animation-fade">
-          <li *ngFor="let sublayer of serviceInfo.layers; let i = index"
-              [class.uk-active]="i === selectedSublayerIndex">
+      <div class="uk-width-1-3" *ngIf="layersWithoutChildren.length > 1; else noSublayers">
+        <ul
+          class="uk-tab-left max-h-100vh overflow-scroll-y uk-flex-nowrap"
+          uk-tab="connect: #sublayer-list; animation: uk-animation-fade">
+          <li
+            *ngFor="let sublayer of layersWithoutChildren; let i = index"
+            [class.uk-active]="i === selectedSublayerIndex">
             <a (click)="selectSublayer(sublayer)">{{sublayer.name}}</a>
           </li>
         </ul>
       </div>
       <div class="uk-width-2-3">
         <ul id="sublayer-list" class="uk-switcher">
-          <li *ngFor="let sublayer of serviceInfo.layers">
+          <li *ngFor="let sublayer of layersWithoutChildren">
             <ng-template *ngTemplateOutlet="sublayerEditor"></ng-template>
           </li>
         </ul>
@@ -49,12 +52,6 @@
           <label class="uk-form-label">Title</label>
           <div class="uk-form-controls">
             <input class="uk-input" type="text" name="title" [(ngModel)]="selectedLayer.title" required>
-          </div>
-        </div>
-        <div class="uk-margin">
-          <label class="uk-form-label" for="url">URL</label>
-          <div class="uk-form-controls">
-            <input class="uk-input" id="url" name="url" type="text" [(ngModel)]="selectedLayer.url" required>
           </div>
         </div>
         <div class="uk-margin uk-child-width-expand" uk-grid>
@@ -86,6 +83,10 @@
                        [(ngModel)]="selectedLayer.popupEnabled"> Enable popup
               </label>
             </ng-container>
+            <label class="uk-display-block">
+              <input class="uk-checkbox" type="checkbox"
+                     [(ngModel)]="selectedLayer.visible"> Make layer visible by default
+            </label>
           </div>
         </div>
         <div class="uk-margin uk-grid uk-child-width-expand" *ngIf="selectedLayer.type !== 'map-image'">

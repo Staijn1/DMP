@@ -24,3 +24,15 @@
 .uk-card-default{
   box-shadow: $global-small-box-shadow;
 }
+
+.max-h-100vh{
+  max-height: 100vh;
+}
+
+.overflow-scroll-y{
+  overflow-y: auto;
+}
+
+.h-100vh{
+  height: 100vh;
+}

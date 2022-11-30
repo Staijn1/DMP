@@ -135,4 +135,9 @@ export class LayerEditorComponent {
       }
     } as LayerConfig
   }
+
+  get layersWithoutChildren() {
+    if (!this.serviceInfo.layers) return [];
+    return this.serviceInfo.layers.filter(layer => !layer.subLayerIds);
+  }
 }
