@@ -5,6 +5,7 @@ import UniqueValueRenderer from '@arcgis/core/renderers/UniqueValueRenderer';
 import UIkit from 'uikit';
 import {getTypeForHubItem} from '../../../utils/utils';
 import SimpleRenderer from '@arcgis/core/renderers/SimpleRenderer';
+import Collection from '@arcgis/core/core/Collection';
 
 @Component({
   selector: 'app-layer-editor',
@@ -16,10 +17,23 @@ export class LayerEditorComponent {
   @Output() save: EventEmitter<LayerConfig> = new EventEmitter<LayerConfig>();
   @Input() rootLayerConfig!: LayerConfig | undefined;
   @Input() configuration!: SystemConfiguration;
-  UniqueValueRenderer = UniqueValueRenderer;
   serviceInfo!: ServiceInfo;
   selectedSublayerIndex = 0;
   selectedLayer: LayerConfig | undefined;
+  selectedServiceInfoLayer: ServiceInfoLayer | undefined;
+
+  get compatibleSymbolTypes() {
+    if (!this.selectedLayer || this.selectedLayer.type === 'map-image' || !this.selectedLayer.renderer) return [];
+
+    switch (this.selectedServiceInfoLayer?.geometryType) {
+      case undefined:
+        return []
+      case 'esriGeometryPoint':
+        return ['point-3d'];
+      default:
+        return []
+    }
+  }
 
   /**
    * Emit the save event when the user wants to save
@@ -75,6 +89,7 @@ export class LayerEditorComponent {
     }
 
     if (!this.selectedLayer) this.selectedLayer = this.rootLayerConfig;
+    this.selectedServiceInfoLayer = this.serviceInfo.layers.find(layer => layer.id === this.selectedLayer?.id);
     UIkit.modal(this.modal.nativeElement).show();
   }
 
@@ -108,6 +123,7 @@ export class LayerEditorComponent {
     } else {
       this.selectedLayer = this.createDefaultConfig(serviceInfoLayer);
     }
+    this.selectedServiceInfoLayer = serviceInfoLayer;
   }
 
   /**

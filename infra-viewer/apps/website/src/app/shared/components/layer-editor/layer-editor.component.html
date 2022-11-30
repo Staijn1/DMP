@@ -149,7 +149,7 @@
       <div class="uk-form-controls">
         <select class="uk-select" id="symbolType" name="symbolType"
                 [(ngModel)]="selectedLayer.renderer.symbol.type">
-          <option value="simple-marker">Simple Marker</option>
+          <option value="simple-marker" *ngFor="let symbolType of compatibleSymbolTypes">Simple Marker</option>
           <option value="simple-line">Simple Line</option>
           <option value="simple-fill">Simple Fill</option>
         </select>
