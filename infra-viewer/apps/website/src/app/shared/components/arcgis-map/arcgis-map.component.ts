@@ -114,6 +114,10 @@ export class ArcgisMapComponent implements OnInit {
         this.activeHighlight.remove();
       }
     });
+    this.view.watch('updating', (isUpdating) => {
+      // Set the cursor to a loading indicator when the view is updating
+      this.view.container.style.cursor = isUpdating ? 'progress' : 'default';
+    })
   }
 
   /**
