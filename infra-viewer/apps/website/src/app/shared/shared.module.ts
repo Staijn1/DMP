@@ -14,7 +14,6 @@ import {NgxSliderModule} from '@angular-slider/ngx-slider';
 import {ScrollTrackerDirective} from './directives/scrolling/scroll-tracker.directive';
 import {LayerEditorComponent} from './components/layer-editor/layer-editor.component';
 import {PipesModule} from '../pipes/pipes.module';
-import {NgSelectModule} from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -26,7 +25,7 @@ import {NgSelectModule} from '@ng-select/ng-select';
     LayerEditorComponent,
   ],
   exports: [ArcgisMapComponent, FeatureGridComponent, ScrollTrackerDirective, LayerEditorComponent],
-  imports: [AgGridModule, CommonModule, FormsModule, NgxSliderModule, PipesModule, NgSelectModule],
+  imports: [AgGridModule, CommonModule, FormsModule, NgxSliderModule, PipesModule],
   providers: [],
 })
 export class SharedModule {
