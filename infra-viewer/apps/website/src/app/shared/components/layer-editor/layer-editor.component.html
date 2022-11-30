@@ -9,7 +9,9 @@
     <div class="uk-modal-body uk-container" uk-grid>
       <!--      A list of all sublayers, but if there aren't any, just show the editor-->
       <ng-template #noSublayers>
-        <ng-template *ngTemplateOutlet="sublayerEditor"></ng-template>
+        <div class="uk-padding-large uk-padding-remove-vertical">
+          <ng-template *ngTemplateOutlet="sublayerEditor"></ng-template>
+        </div>
       </ng-template>
       <div class="uk-width-1-3" *ngIf="serviceInfo.layers.length > 1; else noSublayers">
         <ul class="uk-tab-left" uk-tab="connect: #sublayer-list;">
@@ -74,24 +76,17 @@
         </div>
         <!--           Create a checkbox to show the layer in the legend. -->
         <div class="uk-margin" uk-grid>
-          <div class="uk-grid uk-width-1-2">
-            <label class="uk-form-label" for="legendEnabled">Show in Legend</label>
-            <div class="uk-form-controls">
-              <input class="uk-checkbox" id="legendEnabled" name="legendEnabled" type="checkbox"
-                     [(ngModel)]="selectedLayer.legendEnabled">
-            </div>
-            <ng-container *ngIf="selectedLayer.type !== 'map-image'">
-              <label class="uk-form-label" for="popupEnabled">Popup enabled</label>
-              <div class="uk-form-controls">
-                <input class="uk-checkbox" id="popupEnabled" name="popupEnabled" type="checkbox"
-                       [(ngModel)]="selectedLayer.popupEnabled">
-              </div>
-            </ng-container>
-          </div>
           <div class="uk-width-1-2">
-            <!--  <ng-select [(ngModel)]="layerConfig.fields">
-                <ng-option *ngFor="let field of " [value]="field">{{field}}</ng-option>
-              </ng-select>-->
+            <ng-container *ngIf="selectedLayer.type !== 'map-image'">
+              <label class="uk-display-block">
+                <input class="uk-checkbox" type="checkbox"
+                       [(ngModel)]="selectedLayer.legendEnabled"> Show layer in legend
+              </label>
+              <label class="uk-display-block">
+                <input class="uk-checkbox" type="checkbox"
+                       [(ngModel)]="selectedLayer.popupEnabled"> Enable popup
+              </label>
+            </ng-container>
           </div>
         </div>
         <div class="uk-margin uk-grid uk-child-width-expand" *ngIf="selectedLayer.type !== 'map-image'">
