@@ -135,10 +135,17 @@
       "type": "map-image",
       "sublayers": [
         {
+          "visible": true,
           "id": 14,
+          "outfields": [
+            "*"
+          ],
           "elevationInfo": {
             "mode": "relative-to-ground",
-            "offset": -1
+            "featureExpressionInfo": {
+              "expression": "-($feature.BOB_VAN - (($feature.DIAMETER / 1000) / 2))"
+            },
+            "unit": "meters"
           },
           "renderer": {
             "visualVariables": [
