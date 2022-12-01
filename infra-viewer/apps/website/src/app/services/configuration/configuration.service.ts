@@ -1,7 +1,7 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {HTTPService} from '../HTTP/http.service';
 import {environment} from '../../../environments/environment';
-import {HubItem, LayerConfig, SystemConfiguration, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
+import {HubItem, LayerConfig, SystemConfiguration} from '@infra-viewer/interfaces';
 import {getTypeForHubItem} from '../../utils/utils';
 
 @Injectable({

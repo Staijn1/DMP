@@ -17,7 +17,7 @@ import {HubService} from '../../services/hub/hub.service';
 })
 export class ConfigPageComponent implements OnDestroy {
   @ViewChild(LayerEditorComponent) editor!: LayerEditorComponent;
-  @ViewChild('advancedForm') advancedForm!: NgForm;
+  @ViewChild('form') form!: NgForm;
   selectedLayer: LayerConfig | undefined;
   configuration!: SystemConfiguration;
   private configurationBackup!: SystemConfiguration;
@@ -30,7 +30,7 @@ export class ConfigPageComponent implements OnDestroy {
     try {
       this.configuration = JSON.parse(value);
     } catch (e) {
-      this.advancedForm.controls['advancedConfiguration'].setErrors({json: true});
+      this.form.controls['advancedConfiguration'].setErrors({json: true});
     }
   }
 

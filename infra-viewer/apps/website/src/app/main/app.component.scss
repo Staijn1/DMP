@@ -1,3 +1,20 @@
 .uk-logo {
   width: 15%;
 }
+
+.alert-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 25%;
+  top: 0;
+  left: 50%;
+  z-index: 9999;
+  transform: translate(-50%, 0);
+
+  > div[class^='uk-alert'], > div[class*=' uk-alert']{
+    width: 100%;
+    margin: 5px;
+  }
+}

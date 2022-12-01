@@ -1,20 +1,20 @@
 import {Injectable} from '@angular/core';
-import {CustomError} from '@infra-viewer/interfaces';
+import {Message, MessageService} from '../message-service/message.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HTTPService {
+  constructor(private readonly messageService: MessageService) {
+  }
+
   /**
    * Handle the error from the api and map it to an error we can show
    * @param {any} err
-   * @returns {CustomError}
    * @private
    */
-  private handleError(err: string | any): CustomError {
-    console.warn('Handle error not implemented');
-
-    return err;
+  private handleError(err: string | any): Message {
+    return this.messageService.setMessage(err)
   }
 
   /**
@@ -23,18 +23,22 @@ export class HTTPService {
    * @param init - options with request
    */
   protected async request(input: string, init: RequestInit): Promise<any> {
-    const response = await fetch(input, init);
-    const text = await response.text();
-    // If the text is valid json, parse it
-    let data: any;
     try {
-      data = JSON.parse(text);
+      const response = await fetch(input, init);
+      const text = await response.text();
+      // If the text is valid json, parse it
+      let data: any;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        data = text;
+      }
+      if (!response.ok || data.error) {
+        throw this.handleError(data.error || data);
+      }
+      return data;
     } catch (e) {
-      data = text;
+      throw this.handleError(e)
     }
-    if (!response.ok) {
-      throw this.handleError(data);
-    }
-    return data;
   }
 }

@@ -6,13 +6,14 @@ import PortalQueryParams from '@arcgis/core/portal/PortalQueryParams';
 import {HTTPService} from '../HTTP/http.service';
 import {AuthenticationService} from '../authentication/authentication.service';
 import {ServiceInfo} from '@infra-viewer/interfaces';
+import {MessageService} from '../message-service/message.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HubService extends HTTPService {
-  constructor(private readonly authService: AuthenticationService) {
-    super();
+  constructor(messageService: MessageService, private readonly authService: AuthenticationService) {
+    super(messageService);
   }
 
   queryItems(options: PortalQueryParams): Promise<PortalQueryResult> {
