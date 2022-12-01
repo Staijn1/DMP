@@ -23,18 +23,22 @@ export class HTTPService {
    * @param init - options with request
    */
   protected async request(input: string, init: RequestInit): Promise<any> {
-    const response = await fetch(input, init);
-    const text = await response.text();
-    // If the text is valid json, parse it
-    let data: any;
     try {
-      data = JSON.parse(text);
+      const response = await fetch(input, init);
+      const text = await response.text();
+      // If the text is valid json, parse it
+      let data: any;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        data = text;
+      }
+      if (!response.ok || data.error) {
+        throw this.handleError(data.error || data);
+      }
+      return data;
     } catch (e) {
-      data = text;
+      throw this.handleError(e)
     }
-    if (!response.ok || data.error) {
-      throw this.handleError(data.error || data);
-    }
-    return data;
   }
 }
