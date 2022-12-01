@@ -6,7 +6,7 @@ import {AuthenticationService} from '../services/authentication/authentication.s
 import {NavigationEnd, Router} from '@angular/router';
 import * as AOS from 'aos';
 import {SwUpdate} from '@angular/service-worker';
-import {Message, MessageService} from '../services/message.service';
+import {Message, MessageService} from '../services/message-service/message.service';
 import {swipeTopAnimation} from '@infra-viewer/ui';
 
 @Component({

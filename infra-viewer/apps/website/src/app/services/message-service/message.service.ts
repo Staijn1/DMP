@@ -6,12 +6,20 @@ import {Injectable} from '@angular/core';
 export class MessageService {
   private _messages: Message[] = [];
 
-  public setMessage(error: Error) {
+  /**
+   * Set a message to be shown to the user
+   * Map the error to a message object if it is not already a message object
+   * Returns the mapped error
+   * @param {Error} error
+   * @returns {Message}
+   */
+  public setMessage(error: Error): Message {
     const mappedError = this.mapError(error)
     this._messages.push(mappedError)
     setTimeout(() => {
       this._messages.shift()
     }, 5000)
+    return mappedError;
   }
 
   public getMessages(): Message[] {
