@@ -1,18 +1,52 @@
-$global-primary-background: #02357c;
-
 @import "forms.scss";
 
+// 1. Custom variables and variables overwrites
+$global-primary-background: #02357c;
 
 // 2. Import default variables and available mixins.
-@import "uikit/src/scss/variables-theme";
-@import "uikit/src/scss/mixins-theme";
+@import "uikit/src/scss/variables-theme.scss";
+@import "uikit/src/scss/mixins-theme.scss";
 
-// This mixin is used to create the border on an active tab. It is extended to make the border thicker and the font bold
+// 3. Your custom mixin overwrites.
 @mixin hook-tab-item-active {
   border-color: $global-primary-background;
   border-width: 4px;
   font-weight: bold;
 }
 
-// 4. Import UIkit
+@mixin hook-button() {
+  text-transform: $button-text-transform;
+  transition: 0.1s ease-in-out;
+  transition-property: color, background-color, border-color;
+  border-radius: $border-rounded-border-radius;
+}
+
+@mixin hook-card() {
+  border-radius: $border-rounded-border-radius;
+}
+
+@mixin hook-alert() {
+  border-radius: $border-rounded-border-radius;
+}
+
+@mixin hook-alert-primary() {
+  border: $global-border-width solid $global-primary-background;
+}
+
+@mixin hook-alert-warning() {
+  border: $global-border-width solid $global-warning-background;
+  font-weight: bold;
+}
+
+@mixin hook-alert-danger() {
+  border: $global-border-width solid $global-danger-background;
+  font-weight: bold;
+}
+
+@mixin hook-alert-success() {
+  border: $global-border-width solid $global-success-background;
+  font-weight: bold;
+}
+
+// 4. Import UIkit.
 @import "uikit/src/scss/uikit-theme.scss";

@@ -6,14 +6,18 @@
   "targets": {
     "build": {
       "executor": "@nrwl/webpack:webpack",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "target": "node",
         "compiler": "tsc",
         "outputPath": "dist/apps/scraper",
         "main": "apps/scraper/src/main.ts",
         "tsConfig": "apps/scraper/tsconfig.app.json",
-        "assets": ["apps/scraper/src/assets"]
+        "assets": [
+          "apps/scraper/src/assets"
+        ]
       },
       "configurations": {
         "production": {
@@ -42,14 +46,20 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/scraper/**/*.ts"]
+        "lintFilePatterns": [
+          "apps/scraper/**/*.ts"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "apps/scraper/jest.config.ts",
         "passWithNoTests": true
