@@ -36,7 +36,7 @@ export class AppComponent {
       if (val instanceof NavigationEnd) {
         if (this.authService.isLoggedIn) return;
 
-        if (val.url !== '/' && !val.url.includes('/login')) {
+        if (val.url !== '/home' && !val.url.includes('/login')) {
           this.router.navigateByUrl('/').then();
         }
       }
