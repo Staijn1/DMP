@@ -136,6 +136,7 @@ export class MapUIBuilderService implements OnDestroy {
     }
     view.ui.add([layerlistExpand, fullScreen, legendExpand], 'top-left');
     view.ui.add([this.searchWidget, elevationProfileExpand, daylightExpand, shadowWidget, editor, directLineMeasurement, areaMeasurement], 'top-right');
+    
   }
 
   /**
