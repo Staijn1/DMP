@@ -66,6 +66,7 @@ export class MapUIBuilderService implements OnDestroy {
 
     const elevationProfileExpand = new Expand({
       view: view,
+      group: 'top-right',
       expandTooltip: 'Show elevation profile',
       collapseTooltip: 'Hide elevation profile',
       content: elevationProfile,
@@ -133,9 +134,8 @@ export class MapUIBuilderService implements OnDestroy {
       });
       view.ui.add(coordinateConversion, 'bottom-left');
     }
-    view.ui.add([legendExpand, fullScreen], 'bottom-right');
-    view.ui.add([elevationProfileExpand, layerlistExpand], 'top-left');
-    view.ui.add([this.searchWidget, daylightExpand, shadowWidget, editor, directLineMeasurement, areaMeasurement], 'top-right');
+    view.ui.add([layerlistExpand, fullScreen, legendExpand], 'top-left');
+    view.ui.add([this.searchWidget, elevationProfileExpand, daylightExpand, shadowWidget, editor, directLineMeasurement, areaMeasurement], 'top-right');
   }
 
   /**
