@@ -135,7 +135,7 @@
       "type": "map-image",
       "sublayers": [
         {
-          "visible": true,
+          "visible": false,
           "id": 14,
           "outfields": [
             "*"
