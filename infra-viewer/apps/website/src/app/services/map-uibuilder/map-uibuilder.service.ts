@@ -1,4 +1,4 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {ElementRef, Injectable, OnDestroy} from '@angular/core';
 import Search from '@arcgis/core/widgets/Search';
 import LayerList from '@arcgis/core/widgets/LayerList';
 import Expand from '@arcgis/core/widgets/Expand';
@@ -20,7 +20,11 @@ export class MapUIBuilderService implements OnDestroy {
   private searchWidget!: __esri.widgetsSearch;
 
 
-  async buildUI(view: __esri.SceneView): Promise<void> {
+  async buildUI(
+    view: __esri.SceneView,
+    measurementParent: ElementRef<HTMLDivElement>,
+    distanceMeasurement: ElementRef<HTMLDivElement>,
+    surfaceMeasurement: ElementRef<HTMLDivElement>): Promise<void> {
     const legendExpand = new Expand({
       view: view,
       expandTooltip: 'Show legend',
@@ -101,25 +105,24 @@ export class MapUIBuilderService implements OnDestroy {
     const editor = await this.createEditorWidget(view);
     // const sketchExpand = this.createSketchWidget(view);
 
-    const areaMeasurement = new Expand({
+    const measurementExpand = new Expand({
       view: view,
-      expandTooltip: 'Show area measurement',
-      collapseTooltip: 'Hide area measurement',
-      content: new AreaMeasurement3D({
-        view: view,
-      }),
-      group: 'top-right'
+      group: 'top-right',
+      expandTooltip: 'Show measurement',
+      collapseTooltip: 'Hide measurement',
+      content: measurementParent.nativeElement,
     });
 
-    const directLineMeasurement = new Expand({
+    new AreaMeasurement3D({
       view: view,
-      expandTooltip: 'Show direct line measurement',
-      collapseTooltip: 'Hide direct line measurement',
-      content: new DirectLineMeasurement3D({
-        view: view,
-      }),
-      group: 'top-right'
+      container: surfaceMeasurement.nativeElement,
     });
+
+    new DirectLineMeasurement3D({
+      view: view,
+      container: distanceMeasurement.nativeElement,
+    });
+
     const fullScreen = new Fullscreen({
       view: view
     });
@@ -135,7 +138,7 @@ export class MapUIBuilderService implements OnDestroy {
       view.ui.add(coordinateConversion, 'bottom-left');
     }
     view.ui.add([layerlistExpand, fullScreen, legendExpand], 'top-left');
-    view.ui.add([this.searchWidget, elevationProfileExpand, daylightExpand, shadowWidget, editor, directLineMeasurement, areaMeasurement], 'top-right');
+    view.ui.add([this.searchWidget, elevationProfileExpand, daylightExpand, shadowWidget, editor, measurementExpand], 'top-right');
   }
 
   /**

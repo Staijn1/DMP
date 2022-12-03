@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import WebScene from '@arcgis/core/WebScene';
 import SceneView from '@arcgis/core/views/SceneView';
 import {ConfigurationService} from '../../../services/configuration/configuration.service';
@@ -23,7 +23,11 @@ import SceneLayer from '@arcgis/core/layers/SceneLayer';
 })
 export class ArcgisMapComponent implements OnInit {
   @ViewChild(SketchQueryWidgetComponent) private sketchWidget!: SketchQueryWidgetComponent
+  @ViewChild('measurementWidgetsContainer') private measurementWidgetsContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('distanceMeasurement') private distanceMeasurement!: ElementRef<HTMLDivElement>
+  @ViewChild('surfaceMeasurement') private surfaceMeasurement!: ElementRef<HTMLDivElement>
   @Output() query: EventEmitter<QueriedFeatures[]> = new EventEmitter<QueriedFeatures[]>();
+
   private map!: WebScene;
   view!: SceneView;
   private activeHighlight: __esri.Handle | undefined;
@@ -50,7 +54,7 @@ export class ArcgisMapComponent implements OnInit {
     this.createMap();
     this.createView();
     await this.applyConfig();
-    await this.uiBuilder.buildUI(this.view);
+    await this.uiBuilder.buildUI(this.view, this.measurementWidgetsContainer, this.distanceMeasurement, this.surfaceMeasurement);
     this.eventHandler.registerEvents(this.view);
     this.sketchWidget.initialize(this.view)
   }
