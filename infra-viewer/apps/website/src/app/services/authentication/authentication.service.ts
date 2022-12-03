@@ -15,8 +15,11 @@ export class AuthenticationService {
 
   get isLoggedIn(): boolean {
     const credential = sessionStorage.getItem('credential');
+
+    if (!credential) return false;
+
     try {
-      const parsed = JSON.parse(credential || '{}');
+      const parsed = JSON.parse(credential as string);
       this.registerToken(parsed.token, parsed.expires);
       return true;
     } catch (e) {
