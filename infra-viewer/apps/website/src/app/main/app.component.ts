@@ -16,6 +16,29 @@ import {swipeTopAnimation} from '@infra-viewer/ui';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
+  readonly menuItems = [
+    {
+      title: 'Home',
+      link: '/',
+      requiresLogin: false
+    },
+    {
+      title: 'Map',
+      link: '/map',
+      requiresLogin: true
+    },
+    {
+      title: 'Config',
+      link: '/config',
+      requiresLogin: true
+    },
+    {
+      title: 'Content Hub',
+      link: '/hub',
+      requiresLogin: true
+    }];
+  isLoggedIn = false;
+
   constructor(
     private readonly configurationService: ConfigurationService,
     private authService: AuthenticationService,
@@ -34,17 +57,14 @@ export class AppComponent {
     // If not, and the route is not /, redirect to /
     this.router.events.subscribe((val) => {
       if (val instanceof NavigationEnd) {
+        this.isLoggedIn = this.authService.isLoggedIn;
         if (this.authService.isLoggedIn) return;
 
         if (val.url !== '/home' && !val.url.includes('/login')) {
-          this.router.navigateByUrl('/').then();
+          this.router.navigateByUrl('/home').then();
         }
       }
     });
-  }
-
-  isLoggedIn(): boolean {
-    return this.authService.isLoggedIn;
   }
 
   private checkForUpdate() {
@@ -66,5 +86,9 @@ export class AppComponent {
   onAlertClick(error: Message) {
     if (!error.action) return;
     error.action();
+  }
+
+  closeNav(sidenav: HTMLDivElement) {
+    UIkit.offcanvas(sidenav).hide();
   }
 }
