@@ -117,13 +117,20 @@
               </select>
             </div>
           </div>
-          <div *ngIf="selectedLayer.elevationInfo.mode !== 'on-the-ground'">
-            <label class="uk-form-label" for="offset">Offset</label>
-            <div class="uk-form-controls">
-              <input class="uk-input" id="offset" name="offset" type="number" step="0.1"
-                     [(ngModel)]="selectedLayer.elevationInfo.offset">
+          <ng-container *ngIf="selectedLayer.type !== 'scene' && !selectedLayer.elevationInfo.featureExpressionInfo; else tooAdvancedElevationInfo">
+            <div *ngIf="selectedLayer.elevationInfo.mode !== 'on-the-ground'">
+              <label class="uk-form-label" for="offset">Offset</label>
+              <div class="uk-form-controls">
+                <input class="uk-input" id="offset" name="offset" type="number" step="0.1"
+                       [(ngModel)]="selectedLayer.elevationInfo.offset">
+              </div>
             </div>
-          </div>
+          </ng-container>
+          <ng-template #tooAdvancedElevationInfo>
+            <p class="uk-text-warning">The elevation offset of this layer is controlled by an Arcade expression. This is currently not supported
+              in this editor. <br>
+              Please refer to the Arcgis documentation and edit this layer in the "Advanced configuration" section.</p>
+          </ng-template>
         </div>
       </li>
     </ul>

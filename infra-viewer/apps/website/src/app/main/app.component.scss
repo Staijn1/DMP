@@ -1,6 +1,4 @@
-.uk-logo {
-  width: 15%;
-}
+@import "uikit/src/scss/variables-theme";
 
 .alert-container {
   position: absolute;
@@ -13,8 +11,24 @@
   z-index: 9999;
   transform: translate(-50%, 0);
 
-  > div[class^='uk-alert'], > div[class*=' uk-alert']{
+  > div[class^='uk-alert'], > div[class*=' uk-alert'] {
     width: 100%;
     margin: 5px;
+  }
+}
+
+@media screen and (max-width: $breakpoint-small-max) {
+  .uk-logo {
+    svg {
+      width: 190px;
+    }
+  }
+}
+
+@media screen and (min-width: $breakpoint-medium) {
+  .uk-logo {
+    svg {
+      width: 250px;
+    }
   }
 }

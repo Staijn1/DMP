@@ -1,2 +1,20 @@
 <div id="map"></div>
+
+<div #measurementWidgetsContainer class="uk-background-white" id="measurement-widgets-container">
+  <ul uk-tab="animation:uk-animation-fade;">
+    <li><a href="#">Distance</a></li>
+    <li><a href="#">Surface</a></li>
+  </ul>
+
+  <ul class="uk-switcher uk-margin">
+    <li>
+      <div #distanceMeasurement id="distance-measurement"></div>
+    </li>
+    <li>
+      <div #surfaceMeasurement id="surface-measurement"></div>
+    </li>
+  </ul>
+
+</div>
+
 <app-sketch-query-widget (query)="this.query.emit($event)"></app-sketch-query-widget>

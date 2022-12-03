@@ -52,6 +52,11 @@ import { ServiceWorkerModule } from '@angular/service-worker';
             import('./pages/hub-page/hub-page.module').then(
               (m) => m.HubPageModule
             ),
+        },
+        {
+          path: '**',
+          redirectTo: 'home',
+          pathMatch: 'full',
         }
       ],
       { initialNavigation: 'enabledBlocking' }
