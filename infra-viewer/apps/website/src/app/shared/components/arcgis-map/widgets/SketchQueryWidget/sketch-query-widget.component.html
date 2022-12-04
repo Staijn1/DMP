@@ -26,7 +26,7 @@
   </div>
   <br/>
   <label for="relationship-select">Spatial relationship:</label>
-  <select id="relationship-select" class="options" [(ngModel)]="selectedSpatialRelationship"
+  <select id="relationship-select" class="options uk-select" [(ngModel)]="selectedSpatialRelationship"
           (change)="queryByClientsideFilter()">
     <!--    Create an option for all possible spatial relationships-->
     <option *ngFor="let relationship of spatialRelationships" [ngValue]="relationship">{{relationship}}</option>

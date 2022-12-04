@@ -25,22 +25,37 @@
   background: white;
 }
 
-.uk-card-default{
+.uk-card-default {
   box-shadow: $global-small-box-shadow;
 }
 
-.max-h-100vh{
+.max-h-100vh {
   max-height: 100vh;
 }
 
-.overflow-scroll-y{
+.overflow-scroll-y {
   overflow-y: auto;
 }
 
-.h-100vh{
+.h-100vh {
   height: 100vh;
 }
 
-.esri-expand__content{
+/**
+Esri overrides
+ */
+:root{
+  --calcite-ui-brand: #{$global-primary-background};
+}
+.esri-expand__content {
   background-color: white;
+}
+
+.esri-button {
+  background: $global-primary-background;
+  color: white;
+}
+
+.esri-widget--button, .esri-button {
+  border-radius: $border-rounded-border-radius;
 }
