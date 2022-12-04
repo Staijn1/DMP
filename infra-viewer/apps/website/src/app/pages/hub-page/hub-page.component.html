@@ -17,14 +17,13 @@
         </div>
       </div>
       <div class="uk-margin uk-flex uk-flex-right">
-        <button name="filterbutton" type="submit" class="uk-button uk-button-primary" (click)="filterItems()">Filter
-        </button>
+        <button name="filterbutton" type="submit" class="uk-button uk-button-primary">Filter</button>
       </div>
     </form>
   </div>
 
   <!--Create rows with four columns iterating over the hubitems, showing it's information-->
-  <div class="uk-width-1-2" appScrollTracker (scrollingFinished)="getItems()">
+  <div class="uk-width-1-2" appScrollTracker (scrollingFinished)="getItems(true)">
     <div
       uk-grid
       #hubItemsList="cdkDropList"
@@ -63,9 +62,9 @@
           </div>
         </div>
       </div>
-      <div class="uk-flex uk-flex-center" *ngIf="hasMoreItems">
-        <button type="button" class="uk-button uk-button-default" (click)="getItems()">Load more</button>
-      </div>
+    </div>
+    <div class="uk-flex uk-flex-center uk-margin" *ngIf="hasMoreItems">
+      <button type="button" class="uk-button uk-button-default" (click)="getItems()">Load more</button>
     </div>
   </div>
 
