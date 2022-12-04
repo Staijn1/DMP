@@ -5,6 +5,7 @@ import { AppComponent } from './main/app.component';
 import { RouterModule } from '@angular/router';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [AppComponent],
@@ -59,7 +60,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
           pathMatch: 'full',
         }
       ],
-      { initialNavigation: 'enabledBlocking' }
+      {initialNavigation: 'enabledBlocking'}
     ),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
@@ -67,6 +68,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
     }),
+    FontAwesomeModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -25,3 +25,52 @@
     </div>
   </div>
 </div>
+
+<section class="uk-container uk-margin-large">
+  <div class="uk-child-width-1-2@s uk-child-width-1-4@m" uk-grid uk-height-match="target: > div > .uk-card">
+    <div>
+      <ng-container
+        *ngTemplateOutlet="featureCard; context: {title: '3D', description: 'Bekijk kaarten van Arnhem in 3D, op ware groottes.', icon: icon3D}"></ng-container>
+    </div>
+    <div>
+      <ng-container
+        *ngTemplateOutlet="featureCard; context: {title: 'Afstand', description: 'Meet gemakkelijk de afstand tussen twee punten', icon: distanceMeasureIcon}"></ng-container>
+    </div>
+    <div>
+      <ng-container
+        *ngTemplateOutlet="featureCard; context: {title: 'Oppervlakte', description: 'Meet gemakkelijk de oppervlakte van een locatie.', icon: surfaceMeasureIcon}"></ng-container>
+    </div>
+    <div>
+      <ng-container
+        *ngTemplateOutlet="featureCard; context: {title: 'Configuratie', description: 'Configureer (sub)lagen in een gemakkelijk te gebruiken scherm', icon: configureIcon}"></ng-container>
+    </div>
+    <div>
+      <ng-container
+        *ngTemplateOutlet="featureCard; context: {title: 'Content Hub', description: 'Laad gemakkelijk nieuwe kaartlagen met de Content Hub', icon: hubIcon}"></ng-container>
+    </div>
+    <div>
+      <ng-container
+        *ngTemplateOutlet="featureCard; context: {title: 'Zoeken', description: 'Omcirkel een locatie en ontvang alle bekende informatie over die locatie.', icon: searchIcon}"></ng-container>
+    </div>
+    <div>
+      <ng-container
+        *ngTemplateOutlet="featureCard; context: {title: 'Schaduw', description: 'Bereken hoe lang een locatie in de schaduw staat.', icon: shadowIcon}"></ng-container>
+    </div>
+    <div>
+      <ng-container
+        *ngTemplateOutlet="featureCard; context: {title: 'Hoogteprofielen', description: 'Maak hoogteprofielen en meet grond- & object-hoogtes', icon: elevationProfileIcon}"></ng-container>
+    </div>
+  </div>
+</section>
+
+<ng-template #featureCard let-title="title" let-description="description" let-icon="icon">
+  <div class="feature-card uk-padding-small uk-card uk-card-default" data-aos="fade-up">
+    <div class="uk-card-media-top">
+      <fa-icon [icon]="icon"></fa-icon>
+    </div>
+    <div class="uk-card-body">
+      <h3 class="uk-card-title">{{title}}</h3>
+      <p>{{description}}</p>
+    </div>
+  </div>
+</ng-template>

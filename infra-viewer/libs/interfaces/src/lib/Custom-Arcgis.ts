@@ -20,7 +20,7 @@ export interface HubItem {
   id: string;
   licenseInfo?: any;
   modified: number;
-  name?: string;
+  name: string;
   owner: string;
   ownerFolder?: any;
   snippet: string;

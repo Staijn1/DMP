@@ -47,7 +47,9 @@ export class HubPageComponent implements OnInit {
     return `${environment.portalURL}/home/item.html?id=${hubItem.id}`;
   }
 
-  getItems() {
+  getItems(triggeredByScroll = false) {
+    if (triggeredByScroll && !this.hasMoreItems) return;
+
     this.query = this.hubService.buildQuery(this.filter);
     this.hubService.queryItems(this.query).then(r => {
       // When there are no more results the start property is set to -1
