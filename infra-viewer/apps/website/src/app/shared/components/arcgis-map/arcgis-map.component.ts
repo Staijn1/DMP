@@ -173,4 +173,8 @@ export class ArcgisMapComponent implements OnInit {
   onFeatureGridFilterChange($event: __esri.Graphic[], layer: FeatureLayer | SceneLayer) {
     this.sketchWidget.onExternalFilterChange($event, layer)
   }
+
+  clearMeasurements(type: 'distance' | 'surface') {
+    this.uiBuilder.clearMeasurements(type)
+  }
 }
