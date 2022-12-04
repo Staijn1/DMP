@@ -8,6 +8,8 @@ import * as AOS from 'aos';
 import {SwUpdate} from '@angular/service-worker';
 import {Message, MessageService} from '../services/message-service/message.service';
 import {swipeTopAnimation} from '@infra-viewer/ui';
+import {FaIconLibrary} from '@fortawesome/angular-fontawesome';
+import {facShadeCast} from '../utils/CustomIcons';
 
 @Component({
   selector: 'app-root',
@@ -44,9 +46,9 @@ export class AppComponent {
     private authService: AuthenticationService,
     private router: Router,
     private readonly updates: SwUpdate,
+    private readonly iconLibrary: FaIconLibrary,
     public messageService: MessageService) {
-    // loads the Icon plugin for UIKit
-    UIkit.use(Icons);
+    this.registerIcons();
     // Initialize the Animate on Scroll library
     AOS.init();
 
@@ -65,6 +67,13 @@ export class AppComponent {
         }
       }
     });
+  }
+
+  private registerIcons() {
+    // loads the Icon plugin for UIKit
+    UIkit.use(Icons);
+
+    this.iconLibrary.addIcons(facShadeCast)
   }
 
   private checkForUpdate() {

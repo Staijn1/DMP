@@ -147,9 +147,13 @@
 </div>
 
 <div class="alert-container">
-  <div (click)="onAlertClick(message)" *ngFor="let message of messageService.getMessages()" @swipeTop
-       [ngClass]="{'info' : 'uk-alert-primary', 'warning' : 'uk-alert-warning', 'error': 'uk-alert-danger', 'success': 'uk-alert-success'}[message.severity]"
-       uk-alert
+  <div
+    class="uk-text-center"
+    (click)="onAlertClick(message)"
+    *ngFor="let message of messageService.getMessages()"
+    @swipeTop
+    [ngClass]="{'info' : 'uk-alert-primary', 'warning' : 'uk-alert-warning', 'error': 'uk-alert-danger', 'success': 'uk-alert-success'}[message.severity]"
+    uk-alert
   >
     <p>{{message.message}}</p>
   </div>

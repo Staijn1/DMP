@@ -1,3 +1,4 @@
+@import "../../../theme/variables";
 
 .container {
   position: relative;
@@ -18,4 +19,26 @@ $offset-left: 40%;
   height: 100%;
   width: calc(100% - $offset-left);
   clip-path: polygon(25% 0%, 100% 0, 75% 100%, 0% 100%);
+}
+
+.feature-card {
+  .uk-card-media-top {
+    display: flex;
+    justify-content: center;
+    font-size: $global-large-font-size;
+
+    fa-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 1em;
+      height: 1em;
+      color: white;
+      border-radius: 50%;
+      padding: 0.5em;
+      background: $global-primary-background;
+    }
+  }
+
+
 }

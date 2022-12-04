@@ -1,0 +1,5 @@
+// 1. Custom variables and variables overwrites
+$global-primary-background: #02357c;
+
+// 2. Import default variables and available mixins.
+@import "uikit/src/scss/variables-theme.scss";
