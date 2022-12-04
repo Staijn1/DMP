@@ -2,7 +2,7 @@ import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
 import PopupTemplate from '@arcgis/core/PopupTemplate';
 import Field from '@arcgis/core/layers/support/Field';
-import {HubItem, QueriedFeatures, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
+import {QueriedFeatures, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
 
 /**
  * Create an HTML table from an object
@@ -63,7 +63,13 @@ export const createFeatureLayerFromFeatureLayer = (result: QueriedFeatures) => {
   );
 }
 
-export const getTypeForHubItem = (hubItem: { type: string }): SystemConfigurationLayerTypes => {
+export const getTypeForHubItem = (hubItem: { type: string, name?: string, title?: string }): SystemConfigurationLayerTypes => {
+  const title = hubItem.name || hubItem.title || '';
+
+  // An elevation layer is a type of image service, but not all image services are elevation layers
+  // This is a work around to make sure we don't add elevation layers to the map, because they need to be added to the ground
+  if (title.toUpperCase().includes('ELEVATION')) return 'elevation';
+
   switch (hubItem.type) {
     case 'Scene Service':
       return 'scene';
