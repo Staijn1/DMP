@@ -109,6 +109,7 @@ export class MapUIBuilderService implements OnDestroy {
 
     const measurementExpand = new Expand({
       view: view,
+      expandIconClass: 'esri-icon-measure-line',
       group: 'top-right',
       expandTooltip: 'Show measurement',
       collapseTooltip: 'Hide measurement',
