@@ -8,12 +8,16 @@ import {createFeatureLayerFromFeatureLayer} from '../../utils/utils';
 import {Strategy} from '../../shared/components/arcgis-map/strategies/Strategy';
 import {RuleStrategy} from '../../shared/components/arcgis-map/strategies/300RuleStrategy';
 import {EnergyLabelStrategy} from '../../shared/components/arcgis-map/strategies/EnergyLabelStrategy';
+import {StorageService} from "../storage/storage.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class MapEventHandlerService {
   private queryResultGroupLayer!: GroupLayer;
+
+  constructor(private readonly storageService: StorageService) {
+  }
 
   registerEvents(view: __esri.SceneView) {
     // Find layers starting with id editable and add the edits event
@@ -24,6 +28,16 @@ export class MapEventHandlerService {
           layer.on('edits', (event) => this.onLayerEdited(event, view, layer));
         }
       });
+
+    // When changing the camera, save it's new position in session storage so we can restore it when the page loads again
+    view.watch('camera', (camera) => {
+      this.storageService.store('camera', camera);
+    });
+
+    view.watch('updating', (isUpdating) => {
+      // Set the cursor to a loading indicator when the view is updating
+      view.container.style.cursor = isUpdating ? 'progress' : 'default';
+    })
   }
 
   /**

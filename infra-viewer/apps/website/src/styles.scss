@@ -29,6 +29,10 @@
   box-shadow: $global-small-box-shadow;
 }
 
+.uk-text-underline {
+  text-decoration: underline;
+}
+
 .max-h-100vh {
   max-height: 100vh;
 }
@@ -44,9 +48,10 @@
 /**
 Esri overrides
  */
-:root{
+:root {
   --calcite-ui-brand: #{$global-primary-background};
 }
+
 .esri-expand__content {
   background-color: white;
 }
