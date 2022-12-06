@@ -5,13 +5,16 @@
 }
 
 .text-container {
-  z-index: 1;
   position: absolute;
-  left: 15%;
-  top: 15%;
+  z-index: 1;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: none;
+  top: 10%;
+  padding-left: 15%;
 }
 
-$offset-left: 40%;
+$offset-left: 0%;
 .image-container {
   z-index: 0;
   position: absolute;
