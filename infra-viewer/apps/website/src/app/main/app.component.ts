@@ -21,7 +21,7 @@ export class AppComponent {
   readonly menuItems = [
     {
       title: 'Home',
-      link: '/',
+      link: '/home',
       requiresLogin: false
     },
     {
