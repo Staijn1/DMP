@@ -30,7 +30,7 @@ async function bootstrap() {
 
   app.use(json({limit: '1mb'}));
   app.use(urlencoded({extended: true, limit: '1mb'}));
-  app.useStaticAssets(path.join(__filename, '..', 'public'));
+  app.useStaticAssets(path.join(__filename, '..', 'public'), {prefix: '/public/'});
 
   const port = process.env.PORT || 3333;
   await app.listen(port);

@@ -18,6 +18,8 @@ import Fullscreen from '@arcgis/core/widgets/Fullscreen';
 })
 export class MapUIBuilderService implements OnDestroy {
   private searchWidget!: __esri.widgetsSearch;
+  private directLineMeasurement!: __esri.DirectLineMeasurement3D | __esri.DirectLineMeasurement3D;
+  private surfaceMeasurement!: __esri.AreaMeasurement3D | __esri.AreaMeasurement3D;
 
 
   async buildUI(
@@ -107,18 +109,19 @@ export class MapUIBuilderService implements OnDestroy {
 
     const measurementExpand = new Expand({
       view: view,
+      expandIconClass: 'esri-icon-measure-line',
       group: 'top-right',
       expandTooltip: 'Show measurement',
       collapseTooltip: 'Hide measurement',
       content: measurementParent.nativeElement,
     });
 
-    new AreaMeasurement3D({
+    this.surfaceMeasurement = new AreaMeasurement3D({
       view: view,
       container: surfaceMeasurement.nativeElement,
     });
 
-    new DirectLineMeasurement3D({
+    this.directLineMeasurement = new DirectLineMeasurement3D({
       view: view,
       container: distanceMeasurement.nativeElement,
     });
@@ -171,5 +174,13 @@ export class MapUIBuilderService implements OnDestroy {
 
   ngOnDestroy(): void {
     this.searchWidget.destroy();
+  }
+
+  clearMeasurements(type: 'distance' | 'surface') {
+    if (type === 'distance') {
+      this.directLineMeasurement.viewModel.clear();
+    } else {
+      this.surfaceMeasurement.viewModel.clear();
+    }
   }
 }

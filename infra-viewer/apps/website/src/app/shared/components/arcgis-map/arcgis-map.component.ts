@@ -15,6 +15,7 @@ import {QueriedFeatures, SystemConfiguration, SystemConfigurationLayerTypes} fro
 import {LayerFactoryService} from '../../../services/layer-factory/layer-factory.service';
 import {SketchQueryWidgetComponent} from './widgets/SketchQueryWidget/sketch-query-widget.component';
 import SceneLayer from '@arcgis/core/layers/SceneLayer';
+import {StorageService} from "../../../services/storage/storage.service";
 
 @Component({
   selector: 'app-arcgis-map',
@@ -37,6 +38,7 @@ export class ArcgisMapComponent implements OnInit {
     private readonly configService: ConfigurationService,
     private readonly uiBuilder: MapUIBuilderService,
     private readonly eventHandler: MapEventHandlerService,
+    private readonly storageService: StorageService,
     private readonly layerFactory: LayerFactoryService) {
   }
 
@@ -85,6 +87,10 @@ export class ArcgisMapComponent implements OnInit {
    * @private
    */
   private createView(): void {
+    // Get the camera object if it exists. If it does not exist, use the camera configuration in the systemconfig.
+    const cameraInStorage = this.storageService.get("camera");
+    const camera = cameraInStorage || this.configuration.view.camera;
+
     const extent = {
       // autocasts as new Extent()
       xmin: 151575.98477672008,
@@ -109,6 +115,7 @@ export class ArcgisMapComponent implements OnInit {
       container: 'map',
       viewingMode: 'local',
       map: this.map,
+      camera: camera
     } as any
     // Create the view
     this.view = new SceneView(sceneConfig);
@@ -118,10 +125,6 @@ export class ArcgisMapComponent implements OnInit {
         this.activeHighlight.remove();
       }
     });
-    this.view.watch('updating', (isUpdating) => {
-      // Set the cursor to a loading indicator when the view is updating
-      this.view.container.style.cursor = isUpdating ? 'progress' : 'default';
-    })
   }
 
   /**
@@ -172,5 +175,9 @@ export class ArcgisMapComponent implements OnInit {
 
   onFeatureGridFilterChange($event: __esri.Graphic[], layer: FeatureLayer | SceneLayer) {
     this.sketchWidget.onExternalFilterChange($event, layer)
+  }
+
+  clearMeasurements(type: 'distance' | 'surface') {
+    this.uiBuilder.clearMeasurements(type)
   }
 }

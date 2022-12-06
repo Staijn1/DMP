@@ -1,16 +1,20 @@
 <div id="map"></div>
 
 <div #measurementWidgetsContainer class="uk-background-white" id="measurement-widgets-container">
-  <ul uk-tab="animation:uk-animation-fade;">
+  <ul class="uk-padding-small uk-padding-remove-vertical" uk-tab="animation:uk-animation-fade;">
     <li><a href="#">Distance</a></li>
     <li><a href="#">Surface</a></li>
   </ul>
 
   <ul class="uk-switcher uk-margin">
-    <li>
+    <li class="uk-padding-small uk-padding-remove-vertical">
+      <p>Create a distance measurement</p>
+      <button class="uk-button uk-button-default uk-width-1-1" (click)="clearMeasurements('distance')">Clear</button>
       <div #distanceMeasurement id="distance-measurement"></div>
     </li>
-    <li>
+    <li class="uk-padding-small uk-padding-remove-vertical">
+      <p>Create a surface measurement</p>
+      <button class="uk-button uk-button-default uk-width-1-1" (click)="clearMeasurements('surface')">Clear</button>
       <div #surfaceMeasurement id="surface-measurement"></div>
     </li>
   </ul>

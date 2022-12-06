@@ -39,6 +39,6 @@ export class WelcomePageComponent {
     // Strip off the /api from the end of the url
     const url = environment.api.substring(0, environment.api.length - 4);
     // Add the image name to the end of the url
-    return `${url}/${imagename}`;
+    return `${url}/public/${imagename}`;
   }
 }
