@@ -3,6 +3,8 @@ import {HTTPService} from '../HTTP/http.service';
 import {environment} from '../../../environments/environment';
 import {HubItem, LayerConfig, SystemConfiguration} from '@infra-viewer/interfaces';
 import {getTypeForHubItem} from '../../utils/utils';
+import {StorageService} from "../storage/storage.service";
+import {MessageService} from "../message-service/message.service";
 
 @Injectable({
   providedIn: 'root',
@@ -10,22 +12,23 @@ import {getTypeForHubItem} from '../../utils/utils';
 export class ConfigurationService extends HTTPService implements OnDestroy {
   public static configuration: SystemConfiguration | null = null;
 
-  async getConfiguration(force?: boolean): Promise<SystemConfiguration> {
-    if (ConfigurationService.configuration && !force) return ConfigurationService.configuration;
+  constructor(private storageService: StorageService, messageService: MessageService) {
+    super(messageService);
+  }
 
-    const config = await this.request(`${environment.api}/System/Configuration`, {});
-    ConfigurationService.configuration = config;
+  async getConfiguration(): Promise<SystemConfiguration> {
+    const config = this.storageService.get('configuration', localStorage);
+
+    if (!config) {
+      const defaultConfig = await this.request('assets/SystemConfiguration.json', {});
+      this.storageService.store('configuration', defaultConfig, localStorage);
+      return defaultConfig;
+    }
     return config;
   }
 
   async setConfiguration(configuration: SystemConfiguration | string): Promise<void> {
-    if (typeof configuration === 'object') configuration = JSON.stringify(configuration);
-
-    return this.request(`${environment.api}/System/Configuration`, {
-      method: 'POST',
-      body: configuration,
-      headers: {'Content-Type': 'application/json'}
-    });
+    this.storageService.store('configuration', configuration, localStorage)
   }
 
   ngOnDestroy(): void {
