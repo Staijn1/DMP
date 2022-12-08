@@ -1,7 +1,7 @@
 <div class="container" uk-height-viewport="offset-top:true">
   <div class="text-container uk-card uk-card-default uk-card-body">
     <div>
-      <h1 class="uk-card-title uk-heading-large" data-aos="fade-zoom-in">Infraviewer</h1>
+      <h1 class="uk-heading-large" data-aos="fade-zoom-in">Infraviewer</h1>
       <p>Bekijk de openbare ruimte van Arnhem in 3D.</p>
       <button class="uk-button uk-button-primary" (click)="authService.login()">Beginnen!</button>
     </div>
@@ -12,16 +12,16 @@
          uk-slideshow="animation: push; autoplay: true; autoplay-interval: 5000;">
       <ul class="uk-slideshow-items uk-height-1-1">
         <li>
-          <img [src]="getSrc('musis.jpg')" alt="" uk-cover>
+          <img src="assets/musis.jpg" alt="" uk-cover>
         </li>
         <li>
-          <img [src]="getSrc('station.jpg')" alt="" uk-cover>
+          <img src="assets/station.jpg" alt="" uk-cover>
         </li>
         <li>
-          <img [src]="getSrc('johnfrost.jpg')" alt="" uk-cover>
+          <img src="assets/johnfrost.jpg" alt="" uk-cover>
         </li>
         <li>
-          <img [src]="getSrc('korenmarkt.jpg')" alt="" uk-cover>
+          <img src="assets/korenmarkt.jpg" alt="" uk-cover>
         </li>
       </ul>
     </div>
@@ -66,7 +66,7 @@
 </section>
 
 <ng-template #featureCard let-title="title" let-description="description" let-icon="icon">
-  <div class="feature-card uk-padding-small uk-card uk-card-default" data-aos="fade-up">
+  <div class="feature-card uk-card-hover uk-padding-small uk-card uk-card-default" data-aos="fade-up">
     <div class="uk-card-media-top">
       <fa-icon [icon]="icon"></fa-icon>
     </div>

@@ -38,8 +38,8 @@ export class ConfigPageComponent implements OnDestroy {
     this.getInformation();
   }
 
-  getInformation(force?: boolean) {
-    this.configService.getConfiguration(force).then(config => this.configuration = config);
+  getInformation() {
+    this.configService.getConfiguration().then(config => this.configuration = config);
   }
 
   /**

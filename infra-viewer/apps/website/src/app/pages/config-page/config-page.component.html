@@ -3,7 +3,7 @@
   <p>On this page you can quickly configure the infraviewer</p>
   <form class="uk-form-stacked" #form="ngForm">
     <div class="uk-grid uk-flex-between">
-      <button class="uk-button uk-button-default" type="button" (click)="getInformation(true)">Refresh config</button>
+      <button class="uk-button uk-button-default" type="button" (click)="getInformation()">Refresh config</button>
       <button
         type="submit"
         [disabled]="form.invalid"

@@ -1,7 +1,16 @@
 @import "forms.scss";
+@import "card";
 
 @import "variables";
 @import "uikit/src/scss/mixins-theme.scss";
+
+
+// On a phone or tablet, disable text selection
+@media screen and (max-width: $breakpoint-small-max){
+  html {
+    user-select: none;
+  }
+}
 
 // 3. Your custom mixin overwrites.
 @mixin hook-tab-item-active {
