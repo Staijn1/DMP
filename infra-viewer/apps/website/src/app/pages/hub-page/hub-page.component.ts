@@ -94,6 +94,7 @@ export class HubPageComponent implements OnInit {
 
   filterItems() {
     this.hubItems = [];
+    this.filter.start = 1;
     this.getItems();
   }
 
