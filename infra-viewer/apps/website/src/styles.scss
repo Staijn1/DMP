@@ -61,10 +61,6 @@ Esri overrides
   color: white;
 }
 
-.esri-widget--button, .esri-button, .esri-expand {
+.esri-widget--button, .esri-button {
   border-radius: $border-rounded-border-radius;
-}
-
-.esri-daylight .esri-slider.esri-slider--horizontal .esri-slider__thumb:hover, .esri-daylight .esri-slider.esri-slider--horizontal .esri-slider__thumb:active, .esri-daylight .esri-slider.esri-slider--horizontal .esri-slider__thumb:focus {
-  background-color: $global-primary-background !important;
 }
