@@ -1,4 +1,4 @@
-name: Build & Deploy Docker Infraviewer
+name: Build & Deploy Docker Infraviewer ARM
 
 on:
   push:
