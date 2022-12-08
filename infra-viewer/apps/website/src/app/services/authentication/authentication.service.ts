@@ -38,7 +38,8 @@ export class AuthenticationService {
    * Redirect the user to the Arcgis Enterprise login portal
    */
   login() {
-    window.location.href = this.portalSharingUrl + 'oauth2/authorize?client_id=' + this.appId + '&response_type=token&redirect_uri=' + environment.redirectUri;
+    const redirectUri = this.getRedirectUrl();
+    window.location.href = this.portalSharingUrl + 'oauth2/authorize?client_id=' + this.appId + '&response_type=token&redirect_uri=' + redirectUri;
   }
 
   /**
@@ -63,5 +64,17 @@ export class AuthenticationService {
       expires: isNaN(Number(expiration)) ? new Date().getTime() + (3600 * 1000) : Number(expiration)
     });
     esriId.checkSignInStatus(this.portalSharingUrl).then().catch(e => this.login());
+  }
+
+  /**
+   * Replace the last part of the URL with /login
+   * Example: https://some-subdomain.domain.nl/some-path/home
+   * The last part of the URL is part of the angular routing and needs to be replaced with /login
+   * It results in https://some-subdomain.domain.nl/some-path/login
+   * @private
+   */
+  getRedirectUrl(): string {
+    const currentUrl = window.location.href;
+    return currentUrl.replace(/\/[^/]*$/, "/login");
   }
 }
