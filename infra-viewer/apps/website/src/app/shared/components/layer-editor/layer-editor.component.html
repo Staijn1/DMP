@@ -1,6 +1,6 @@
 <div #modal class="uk-modal-full uk-overflow-auto uk-background-white" uk-modal>
-  <div class="uk-modal-dialog h-100vh" *ngIf="rootLayerConfig && serviceInfo">
-    <button class="uk-modal-close-full uk-close-large" type="button" uk-close (click)="cancelEdit()"></button>
+  <div *ngIf="rootLayerConfig && serviceInfo" class="uk-modal-dialog h-100vh">
+    <button (click)="cancelEdit()" class="uk-modal-close-full uk-close-large" type="button" uk-close></button>
 
     <div class="uk-modal-header">
       <h2 class="uk-modal-title">Layer Configuration</h2>
@@ -13,7 +13,7 @@
           <ng-template *ngTemplateOutlet="sublayerEditor"></ng-template>
         </div>
       </ng-template>
-      <div class="uk-width-1-3" *ngIf="layersWithoutChildren.length > 1; else noSublayers">
+      <div *ngIf="layersWithoutChildren.length > 1; else noSublayers" class="uk-width-1-3">
         <ul
           class="uk-tab-left max-h-100vh overflow-scroll-y uk-flex-nowrap"
           uk-tab="connect: #sublayer-list; animation: uk-animation-fade">
@@ -25,7 +25,7 @@
         </ul>
       </div>
       <div class="uk-width-2-3">
-        <ul id="sublayer-list" class="uk-switcher">
+        <ul class="uk-switcher" id="sublayer-list">
           <li *ngFor="let sublayer of layersWithoutChildren">
             <ng-template *ngTemplateOutlet="sublayerEditor"></ng-template>
           </li>
@@ -34,8 +34,8 @@
     </div>
 
     <div class="uk-modal-footer uk-text-right">
-      <button class="uk-button uk-button-default" type="button" (click)="cancelEdit()">Cancel</button>
-      <button class="uk-button uk-button-primary" type="submit" (click)="onLayerSave()">Save</button>
+      <button (click)="cancelEdit()" class="uk-button uk-button-default" type="button">Cancel</button>
+      <button (click)="onLayerSave()" class="uk-button uk-button-primary" type="submit">Save</button>
     </div>
   </div>
 </div>
@@ -51,22 +51,22 @@
         <div class="uk-margin">
           <label class="uk-form-label">Title</label>
           <div class="uk-form-controls">
-            <input class="uk-input" type="text" name="title" [(ngModel)]="selectedLayer.title" required>
+            <input [(ngModel)]="selectedLayer.title" class="uk-input" name="title" required type="text">
           </div>
         </div>
         <div class="uk-margin uk-child-width-expand" uk-grid>
           <div>
             <label class="uk-form-label" for="minScale">Min Scale</label>
             <div class="uk-form-controls">
-              <input class="uk-input" id="minScale" name="minScale" type="number" step="100"
-                     [(ngModel)]="selectedLayer.minScale">
+              <input [(ngModel)]="selectedLayer.minScale" class="uk-input" id="minScale" name="minScale" step="100"
+                     type="number">
             </div>
           </div>
           <div>
             <label class="uk-form-label" for="maxScale">Max Scale</label>
             <div class="uk-form-controls">
-              <input class="uk-input" id="maxScale" name="maxScale" type="number" step="100"
-                     [(ngModel)]="selectedLayer.maxScale">
+              <input [(ngModel)]="selectedLayer.maxScale" class="uk-input" id="maxScale" name="maxScale" step="100"
+                     type="number">
             </div>
           </div>
         </div>
@@ -75,26 +75,26 @@
           <div class="uk-width-1-2">
             <ng-container *ngIf="selectedLayer.type !== 'map-image'">
               <label class="uk-display-block">
-                <input class="uk-checkbox" type="checkbox"
-                       [(ngModel)]="selectedLayer.legendEnabled"> Show layer in legend
+                <input [(ngModel)]="selectedLayer.legendEnabled" class="uk-checkbox"
+                       type="checkbox"> Show layer in legend
               </label>
               <label class="uk-display-block">
-                <input class="uk-checkbox" type="checkbox"
-                       [(ngModel)]="selectedLayer.popupEnabled"> Enable popup
+                <input [(ngModel)]="selectedLayer.popupEnabled" class="uk-checkbox"
+                       type="checkbox"> Enable popup
               </label>
             </ng-container>
             <label class="uk-display-block">
-              <input class="uk-checkbox" type="checkbox"
-                     [(ngModel)]="selectedLayer.visible"> Make layer visible by default
+              <input [(ngModel)]="selectedLayer.visible" class="uk-checkbox"
+                     type="checkbox"> Make layer visible by default
             </label>
           </div>
         </div>
-        <div class="uk-margin uk-grid uk-child-width-expand" *ngIf="selectedLayer.type !== 'map-image'">
+        <div *ngIf="selectedLayer.type !== 'map-image'" class="uk-margin uk-grid uk-child-width-expand">
           <div>
             <label class="uk-form-label" for="elevationMode">Elevation Mode</label>
             <div class="uk-form-controls">
-              <select class="uk-select" id="elevationMode" name="elevationMode"
-                      [(ngModel)]="selectedLayer.elevationInfo.mode">
+              <select [(ngModel)]="selectedLayer.elevationInfo.mode" class="uk-select" id="elevationMode"
+                      name="elevationMode">
                 <option value="on-the-ground">On the ground</option>
                 <option value="relative-to-ground">Relative to ground</option>
                 <option value="relative-to-scene">Relative to scene</option>
@@ -105,8 +105,8 @@
           <div *ngIf="selectedLayer.elevationInfo.mode !== 'on-the-ground'">
             <label class="uk-form-label" for="units">Units</label>
             <div class="uk-form-controls">
-              <select class="uk-select" id="units" name="units"
-                      [(ngModel)]="selectedLayer.elevationInfo.unit">
+              <select [(ngModel)]="selectedLayer.elevationInfo.unit" class="uk-select" id="units"
+                      name="units">
                 <option value="centimeters">Centimeters</option>
                 <option value="meters">Meters</option>
                 <option value="kilometers">Kilometers</option>
@@ -117,17 +117,19 @@
               </select>
             </div>
           </div>
-          <ng-container *ngIf="selectedLayer.type !== 'scene' && !selectedLayer.elevationInfo.featureExpressionInfo; else tooAdvancedElevationInfo">
+          <ng-container
+            *ngIf="selectedLayer.type !== 'scene' && !selectedLayer.elevationInfo.featureExpressionInfo; else tooAdvancedElevationInfo">
             <div *ngIf="selectedLayer.elevationInfo.mode !== 'on-the-ground'">
               <label class="uk-form-label" for="offset">Offset</label>
               <div class="uk-form-controls">
-                <input class="uk-input" id="offset" name="offset" type="number" step="0.1"
-                       [(ngModel)]="selectedLayer.elevationInfo.offset">
+                <input [(ngModel)]="selectedLayer.elevationInfo.offset" class="uk-input" id="offset" name="offset" step="0.1"
+                       type="number">
               </div>
             </div>
           </ng-container>
           <ng-template #tooAdvancedElevationInfo>
-            <p class="uk-text-warning">The elevation offset of this layer is controlled by an Arcade expression. This is currently not supported
+            <p class="uk-text-warning">The elevation offset of this layer is controlled by an Arcade expression. This is
+              currently not supported
               in this editor. <br>
               Please refer to the Arcgis documentation and edit this layer in the "Advanced configuration" section.</p>
           </ng-template>

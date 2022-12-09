@@ -1,10 +1,10 @@
-import { NgModule, isDevMode } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {NgModule, isDevMode} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
 
-import { AppComponent } from './main/app.component';
-import { RouterModule } from '@angular/router';
+import {AppComponent} from './main/app.component';
+import {RouterModule} from '@angular/router';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { ServiceWorkerModule } from '@angular/service-worker';
+import {ServiceWorkerModule} from '@angular/service-worker';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 
 @NgModule({
@@ -73,4 +73,5 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+}

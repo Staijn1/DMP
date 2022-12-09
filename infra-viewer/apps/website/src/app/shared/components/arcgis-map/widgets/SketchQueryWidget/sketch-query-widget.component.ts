@@ -27,11 +27,6 @@ export class SketchQueryWidgetComponent {
   @ViewChild('infoDiv') infoDiv!: ElementRef<HTMLDivElement>
   @ViewChild('slider') slider!: ElementRef<HTMLDivElement>;
   @Output() query: EventEmitter<QueriedFeatures[]> = new EventEmitter<QueriedFeatures[]>();
-  private layerViews: (FeatureLayerView | SceneLayerView)[] = [];
-  private queriedFeatures: QueriedFeatures[] = [];
-  private sketchViewModel!: __esri.SketchViewModel;
-  private featureFilter: __esri.FeatureFilter = new FeatureFilter();
-
   view!: SceneView;
   // Contains the geometry that the user has drawn. This geometry is used to filter the layers
   sketchGeometry: Geometry | null = null;
@@ -42,7 +37,6 @@ export class SketchQueryWidgetComponent {
   selectedSpatialRelationship: SpatialRelationship = 'intersects';
   bufferSize = 0;
   spatialRelationships = ['intersects', 'contains'];
-
   sliderConfig: Options = {
     floor: 0,
     ceil: 1000,
@@ -50,95 +44,10 @@ export class SketchQueryWidgetComponent {
     translate: (value: number,): string => value + 'm',
 
   }
-
-  private createSketchWidget() {
-    this.view.map.addMany([this.bufferLayer, this.sketchLayer]);
-
-    // create the layerView's to add the filter
-    (this.view.map as WebScene).load().then(() => {
-      let layersToAdd = this.view.map.layers.filter(layer => ['scene', 'feature'].includes(layer.type))
-
-      // Loop through any group layers and add their sublayers to the layerViews array
-      this.view.map.layers.filter(layer => layer.type === 'group').forEach((groupLayer) => {
-        // Get all feature or scene layers that are in this group layer, even the layers that are nested more than one level deep
-        layersToAdd = layersToAdd.concat((groupLayer as GroupLayer).allLayers.filter(layer => ['scene', 'feature'].includes(layer.type)))
-      });
-      // loop through all layers we want to query and add them to the layerViews array
-      layersToAdd.forEach((layer) => {
-        this.view
-          .whenLayerView(layer)
-          .then((layerView: LayerView) => {
-            this.layerViews.push(layerView as FeatureLayerView | SceneLayerView);
-          })
-          .catch(console.error);
-      });
-    });
-
-
-    this.sketchViewModel = new SketchViewModel({
-      layer: this.sketchLayer,
-      view: this.view,
-      pointSymbol: {
-        type: 'simple-marker',
-        style: 'circle',
-        size: 10,
-        color: [255, 255, 255, 0.8],
-        outline: {
-          color: [211, 132, 80, 0.7],
-          size: 10
-        } as any
-      },
-      polylineSymbol: {
-        type: 'simple-line',
-        color: [211, 132, 80, 0.7],
-        width: 6
-      },
-      polygonSymbol: {
-        type: 'polygon-3d',
-        symbolLayers: [
-          {
-            type: 'fill',
-            material: {
-              color: [255, 255, 255, 0.4]
-            },
-            outline: {
-              color: [211, 132, 80, 0.7],
-              size: '10px'
-            }
-          }
-        ]
-      },
-      defaultCreateOptions: {hasZ: false}
-    });
-
-    this.sketchViewModel.on('create', (event) => {
-      // update the filter every time the user finishes drawing the filtergeometry
-      if (event.state == 'complete') {
-        this.sketchGeometry = event.graphic.geometry;
-        this.queryByClientsideFilter();
-        this.queryByServersideFilter();
-      }
-    });
-
-    this.sketchViewModel.on('update', (event) => {
-      const eventInfo = event.toolEventInfo;
-      // update the filter every time the user moves the filtergeometry
-      if (eventInfo && eventInfo.type.includes('stop')) {
-        this.sketchGeometry = event.graphics[0].geometry;
-        this.queryByClientsideFilter();
-        this.queryByServersideFilter();
-      }
-    });
-
-    const expand = new Expand({
-      expandIconClass: 'esri-icon-filter',
-      expandTooltip: 'Filter',
-      view: this.view,
-      content: this.infoDiv.nativeElement
-    });
-    this.view.ui.add(expand, 'top-right');
-    this.infoDiv.nativeElement.style.display = 'block';
-  }
+  private layerViews: (FeatureLayerView | SceneLayerView)[] = [];
+  private queriedFeatures: QueriedFeatures[] = [];
+  private sketchViewModel!: __esri.SketchViewModel;
+  private featureFilter: __esri.FeatureFilter = new FeatureFilter();
 
   /**
    * Performs the necessary steps to initialize this component.
@@ -231,6 +140,128 @@ export class SketchQueryWidgetComponent {
   }
 
   /**
+   * When the user changes the filter outside this component, we need to update our view so the filter matches.
+   * @param {__esri.Graphic[]} graphics - The graphics that match the new filter
+   * @param {__esri.Layer} layer - The layer that was filtered
+   */
+  onExternalFilterChange(graphics: __esri.Graphic[], layer: __esri.FeatureLayer | __esri.SceneLayer) {
+    // Find the layerview that matches the layer that was filtered
+    const layerView = this.layerViews.find((layerView) => layerView.layer.id === layer.id);
+    if (layerView) {
+      // Change the filter to only show the graphics that are in the graphics array
+      layerView.filter = new FeatureFilter({
+        objectIds: graphics.map((graphic) => graphic.attributes[layer.objectIdField])
+      });
+    }
+  }
+
+  /**
+   * Fired while the user is sliding the buffer slider
+   * We do not query the server because that would be too much traffic which would slow down the application enormously
+   */
+  onSliderUserChange() {
+    this.queryByClientsideFilter();
+  }
+
+  /**
+   * Fired when the user has stopped changing the slider.
+   * Now we query the server to get all the features that are within the geometry
+   */
+  onSliderUserChangeEnd() {
+    this.queryByClientsideFilter();
+    this.queryByServersideFilter();
+  }
+
+  private createSketchWidget() {
+    this.view.map.addMany([this.bufferLayer, this.sketchLayer]);
+
+    // create the layerView's to add the filter
+    (this.view.map as WebScene).load().then(() => {
+      let layersToAdd = this.view.map.layers.filter(layer => ['scene', 'feature'].includes(layer.type))
+
+      // Loop through any group layers and add their sublayers to the layerViews array
+      this.view.map.layers.filter(layer => layer.type === 'group').forEach((groupLayer) => {
+        // Get all feature or scene layers that are in this group layer, even the layers that are nested more than one level deep
+        layersToAdd = layersToAdd.concat((groupLayer as GroupLayer).allLayers.filter(layer => ['scene', 'feature'].includes(layer.type)))
+      });
+      // loop through all layers we want to query and add them to the layerViews array
+      layersToAdd.forEach((layer) => {
+        this.view
+          .whenLayerView(layer)
+          .then((layerView: LayerView) => {
+            this.layerViews.push(layerView as FeatureLayerView | SceneLayerView);
+          })
+          .catch(console.error);
+      });
+    });
+
+
+    this.sketchViewModel = new SketchViewModel({
+      layer: this.sketchLayer,
+      view: this.view,
+      pointSymbol: {
+        type: 'simple-marker',
+        style: 'circle',
+        size: 10,
+        color: [255, 255, 255, 0.8],
+        outline: {
+          color: [211, 132, 80, 0.7],
+          size: 10
+        } as any
+      },
+      polylineSymbol: {
+        type: 'simple-line',
+        color: [211, 132, 80, 0.7],
+        width: 6
+      },
+      polygonSymbol: {
+        type: 'polygon-3d',
+        symbolLayers: [
+          {
+            type: 'fill',
+            material: {
+              color: [255, 255, 255, 0.4]
+            },
+            outline: {
+              color: [211, 132, 80, 0.7],
+              size: '10px'
+            }
+          }
+        ]
+      },
+      defaultCreateOptions: {hasZ: false}
+    });
+
+    this.sketchViewModel.on('create', (event) => {
+      // update the filter every time the user finishes drawing the filtergeometry
+      if (event.state == 'complete') {
+        this.sketchGeometry = event.graphic.geometry;
+        this.queryByClientsideFilter();
+        this.queryByServersideFilter();
+      }
+    });
+
+    this.sketchViewModel.on('update', (event) => {
+      const eventInfo = event.toolEventInfo;
+      // update the filter every time the user moves the filtergeometry
+      if (eventInfo && eventInfo.type.includes('stop')) {
+        this.sketchGeometry = event.graphics[0].geometry;
+        this.queryByClientsideFilter();
+        this.queryByServersideFilter();
+      }
+    });
+
+    const expand = new Expand({
+      expandIconClass: 'esri-icon-filter',
+      expandTooltip: 'Filter',
+      view: this.view,
+      content: this.infoDiv.nativeElement
+    });
+    this.view.ui.add(expand, 'top-right');
+    this.infoDiv.nativeElement.style.display = 'block';
+  }
+
+  /**
    * Query all the features that are within the filter that is active
    * @param {__esri.SceneLayerView[] | __esri.FeatureLayerView[]} layerViews
    * @private
@@ -267,38 +298,5 @@ export class SketchQueryWidgetComponent {
    */
   private applyFilterForAllLayers(layerViews: (__esri.FeatureLayerView | __esri.SceneLayerView)[]) {
     layerViews.forEach((layerView: FeatureLayerView | SceneLayerView) => layerView.filter = this.featureFilter);
-  }
-
-  /**
-   * When the user changes the filter outside this component, we need to update our view so the filter matches.
-   * @param {__esri.Graphic[]} graphics - The graphics that match the new filter
-   * @param {__esri.Layer} layer - The layer that was filtered
-   */
-  onExternalFilterChange(graphics: __esri.Graphic[], layer: __esri.FeatureLayer | __esri.SceneLayer) {
-    // Find the layerview that matches the layer that was filtered
-    const layerView = this.layerViews.find((layerView) => layerView.layer.id === layer.id);
-    if (layerView) {
-      // Change the filter to only show the graphics that are in the graphics array
-      layerView.filter = new FeatureFilter({
-        objectIds: graphics.map((graphic) => graphic.attributes[layer.objectIdField])
-      });
-    }
-  }
-
-  /**
-   * Fired while the user is sliding the buffer slider
-   * We do not query the server because that would be too much traffic which would slow down the application enormously
-   */
-  onSliderUserChange() {
-    this.queryByClientsideFilter();
-  }
-
-  /**
-   * Fired when the user has stopped changing the slider.
-   * Now we query the server to get all the features that are within the geometry
-   */
-  onSliderUserChangeEnd() {
-    this.queryByClientsideFilter();
-    this.queryByServersideFilter();
   }
 }

@@ -144,6 +144,18 @@ export class MapUIBuilderService implements OnDestroy {
     view.ui.add([this.searchWidget, elevationProfileExpand, daylightExpand, shadowWidget, editor, measurementExpand], 'top-right');
   }
 
+  ngOnDestroy(): void {
+    this.searchWidget.destroy();
+  }
+
+  clearMeasurements(type: 'distance' | 'surface') {
+    if (type === 'distance') {
+      this.directLineMeasurement.viewModel.clear();
+    } else {
+      this.surfaceMeasurement.viewModel.clear();
+    }
+  }
+
   /**
    * Create a widget to edit features.
    * Disable editing for all layers, even if they are marked as editable, except for the layers that have an id that starts with 'editable'
@@ -170,17 +182,5 @@ export class MapUIBuilderService implements OnDestroy {
         layerInfos: layerInfos as any,
       })
     });
-  }
-
-  ngOnDestroy(): void {
-    this.searchWidget.destroy();
-  }
-
-  clearMeasurements(type: 'distance' | 'surface') {
-    if (type === 'distance') {
-      this.directLineMeasurement.viewModel.clear();
-    } else {
-      this.surfaceMeasurement.viewModel.clear();
-    }
   }
 }

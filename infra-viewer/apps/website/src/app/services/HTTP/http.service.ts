@@ -9,15 +9,6 @@ export class HTTPService {
   }
 
   /**
-   * Handle the error from the api and map it to an error we can show
-   * @param {any} err
-   * @private
-   */
-  private handleError(err: string | any): Message {
-    return this.messageService.setMessage(err)
-  }
-
-  /**
    * Helper function to perform a request and handle the response with the error handler.
    * @param input - URL to fetch from
    * @param init - options with request
@@ -40,5 +31,14 @@ export class HTTPService {
     } catch (e) {
       throw this.handleError(e)
     }
+  }
+
+  /**
+   * Handle the error from the api and map it to an error we can show
+   * @param {any} err
+   * @private
+   */
+  private handleError(err: string | any): Message {
+    return this.messageService.setMessage(err)
   }
 }

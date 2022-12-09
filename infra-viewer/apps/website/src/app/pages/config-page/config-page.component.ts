@@ -22,6 +22,10 @@ export class ConfigPageComponent implements OnDestroy {
   configuration!: SystemConfiguration;
   private configurationBackup!: SystemConfiguration;
 
+  constructor(private readonly configService: ConfigurationService, private readonly hubService: HubService) {
+    this.getInformation();
+  }
+
   get configurationString() {
     return JSON.stringify(this.configuration, null, 2);
   }
@@ -32,10 +36,6 @@ export class ConfigPageComponent implements OnDestroy {
     } catch (e) {
       this.form.controls['advancedConfiguration'].setErrors({json: true});
     }
-  }
-
-  constructor(private readonly configService: ConfigurationService, private readonly hubService: HubService) {
-    this.getInformation();
   }
 
   getInformation() {

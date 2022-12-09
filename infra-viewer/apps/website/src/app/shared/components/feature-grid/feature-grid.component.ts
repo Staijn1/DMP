@@ -25,6 +25,9 @@ export class FeatureGridComponent {
     resizable: true,
   };
   public columnDefs: ColDef[] = [];
+  gridOptions: GridOptions = {};
+  // Data that gets displayed in the grid
+  public rowData: Graphic[] = [];
   private zoomToFeatureColumn: ColDef = {
     headerName: 'Zoom',
     pinned: 'left',
@@ -34,12 +37,6 @@ export class FeatureGridComponent {
     },
     width: 100
   };
-  gridOptions: GridOptions = {};
-
-
-  // Data that gets displayed in the grid
-  public rowData: Graphic[] = [];
-
 
   // Example load data from sever
   onGridReady(params: GridReadyEvent) {
@@ -51,6 +48,17 @@ export class FeatureGridComponent {
 
   zoomToFeature(graphic: Graphic) {
     this.map.highlightAndZoomTo(graphic);
+  }
+
+  /**
+   * When the filter changes, emit an event with all the currently visible rows
+   * @param {FilterChangedEvent<any>} event
+   */
+  onFilterChanged(event: FilterChangedEvent) {
+    // Get all the visible rows
+    const visibleRows = this.agGrid.api.getRenderedNodes().map(node => node.data);
+    // Emit the event
+    this.filterChanged.emit(visibleRows);
   }
 
   private createColumnDefs(fields: __esri.Field[]) {
@@ -66,16 +74,5 @@ export class FeatureGridComponent {
 
   private createRowData(graphics: __esri.Graphic[]) {
     this.rowData = graphics;
-  }
-
-  /**
-   * When the filter changes, emit an event with all the currently visible rows
-   * @param {FilterChangedEvent<any>} event
-   */
-  onFilterChanged(event: FilterChangedEvent) {
-    // Get all the visible rows
-    const visibleRows = this.agGrid.api.getRenderedNodes().map(node => node.data);
-    // Emit the event
-    this.filterChanged.emit(visibleRows);
   }
 }

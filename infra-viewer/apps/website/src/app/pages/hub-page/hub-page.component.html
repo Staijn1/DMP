@@ -1,4 +1,4 @@
-<div uk-grid class="uk-grid-small" *ngIf="hubItems">
+<div *ngIf="hubItems" class="uk-grid-small" uk-grid>
   <!--  Create a column with a search bar and options to filter on-->
   <div class="uk-width-1-5@m uk-width-1-1@s uk-height-1-1">
     <form #form="ngForm" (ngSubmit)="filterItems()" class="uk-card uk-card-default uk-card-body uk-position-z-index"
@@ -7,85 +7,85 @@
       <div class="uk-margin">
         <div class="uk-inline uk-width-1-1">
           <span class="uk-form-icon" uk-icon="icon: search"></span>
-          <input name="search" class="uk-input" type="text" placeholder="Search" [(ngModel)]="filter.search">
+          <input [(ngModel)]="filter.search" class="uk-input" name="search" placeholder="Search" type="text">
         </div>
       </div>
       <div class="uk-margin">
         <div class="uk-inline uk-width-1-1">
           <span class="uk-form-icon" uk-icon="icon: user"></span>
-          <input name="owner" class="uk-input" type="text" placeholder="Owner" [(ngModel)]="filter.owner">
+          <input [(ngModel)]="filter.owner" class="uk-input" name="owner" placeholder="Owner" type="text">
         </div>
       </div>
       <div class="uk-margin uk-flex uk-flex-right">
-        <button name="filterbutton" type="submit" class="uk-button uk-button-primary">Filter</button>
+        <button class="uk-button uk-button-primary" name="filterbutton" type="submit">Filter</button>
       </div>
     </form>
   </div>
 
   <!--Create rows with four columns iterating over the hubitems, showing it's information-->
-  <div class="uk-width-expand" appScrollTracker (scrollingFinished)="getItems(true)">
+  <div (scrollingFinished)="getItems(true)" appScrollTracker class="uk-width-expand">
     <div
-      uk-grid
       #hubItemsList="cdkDropList"
       [cdkDropListConnectedTo]="[activeLayersList]"
-      cdkDropList
       [cdkDropListData]="hubItems"
-      class="uk-grid-match uk-grid-small">
+      cdkDropList
+      class="uk-grid-match uk-grid-small"
+      uk-grid>
       <div
-        cdkDrag
         *ngFor="let hubItem of hubItems"
         [cdkDragData]="hubItem"
+        cdkDrag
         class="uk-width-1-1@s uk-width-1-3@m">
         <div class="uk-card uk-card-default uk-card-hover uk-flex uk-flex-column uk-flex-between" data-aos="fade-up">
           <div class="uk-card-media-top">
-            <a target="_blank" [href]="createUrlToPortalItem(hubItem)">
-              <img [src]="createImageUrl(hubItem)" alt="Thumbnail" class="uk-width-1-1"
-                   (error)="onThumbnailImageError($event)">
+            <a [href]="createUrlToPortalItem(hubItem)" target="_blank">
+              <img (error)="onThumbnailImageError($event)" [src]="createImageUrl(hubItem)" alt="Thumbnail"
+                   class="uk-width-1-1">
             </a>
           </div>
           <div class="uk-card-badge uk-label no-background">
             <span class="uk-badge uk-background-primary">{{hubItem.type}}</span>
             <ng-container *ngIf="layerAlreadyInConfiguration(hubItem); else notInConfig">
-                 <span class="uk-badge uk-background-danger"
-                       (click)="removeLayerFromConfiguration(hubItem)">Remove</span>
+                 <span (click)="removeLayerFromConfiguration(hubItem)"
+                       class="uk-badge uk-background-danger">Remove</span>
             </ng-container>
             <ng-template #notInConfig>
-             <span class="uk-badge uk-background-success"
-                   (click)="addLayerToConfiguration(hubItem)">Add</span>
+             <span (click)="addLayerToConfiguration(hubItem)"
+                   class="uk-badge uk-background-success">Add</span>
             </ng-template>
           </div>
           <div class="uk-card-header">
             <h3 class="uk-card-title">{{transformTitle(hubItem)}}</h3>
           </div>
           <div class="uk-card-body">
-            <a class="uk-link" target="_blank" [href]="createUrlToPortalItem(hubItem)">Go to portal</a>
+            <a [href]="createUrlToPortalItem(hubItem)" class="uk-link" target="_blank">Go to portal</a>
           </div>
         </div>
       </div>
     </div>
-    <div class="uk-flex uk-flex-center uk-margin" *ngIf="hasMoreItems">
-      <button type="button" class="uk-button uk-button-default" (click)="getItems()">Load more</button>
+    <div *ngIf="hasMoreItems" class="uk-flex uk-flex-center uk-margin">
+      <button (click)="getItems()" class="uk-button uk-button-default" type="button">Load more</button>
     </div>
   </div>
 
   <div class="uk-width-1-4 uk-visible@m">
     <div
-      uk-sticky
       class="uk-card uk-card-default uk-card-body uk-position-z-index"
+      uk-sticky
     >
       <h3 class="uk-card-title">Active Layers</h3>
       <div
         #activeLayersList="cdkDropList"
-        [cdkDropListConnectedTo]="[hubItemsList]"
-        cdkDropList
-        [cdkDropListData]="configuration?.layers || []"
         (cdkDropListDropped)="drop($event)"
+        [cdkDropListConnectedTo]="[hubItemsList]"
+        [cdkDropListData]="configuration?.layers || []"
         [cdkDropListEnterPredicate]="layerAlreadyInConfigurationPredicate.bind(this)"
+        cdkDropList
         uk-height-viewport="offset-top: true"
       >
-        <ul  class="uk-list uk-list-disc uk-list-primary uk-list-divider uk-height-1-1" *ngIf="configuration">
-          <li @swipeLeft *ngFor="let layer of configuration.layers">
-            <div class="example-custom-placeholder" *cdkDragPlaceholder>4</div>
+        <ul *ngIf="configuration" class="uk-list uk-list-disc uk-list-primary uk-list-divider uk-height-1-1">
+          <li *ngFor="let layer of configuration.layers" @swipeLeft>
+            <div *cdkDragPlaceholder class="example-custom-placeholder">4</div>
             <div class="uk-flex uk-flex-between">
               <div class="uk-width-1-1">
                 <ng-container [ngSwitch]="layer.type">
@@ -95,12 +95,12 @@
                   <span *ngSwitchCase="'map-image'" uk-icon="icon: image"></span>
                   <span *ngSwitchDefault uk-icon="icon: question"></span>
                 </ng-container>
-                <span class="uk-margin-small-left"
-                      [class.uk-text-warning]="!layer.title">{{layer.title || "Unknown Title"}}</span>
+                <span [class.uk-text-warning]="!layer.title"
+                      class="uk-margin-small-left">{{layer.title || "Unknown Title"}}</span>
               </div>
               <div class="uk-flex">
-                <button class="uk-button uk-button-danger uk-button-small"
-                        (click)="removeLayerFromConfiguration(layer)">
+                <button (click)="removeLayerFromConfiguration(layer)"
+                        class="uk-button uk-button-danger uk-button-small">
                   <span uk-icon="icon: trash"></span>
                 </button>
               </div>

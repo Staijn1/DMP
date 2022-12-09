@@ -69,6 +69,19 @@ export class AppComponent {
     });
   }
 
+  updateApp() {
+    this.updates.activateUpdate().then(() => document.location.reload())
+  }
+
+  onAlertClick(error: Message) {
+    if (!error.action) return;
+    error.action();
+  }
+
+  closeNav(sidenav: HTMLDivElement) {
+    UIkit.offcanvas(sidenav).hide();
+  }
+
   private registerIcons() {
     // loads the Icon plugin for UIKit
     UIkit.use(Icons);
@@ -86,18 +99,5 @@ export class AppComponent {
         }
       })
     }
-  }
-
-  updateApp() {
-    this.updates.activateUpdate().then(() => document.location.reload())
-  }
-
-  onAlertClick(error: Message) {
-    if (!error.action) return;
-    error.action();
-  }
-
-  closeNav(sidenav: HTMLDivElement) {
-    UIkit.offcanvas(sidenav).hide();
   }
 }

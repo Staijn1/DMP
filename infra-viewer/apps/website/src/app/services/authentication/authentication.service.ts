@@ -10,8 +10,15 @@ export class AuthenticationService {
   private readonly appId = 'jpL480B69UHL0NWO';
   private readonly portalURL = environment.portalURL;
   private readonly portalSharingUrl = this.portalURL + '/sharing/';
+
+  constructor(private router: Router) {
+  }
+
   private _token!: string;
 
+  get token(): string {
+    return this._token;
+  }
 
   get isLoggedIn(): boolean {
     const credential = sessionStorage.getItem('credential');
@@ -25,13 +32,6 @@ export class AuthenticationService {
     } catch (e) {
       return false;
     }
-  }
-
-  get token(): string {
-    return this._token;
-  }
-
-  constructor(private router: Router) {
   }
 
   /**
@@ -56,16 +56,6 @@ export class AuthenticationService {
     }).catch(e => console.error(e))
   }
 
-  private registerToken(token: string, expiration: string) {
-    this._token = token;
-    esriId.registerToken({
-      server: this.portalSharingUrl,
-      token: token,
-      expires: isNaN(Number(expiration)) ? new Date().getTime() + (3600 * 1000) : Number(expiration)
-    });
-    esriId.checkSignInStatus(this.portalSharingUrl).then().catch(e => this.login());
-  }
-
   /**
    * Replace the last part of the URL with /login
    * Example: https://some-subdomain.domain.nl/some-path/home
@@ -76,5 +66,15 @@ export class AuthenticationService {
   getRedirectUrl(): string {
     const currentUrl = window.location.href;
     return currentUrl.replace(/\/[^/]*$/, "/login");
+  }
+
+  private registerToken(token: string, expiration: string) {
+    this._token = token;
+    esriId.registerToken({
+      server: this.portalSharingUrl,
+      token: token,
+      expires: isNaN(Number(expiration)) ? new Date().getTime() + (3600 * 1000) : Number(expiration)
+    });
+    esriId.checkSignInStatus(this.portalSharingUrl).then().catch(e => this.login());
   }
 }

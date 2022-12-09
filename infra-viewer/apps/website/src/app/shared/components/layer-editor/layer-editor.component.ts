@@ -17,6 +17,11 @@ export class LayerEditorComponent {
   selectedSublayerIndex = 0;
   selectedLayer: LayerConfig | undefined;
 
+  get layersWithoutChildren() {
+    if (!this.serviceInfo.layers) return [];
+    return this.serviceInfo.layers.filter(layer => !layer.subLayerIds);
+  }
+
   /**
    * Emit the save event when the user wants to save
    */
@@ -134,10 +139,5 @@ export class LayerEditorComponent {
         offset: 0,
       }
     } as LayerConfig
-  }
-
-  get layersWithoutChildren() {
-    if (!this.serviceInfo.layers) return [];
-    return this.serviceInfo.layers.filter(layer => !layer.subLayerIds);
   }
 }
