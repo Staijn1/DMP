@@ -79,12 +79,9 @@ export class WelcomePage3DComponent implements AfterViewInit {
     // Lights
     const spotLight = new THREE.SpotLight('#ffffff', 2.1)
     spotLight.castShadow = true
-    spotLight.position.set(0, 0, 0)
+    spotLight.position.set(0, 3, 0)
     spotLight.lookAt(this.ball.position)
 
-    this.gui.add(spotLight.position, 'x', 0, 100, 1)
-    this.gui.add(spotLight.position, 'y', 0, 100, 1)
-    this.gui.add(spotLight.position, 'z', 0, 100, 1)
     // General light
     const ambientLight = new THREE.AmbientLight("#ffffff", 1);
     this.scene.add(ambientLight)
