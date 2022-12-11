@@ -1,8 +1,20 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import * as THREE from 'three';
-import {Mesh, MeshStandardMaterial, PerspectiveCamera, SphereGeometry, WebGLRenderer} from 'three';
+import {
+  Group,
+  Mesh, MeshBasicMaterial,
+  MeshStandardMaterial,
+  MathUtils,
+  PerspectiveCamera, PlaneGeometry,
+  SphereGeometry,
+  Texture,
+  TextureLoader,
+  WebGLRenderer
+} from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import {GUI} from 'dat.gui'
+import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+import TWEEN from "@tweenjs/tween.js";
 
 @Component({
   selector: 'app-welcome-page3-d',
@@ -15,7 +27,6 @@ export class WelcomePage3DComponent implements AfterViewInit {
   private scene = new THREE.Scene();
   private renderer!: WebGLRenderer;
   private camera!: PerspectiveCamera;
-  private ball!: Mesh<SphereGeometry, MeshStandardMaterial>;
   private gui: GUI = new GUI();
 
   get width(): number {
@@ -42,6 +53,7 @@ export class WelcomePage3DComponent implements AfterViewInit {
     this.initialiseCamera();
     this.initialiseGeometries();
     this.initialiseLights();
+
     const orbitControls = new OrbitControls(this.camera, this.renderer.domElement)
     orbitControls.autoRotate = true
 
@@ -64,32 +76,67 @@ export class WelcomePage3DComponent implements AfterViewInit {
 
 
   private initialiseGeometries() {
-    const geometry = new THREE.SphereGeometry(0.5, 64, 64)
-    const lambertMaterial = new THREE.MeshStandardMaterial({
-      color: '#ff0000',
-      metalness: 0.7,
-      roughness: 0.2,
-    })
-    this.ball = new THREE.Mesh(geometry, lambertMaterial)
-    this.ball.position.set(0, 0, 0)
-    this.scene.add(this.ball)
+    this.initialiseLogo();
+    this.initialiseImageCarousel();
+  }
+
+  private initialiseLogo() {
+    const loader = new GLTFLoader();
+    loader.load('../../assets/3D/logo/Arnhemlogo3d.glb', (gltf) => {
+      // Set the position of the object
+      gltf.scene.position.set(0, 0, 0);
+
+      // Add the object to the scene
+      this.scene.add(gltf.scene);
+    });
   }
 
   private initialiseLights() {
-    // Lights
-    const spotLight = new THREE.SpotLight('#ffffff', 2.1)
-    spotLight.castShadow = true
-    spotLight.position.set(0, 3, 0)
-    spotLight.lookAt(this.ball.position)
-
     // General light
     const ambientLight = new THREE.AmbientLight("#ffffff", 1);
     this.scene.add(ambientLight)
-    this.scene.add(spotLight)
   }
 
   private render() {
+    TWEEN.update();
     this.renderer.render(this.scene, this.camera)
     window.requestAnimationFrame(this.render.bind(this))
+  }
+
+  private initialiseImageCarousel() {
+    const carousel = new Group();
+    carousel.position.set(1, 0, 0);
+
+    // Create a texture for each image in the carousel
+    const textureLoader = new TextureLoader();
+    const textures = [
+      textureLoader.load('../../assets/johnfrost.jpg'),
+      textureLoader.load('../../assets/station.jpg'),
+      textureLoader.load('../../assets/musis.jpg'),
+    ];
+
+    // Create a plane geometry for each image
+    const geometry = new PlaneGeometry(1, 1);
+
+    // Use the Tween function to create an animation that moves each image from the right side of the scene to the left side.
+    // then removes the image from the scene
+    const animationDuration = 3000; // 3 seconds
+
+    // Create a mesh for each image and add it to the carousel group
+    for (let i = 0; i < textures.length; i++) {
+      const material = new MeshBasicMaterial({map: textures[i]});
+      const mesh = new Mesh(geometry, material);
+      mesh.position.set(1 * i, 0, 1 * i);
+      carousel.add(mesh);
+
+      new TWEEN.Tween(mesh.position)
+        .to({x: -1}, animationDuration)
+        .delay(animationDuration * i)
+        .onComplete(() => this.scene.remove(mesh))
+        .start();
+    }
+
+
+    this.scene.add(carousel);
   }
 }

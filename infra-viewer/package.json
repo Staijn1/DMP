@@ -72,6 +72,7 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.1.2",
+    "@tweenjs/tween.js": "^18.6.4",
     "ag-grid-angular": "^28.2.0",
     "ag-grid-community": "^28.2.0",
     "aos": "^2.3.4",
