@@ -1,25 +1,26 @@
-import {ElementRef, Injectable, OnDestroy} from '@angular/core';
-import Search from '@arcgis/core/widgets/Search';
-import LayerList from '@arcgis/core/widgets/LayerList';
-import Expand from '@arcgis/core/widgets/Expand';
-import ElevationProfile from '@arcgis/core/widgets/ElevationProfile';
-import Daylight from '@arcgis/core/widgets/Daylight';
-import ShadowCast from '@arcgis/core/widgets/ShadowCast';
-import Legend from '@arcgis/core/widgets/Legend';
-import Editor from '@arcgis/core/widgets/Editor';
-import CoordinateConversion from '@arcgis/core/widgets/CoordinateConversion';
-import {environment} from '../../../environments/environment';
-import AreaMeasurement3D from '@arcgis/core/widgets/AreaMeasurement3D';
-import DirectLineMeasurement3D from '@arcgis/core/widgets/DirectLineMeasurement3D';
-import Fullscreen from '@arcgis/core/widgets/Fullscreen';
+import { ElementRef, Injectable, OnDestroy } from "@angular/core";
+import Search from "@arcgis/core/widgets/Search";
+import LayerList from "@arcgis/core/widgets/LayerList";
+import Expand from "@arcgis/core/widgets/Expand";
+import ElevationProfile from "@arcgis/core/widgets/ElevationProfile";
+import Daylight from "@arcgis/core/widgets/Daylight";
+import ShadowCast from "@arcgis/core/widgets/ShadowCast";
+import Legend from "@arcgis/core/widgets/Legend";
+import Editor from "@arcgis/core/widgets/Editor";
+import CoordinateConversion from "@arcgis/core/widgets/CoordinateConversion";
+import { environment } from "../../../environments/environment";
+import AreaMeasurement3D from "@arcgis/core/widgets/AreaMeasurement3D";
+import DirectLineMeasurement3D from "@arcgis/core/widgets/DirectLineMeasurement3D";
+import Fullscreen from "@arcgis/core/widgets/Fullscreen";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class MapUIBuilderService implements OnDestroy {
   private searchWidget!: __esri.widgetsSearch;
   private directLineMeasurement!: __esri.DirectLineMeasurement3D | __esri.DirectLineMeasurement3D;
   private surfaceMeasurement!: __esri.AreaMeasurement3D | __esri.AreaMeasurement3D;
+  private fullscreenWidget!: __esri.Fullscreen;
 
 
   async buildUI(
@@ -29,8 +30,8 @@ export class MapUIBuilderService implements OnDestroy {
     surfaceMeasurement: ElementRef<HTMLDivElement>): Promise<void> {
     const legendExpand = new Expand({
       view: view,
-      expandTooltip: 'Show legend',
-      collapseTooltip: 'Hide legend',
+      expandTooltip: "Show legend",
+      collapseTooltip: "Hide legend",
       content: new Legend({
         view: view
       })
@@ -38,65 +39,65 @@ export class MapUIBuilderService implements OnDestroy {
 
     this.searchWidget = new Search({
       view: view,
-      container: document.createElement('div'),
+      container: document.createElement("div")
     });
 
     const layerList = new LayerList({
-      view: view,
+      view: view
     });
 
     const layerlistExpand = new Expand({
       view: view,
-      expandTooltip: 'Show layer list',
-      collapseTooltip: 'Hide layer list',
-      content: layerList,
+      expandTooltip: "Show layer list",
+      collapseTooltip: "Hide layer list",
+      content: layerList
     });
 
     const elevationProfile = new ElevationProfile({
       view: view,
       profiles: [
         {
-          type: 'ground', // first profile line samples the ground elevation
+          type: "ground" // first profile line samples the ground elevation
         },
         {
-          type: 'view', // second profile line samples the view and shows building profiles
-        },
+          type: "view" // second profile line samples the view and shows building profiles
+        }
       ],
       // hide the select button
       // this button can be displayed when there are polylines in the
       // scene to select and display the elevation profile for
       visibleElements: {
-        selectButton: false,
-      },
+        selectButton: false
+      }
     });
 
     const elevationProfileExpand = new Expand({
       view: view,
-      group: 'top-right',
-      expandTooltip: 'Show elevation profile',
-      collapseTooltip: 'Hide elevation profile',
-      content: elevationProfile,
+      group: "top-right",
+      expandTooltip: "Show elevation profile",
+      collapseTooltip: "Hide elevation profile",
+      content: elevationProfile
     });
 
     const daylightExpand = new Expand({
       view: view,
-      expandTooltip: 'Show time of day',
-      collapseTooltip: 'Hide time of day',
+      expandTooltip: "Show time of day",
+      collapseTooltip: "Hide time of day",
       content: new Daylight({
         view: view
       }),
-      group: 'top-right'
+      group: "top-right"
     });
 
     const shadowWidget = new Expand({
       view: view,
-      content: new ShadowCast({view: view}),
-      group: 'top-right',
-      expandTooltip: 'Show shadow cast',
-      collapseTooltip: 'Hide shadow cast',
+      content: new ShadowCast({ view: view }),
+      group: "top-right",
+      expandTooltip: "Show shadow cast",
+      collapseTooltip: "Hide shadow cast"
     });
     (shadowWidget.content as ShadowCast).viewModel.stop();
-    shadowWidget.watch('expanded', (expanded) => {
+    shadowWidget.watch("expanded", (expanded) => {
       if (expanded) {
         (shadowWidget.content as ShadowCast).viewModel.start();
       } else {
@@ -109,24 +110,24 @@ export class MapUIBuilderService implements OnDestroy {
 
     const measurementExpand = new Expand({
       view: view,
-      expandIconClass: 'esri-icon-measure-line',
-      group: 'top-right',
-      expandTooltip: 'Show measurement',
-      collapseTooltip: 'Hide measurement',
-      content: measurementParent.nativeElement,
+      expandIconClass: "esri-icon-measure-line",
+      group: "top-right",
+      expandTooltip: "Show measurement",
+      collapseTooltip: "Hide measurement",
+      content: measurementParent.nativeElement
     });
 
     this.surfaceMeasurement = new AreaMeasurement3D({
       view: view,
-      container: surfaceMeasurement.nativeElement,
+      container: surfaceMeasurement.nativeElement
     });
 
     this.directLineMeasurement = new DirectLineMeasurement3D({
       view: view,
-      container: distanceMeasurement.nativeElement,
+      container: distanceMeasurement.nativeElement
     });
 
-    const fullScreen = new Fullscreen({
+    this.fullscreenWidget = new Fullscreen({
       view: view
     });
     // If in development mode, add the coordinate conversion widget
@@ -136,12 +137,12 @@ export class MapUIBuilderService implements OnDestroy {
         content: new CoordinateConversion({
           view: view
         }),
-        group: 'bottom-left'
+        group: "bottom-left"
       });
-      view.ui.add(coordinateConversion, 'bottom-left');
+      view.ui.add(coordinateConversion, "bottom-left");
     }
-    view.ui.add([layerlistExpand, fullScreen, legendExpand], 'top-left');
-    view.ui.add([this.searchWidget, elevationProfileExpand, daylightExpand, shadowWidget, editor, measurementExpand], 'top-right');
+    view.ui.add([layerlistExpand, this.fullscreenWidget, legendExpand], "top-left");
+    view.ui.add([this.searchWidget, elevationProfileExpand, daylightExpand, shadowWidget, editor, measurementExpand], "top-right");
   }
 
   /**
@@ -153,21 +154,21 @@ export class MapUIBuilderService implements OnDestroy {
    */
   private async createEditorWidget(view: __esri.SceneView) {
     const layerInfos = view.map.layers.map((layer) => {
-      const editable = layer.id.startsWith('editable');
+      const editable = layer.id.startsWith("editable");
       return {
         layer: layer,
-        addEnabled: editable,
-      }
+        addEnabled: editable
+      };
     });
 
     return new Expand({
       view: view,
-      group: 'editor',
-      expandTooltip: 'Show editor',
-      collapseTooltip: 'Hide editor',
+      group: "editor",
+      expandTooltip: "Show editor",
+      collapseTooltip: "Hide editor",
       content: new Editor({
         view: view,
-        layerInfos: layerInfos as any,
+        layerInfos: layerInfos as any
       })
     });
   }
@@ -176,11 +177,15 @@ export class MapUIBuilderService implements OnDestroy {
     this.searchWidget.destroy();
   }
 
-  clearMeasurements(type: 'distance' | 'surface') {
-    if (type === 'distance') {
+  clearMeasurements(type: "distance" | "surface") {
+    if (type === "distance") {
       this.directLineMeasurement.viewModel.clear();
     } else {
       this.surfaceMeasurement.viewModel.clear();
     }
+  }
+
+  toggleFullscreen() {
+    this.fullscreenWidget.viewModel.toggle();
   }
 }
