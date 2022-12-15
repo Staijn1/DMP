@@ -1,0 +1,6 @@
+{
+  "server": {
+    "baseDir": "./dist/apps/website",
+    "routes": { "/node_modules": "node_modules" }
+  }
+}
