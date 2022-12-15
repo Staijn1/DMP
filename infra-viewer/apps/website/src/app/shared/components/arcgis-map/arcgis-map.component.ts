@@ -34,7 +34,7 @@ export class ArcgisMapComponent implements OnInit {
   view!: SceneView;
   private activeHighlight: __esri.Handle | undefined;
   private configuration!: SystemConfiguration;
-  private readonly cinameticModeEnabled = true;
+  private readonly cinameticModeEnabled = false;
 
   constructor(
     private readonly configService: ConfigurationService,
@@ -187,8 +187,15 @@ export class ArcgisMapComponent implements OnInit {
     this.uiBuilder.clearMeasurements(type);
   }
 
-  private async cinematicMode() {
-    await this.wait(20000);
+  private async cinematicMode(skipInitialWait: boolean = false) {
+    if (!skipInitialWait) {
+      await this.wait(20000);
+    }
+
+    const uiContainer = document.querySelector(".esri-ui-inner-container") as HTMLDivElement | undefined;
+    if (uiContainer) {
+      uiContainer.style.display = "none";
+    }
     console.log("Starting cinematic mode");
     const eusebius: CameraProperties = {
       "position": {
@@ -209,33 +216,63 @@ export class ArcgisMapComponent implements OnInit {
     await this.wait(5000);
 
     const interestingSewersLocation: CameraProperties = {
-      position: {
-        spatialReference: { wkid: 28992 },
-        x: 190933.16826441555, y: 443573.65717995446, z: -7.535570888432723
-      }, heading: 64.15373775219525, tilt: 115.09501400453506
+      "position": {
+        "spatialReference": {
+          "wkid": 28992
+        }, "x": 191035.2442261865, "y": 443277.2018920018, "z": -31.78619729480218
+      }, "heading": 90.9002494681998, "tilt": 150.34554259609135
     };
     await this.view.goTo(interestingSewersLocation);
-
-    const sewerRotation = 20000;
+    await this.wait(7000);
+    const sewerRotation = 30000;
     timestarted = Date.now();
-    await this.rotateCamera(timestarted, sewerRotation);
+    await this.rotateCamera(timestarted, sewerRotation, "y", -0.5);
+    await this.wait(sewerRotation);
+    console.log("Done animating");
   }
 
-  private async rotateCamera(timeStarted: number, duration: number) {
+  private async rotateCamera(timeStarted: number, duration: number, direction: "x" | "y" = "x", speed: number = 0.5) {
     const timeElapsed = Date.now() - timeStarted;
     if (timeElapsed >= duration) return;
+
+    let heading = this.view.camera.heading;
+    let tilt = this.view.camera.tilt;
+    if (direction === "x") {
+      heading += speed;
+    }
+    if (direction === "y") {
+      if (tilt >= 179) {
+        speed = -speed;
+      }
+      tilt += speed;
+    }
+
     if (!this.view.interacting) {
       await this.view.goTo({
-        heading: this.view.camera.heading + 0.5,
+        heading: heading,
+        tilt: tilt,
         center: this.view.center
       }, { animate: false });
       requestAnimationFrame(() => {
-        this.rotateCamera(timeStarted, duration);
+        this.rotateCamera(timeStarted, duration, direction, speed);
       });
     }
   }
 
-  private wait(amount: number) {
-    return new Promise(resolve => setTimeout(resolve, amount));
+  private wait(milliseconds: number) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+  }
+
+  onKeyDown($event: KeyboardEvent) {
+    switch ($event.code) {
+      case"KeyF":
+        this.uiBuilder.toggleFullscreen();
+        break;
+      case"KeyP":
+        this.cinematicMode(true).then();
+        break;
+      default:
+        console.log("Ignoring key press", $event.code);
+    }
   }
 }
