@@ -1,10 +1,10 @@
-import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import {CustomFeatureLayer, QueriedFeatures} from '@infra-viewer/interfaces';
-import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
-import {Strategy} from './Strategy';
-import {createFeatureLayerFromFeatureLayer} from '../../../../utils/utils';
-import Collection from '@arcgis/core/core/Collection';
-import PolygonSymbol3D from '@arcgis/core/symbols/PolygonSymbol3D';
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import { CustomFeatureLayer, QueriedFeatures } from "@infra-viewer/interfaces";
+import FeatureSet from "@arcgis/core/rest/support/FeatureSet";
+import { Strategy } from "./Strategy";
+import { createFeatureLayerFromFeatureLayer } from "../../../../utils/utils";
+import Collection from "@arcgis/core/core/Collection";
+import PolygonSymbol3D from "@arcgis/core/symbols/PolygonSymbol3D";
 
 /**
  * Strategy that is used to update the 3-30-300 policy map
@@ -35,16 +35,16 @@ export class RuleStrategy extends Strategy {
       if (!RuleStrategy.displayLayer) {
         RuleStrategy.displayLayer = createFeatureLayerFromFeatureLayer({
           featureSet: featuresToEdit,
-          layer: affectedLayer,
+          layer: affectedLayer
         });
         const col = new Collection();
         col.addMany(featuresToEdit.features);
         RuleStrategy.displayLayer.source = col;
-        RuleStrategy.displayLayer.title = RuleStrategy.displayLayer.title + ' (aangepast)';
+        RuleStrategy.displayLayer.title = RuleStrategy.displayLayer.title + " (aangepast)";
         this.view.map.add(RuleStrategy.displayLayer);
       } else {
         // If the display layer does exist, update it by appending the new graphics
-        await RuleStrategy.displayLayer.applyEdits({addFeatures: featuresToEdit.features});
+        await RuleStrategy.displayLayer.applyEdits({ addFeatures: featuresToEdit.features });
       }
     }
   }
@@ -67,10 +67,10 @@ export class RuleStrategy extends Strategy {
     for (const tree of editedFeatures.featureSet.features) {
       const query = affectedLayer.createQuery();
       query.geometry = tree.geometry;
-      query.outFields = ['*'];
+      query.outFields = ["*"];
       query.returnGeometry = true;
       query.distance = 20;
-      query.units = 'meters';
+      query.units = "meters";
       promises.push(affectedLayer.queryFeatures(query));
     }
     const results = await Promise.all(promises);
@@ -80,8 +80,8 @@ export class RuleStrategy extends Strategy {
         if (!feature.symbol) {
           feature.symbol = new PolygonSymbol3D({
             symbolLayers: [{
-              type: 'fill',  // autocasts as new FillSymbol3DLayer()
-              material: {color: 'red'}
+              type: "fill",  // autocasts as new FillSymbol3DLayer()
+              material: { color: "red" }
             }]
           });
         }

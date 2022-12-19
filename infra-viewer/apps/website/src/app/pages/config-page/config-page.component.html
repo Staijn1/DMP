@@ -1,22 +1,22 @@
 <div class="uk-container">
   <h1 class="uk-heading-medium uk-heading-bullet">Configuration</h1>
   <p>On this page you can quickly configure the infraviewer</p>
-  <form class="uk-form-stacked" #form="ngForm">
+  <form #form="ngForm" class="uk-form-stacked">
     <div class="uk-grid uk-flex-between">
-      <button class="uk-button uk-button-default" type="button" (click)="getInformation()">Refresh config</button>
+      <button (click)="getInformation()" class="uk-button uk-button-default" type="button">Refresh config</button>
       <button
-        type="submit"
+        (click)="onAdvancedConfigSubmit()"
         [disabled]="form.invalid"
-        (click)="onAdvancedConfigSubmit()" class="uk-button uk-button-primary">Submit
+        class="uk-button uk-button-primary" type="submit">Submit
       </button>
     </div>
-    <ul uk-accordion *ngIf="configuration">
+    <ul *ngIf="configuration" uk-accordion>
       <li class="uk-open">
         <h2 class="uk-accordion-title">Layers</h2>
         <div class="uk-accordion-content">
           <section class="layers">
             <ul class="uk-list uk-list-disc uk-list-primary uk-list-divider">
-              <li @swipeLeft *ngFor="let layer of configuration.layers">
+              <li *ngFor="let layer of configuration.layers" @swipeLeft>
                 <ng-template
                   *ngTemplateOutlet="layerTemplate; context: {layer: layer, type: layer.type} "></ng-template>
               </li>
@@ -32,8 +32,8 @@
             <div class="uk-margin">
               <label class="uk-form-label" for="qualityProfile">Quality</label>
               <div class="uk-form-controls">
-                <select name="qualityProfile" class="uk-select" id="qualityProfile"
-                        [(ngModel)]="configuration.view.qualityProfile">
+                <select [(ngModel)]="configuration.view.qualityProfile" class="uk-select" id="qualityProfile"
+                        name="qualityProfile">
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
                   <option value="high">High</option>
@@ -43,14 +43,14 @@
             <!--            Create a checkbox for starsEnabled and atmosphereEnabled-->
             <div class="uk-margin">
               <label class="uk-form-label" for="starsEnabled">
-                <input name="starsEnabled" type="checkbox" id="starsEnabled"
-                       [(ngModel)]="configuration.view.environment.starsEnabled"> Stars enabled</label>
+                <input [(ngModel)]="configuration.view.environment.starsEnabled" id="starsEnabled" name="starsEnabled"
+                       type="checkbox"> Stars enabled</label>
             </div>
             <div class="uk-margin">
               <label class="uk-form-label" for="atmosphereEnabled">
-                <input name="atmosphereEnabled" type="checkbox"
-                       id="atmosphereEnabled"
-                       [(ngModel)]="configuration.view.environment.atmosphereEnabled"> Atmosphere enabled</label>
+                <input [(ngModel)]="configuration.view.environment.atmosphereEnabled" id="atmosphereEnabled"
+                       name="atmosphereEnabled"
+                       type="checkbox"> Atmosphere enabled</label>
             </div>
           </section>
         </div>
@@ -61,8 +61,8 @@
           <div>
             <label class="uk-form-label">Configuration JSON</label>
             <div class="uk-form-controls">
-            <textarea class="uk-textarea uk-height-viewport" name="advancedConfiguration"
-                      [(ngModel)]="configurationString"></textarea>
+            <textarea [(ngModel)]="configurationString" class="uk-textarea uk-height-viewport"
+                      name="advancedConfiguration"></textarea>
             </div>
           </div>
         </section>
@@ -73,7 +73,7 @@
 
 <ng-template #layerTemplate let-layer="layer" let-type="type">
   <div class="uk-flex uk-flex-between">
-    <div class="uk-width-1-1" (click)="startEditingLayer(layer)">
+    <div (click)="startEditingLayer(layer)" class="uk-width-1-1">
       <ng-container [ngSwitch]="type">
         <span *ngSwitchCase="'scene'" uk-icon="icon: world"></span>
         <span *ngSwitchCase="'geoJSON'" uk-icon="icon: code"></span>
@@ -81,15 +81,15 @@
         <span *ngSwitchCase="'map-image'" uk-icon="icon: image"></span>
         <span *ngSwitchDefault uk-icon="icon: question"></span>
       </ng-container>
-      <span class="uk-margin-small-left"
-            [class.uk-text-warning]="!layer.title">{{layer.title || "Unknown Title"}}</span>
+      <span [class.uk-text-warning]="!layer.title"
+            class="uk-margin-small-left">{{layer.title || "Unknown Title"}}</span>
     </div>
     <div class="uk-flex">
-      <button class="uk-button uk-button-default uk-button-small" (click)="toggleLayerVisibility(layer)">
-        <span uk-icon="icon: check" *ngIf="layer.visible === undefined || layer.visible === true"></span>
-        <span uk-icon="icon: close" *ngIf="layer.visible === false"></span>
+      <button (click)="toggleLayerVisibility(layer)" class="uk-button uk-button-default uk-button-small">
+        <span *ngIf="layer.visible === undefined || layer.visible === true" uk-icon="icon: check"></span>
+        <span *ngIf="layer.visible === false" uk-icon="icon: close"></span>
       </button>
-      <button class="uk-button uk-button-danger uk-button-small" (click)="deleteLayer(layer)">
+      <button (click)="deleteLayer(layer)" class="uk-button uk-button-danger uk-button-small">
         <span uk-icon="icon: trash"></span>
       </button>
     </div>
@@ -97,5 +97,5 @@
 </ng-template>
 
 
-<app-layer-editor [rootLayerConfig]="selectedLayer" [configuration]="configuration"
-                  (save)="onLayerConfigSave($event)"></app-layer-editor>
+<app-layer-editor (save)="onLayerConfigSave($event)" [configuration]="configuration"
+                  [rootLayerConfig]="selectedLayer"></app-layer-editor>

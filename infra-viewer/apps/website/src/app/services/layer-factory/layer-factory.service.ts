@@ -1,13 +1,13 @@
-import {Injectable} from '@angular/core';
-import {LayerConfig, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
-import SceneLayer from '@arcgis/core/layers/SceneLayer';
-import ElevationLayer from '@arcgis/core/layers/ElevationLayer';
-import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
-import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import Layer from '@arcgis/core/layers/Layer';
-import GroupLayer from '@arcgis/core/layers/GroupLayer';
-import {HubService} from '../hub/hub.service';
-import {createTablePopup} from '../../utils/utils';
+import { Injectable } from "@angular/core";
+import { LayerConfig, SystemConfigurationLayerTypes } from "@infra-viewer/interfaces";
+import SceneLayer from "@arcgis/core/layers/SceneLayer";
+import ElevationLayer from "@arcgis/core/layers/ElevationLayer";
+import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import Layer from "@arcgis/core/layers/Layer";
+import GroupLayer from "@arcgis/core/layers/GroupLayer";
+import { HubService } from "../hub/hub.service";
+import { createTablePopup } from "../../utils/utils";
 import SceneLayerProperties = __esri.SceneLayerProperties;
 import ElevationLayerProperties = __esri.ElevationLayerProperties;
 import GeoJSONLayerProperties = __esri.GeoJSONLayerProperties;
@@ -15,40 +15,40 @@ import FeatureLayerProperties = __esri.FeatureLayerProperties;
 import MapImageLayerProperties = __esri.MapImageLayerProperties;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class LayerFactoryService {
   constructors = new Map();
 
   constructor(private hubService: HubService) {
-    this.constructors.set('scene', (layerConfig: LayerConfig) => new SceneLayer(layerConfig as unknown as SceneLayerProperties));
-    this.constructors.set('elevation', (layerConfig: LayerConfig) => new ElevationLayer(layerConfig as ElevationLayerProperties));
-    this.constructors.set('geojson', (layerConfig: LayerConfig) => {
-      const layer = new GeoJSONLayer(layerConfig as unknown as GeoJSONLayerProperties)
+    this.constructors.set("scene", (layerConfig: LayerConfig) => new SceneLayer(layerConfig as unknown as SceneLayerProperties));
+    this.constructors.set("elevation", (layerConfig: LayerConfig) => new ElevationLayer(layerConfig as ElevationLayerProperties));
+    this.constructors.set("geojson", (layerConfig: LayerConfig) => {
+      const layer = new GeoJSONLayer(layerConfig as unknown as GeoJSONLayerProperties);
       if (layer.popupEnabled) {
         layer.when(() => layer.popupTemplate = createTablePopup(layer));
       }
       return layer;
     });
-    this.constructors.set('feature', (layerConfig: LayerConfig) => {
-      const layer = new FeatureLayer(layerConfig as unknown as FeatureLayerProperties)
+    this.constructors.set("feature", (layerConfig: LayerConfig) => {
+      const layer = new FeatureLayer(layerConfig as unknown as FeatureLayerProperties);
       if (layer.popupEnabled) {
         layer.when(() => layer.popupTemplate = createTablePopup(layer));
       }
       return layer;
     });
-    this.constructors.set('map-image', async (layerConfig: LayerConfig) => this.constructMapImageLayer(layerConfig as MapImageLayerProperties));
+    this.constructors.set("map-image", async (layerConfig: LayerConfig) => this.constructMapImageLayer(layerConfig as MapImageLayerProperties));
   }
 
   async constructLayer(layerConfig: LayerConfig): Promise<Layer> {
     // Create a copy of the layer config
-    const layerConfigCopy = {...layerConfig};
+    const layerConfigCopy = { ...layerConfig };
     const layerType = layerConfig.type as SystemConfigurationLayerTypes;
     // Remove layer type from config
     delete (layerConfigCopy as any).type;
 
     const constructedLayer = this.constructors.get(layerType);
-    if (!constructedLayer) console.error('Unsupported layer type: ' + layerType)
+    if (!constructedLayer) console.error("Unsupported layer type: " + layerType);
 
     return constructedLayer(layerConfigCopy);
   }
@@ -67,14 +67,14 @@ export class LayerFactoryService {
    * @private
    */
   private async constructMapImageLayer(layerConfig: __esri.MapImageLayerProperties): Promise<Layer> {
-    const parent = new GroupLayer({title: layerConfig.title});
+    const parent = new GroupLayer({ title: layerConfig.title });
     const serviceInfo = await this.hubService.getServiceInfo(layerConfig.url as string);
-    const prefix = layerConfig.title + ' - ';
+    const prefix = layerConfig.title + " - ";
 
     for (const sublayer of serviceInfo.layers) {
       const prefixedId = prefix + sublayer.id.toString();
-      if (sublayer.type === 'Group Layer') {
-        const groupLayer = new GroupLayer({title: sublayer.name, id: prefixedId});
+      if (sublayer.type === "Group Layer") {
+        const groupLayer = new GroupLayer({ title: sublayer.name, id: prefixedId });
         parent.add(groupLayer);
         continue;
       }
@@ -90,14 +90,14 @@ export class LayerFactoryService {
       const sublayerConfig = {
         ...{
           url: sublayerUrl,
-          type: 'feature',
+          type: "feature",
           // fields: this.convertFields(sublayerserviceInfo.fields),
           title: sublayer.name,
-          visible: false,
+          visible: false
         },
         ...sublayerConfigOverride
-      }
-      const featureLayer = await this.constructLayer(sublayerConfig as any) as FeatureLayer
+      };
+      const featureLayer = await this.constructLayer(sublayerConfig as any) as FeatureLayer;
       parentLayer.add(featureLayer);
     }
     return parent;

@@ -1,45 +1,45 @@
-import {Component, OnInit} from '@angular/core';
-import {HubService} from '../../services/hub/hub.service';
-import {environment} from '../../../environments/environment';
-import {AuthenticationService} from '../../services/authentication/authentication.service';
-import {HubItem, LayerConfig, SystemConfiguration} from '@infra-viewer/interfaces';
-import {ConfigurationService} from '../../services/configuration/configuration.service';
-import PortalQueryParams from '@arcgis/core/portal/PortalQueryParams';
-import {CdkDrag, CdkDragDrop} from '@angular/cdk/drag-drop';
-import {swipeLeftAnimation} from '@infra-viewer/ui';
+import { Component, OnInit } from "@angular/core";
+import { HubService } from "../../services/hub/hub.service";
+import { environment } from "../../../environments/environment";
+import { AuthenticationService } from "../../services/authentication/authentication.service";
+import { HubItem, LayerConfig, SystemConfiguration } from "@infra-viewer/interfaces";
+import { ConfigurationService } from "../../services/configuration/configuration.service";
+import PortalQueryParams from "@arcgis/core/portal/PortalQueryParams";
+import { CdkDrag, CdkDragDrop } from "@angular/cdk/drag-drop";
+import { swipeLeftAnimation } from "@infra-viewer/ui";
 
 @Component({
-  selector: 'app-hub-page',
+  selector: "app-hub-page",
   animations: [swipeLeftAnimation],
-  templateUrl: './hub-page.component.html',
-  styleUrls: ['./hub-page.component.scss'],
+  templateUrl: "./hub-page.component.html",
+  styleUrls: ["./hub-page.component.scss"]
 })
 export class HubPageComponent implements OnInit {
   hubItems: HubItem[] = [];
   filter = {
     search: undefined,
-    owner: 'GeoPortaal',
+    owner: "GeoPortaal",
     start: 1
   };
 
   query!: PortalQueryParams;
   hasMoreItems = false;
   configuration: SystemConfiguration | undefined;
-  private readonly backupImageUrl = 'assets/empty_world.png';
+  private readonly backupImageUrl = "assets/empty_world.png";
 
-  constructor(private readonly hubService: HubService, private authService: AuthenticationService, private readonly configurationService: ConfigurationService) {
+  constructor(
+    private readonly hubService: HubService,
+    private authService: AuthenticationService,
+    private readonly configurationService: ConfigurationService) {
   }
 
   ngOnInit(): void {
     this.getItems();
-    this.configurationService.getConfiguration().then((config) => {
-      this.configuration = config
-    });
+    this.getConfiguration();
   }
 
-
   createImageUrl(hubItem: HubItem) {
-    if (!hubItem.thumbnail) return this.backupImageUrl
+    if (!hubItem.thumbnail) return this.backupImageUrl;
     return `${environment.portalURL}/sharing/rest/content/items/${hubItem.id}/info/${hubItem.thumbnail}?token=${this.authService.token}`;
   }
 
@@ -60,15 +60,15 @@ export class HubPageComponent implements OnInit {
   }
 
   transformTitle(hubItem: HubItem) {
-    return hubItem.title.replace(/_/g, ' ');
+    return hubItem.title.replace(/_/g, " ");
   }
 
   addLayerToConfiguration(hubItem: HubItem) {
-    this.configurationService.addLayer(hubItem).then();
+    this.configurationService.addLayer(hubItem).then(() => this.getConfiguration());
   }
 
   removeLayerFromConfiguration(hubItem: HubItem | LayerConfig) {
-    this.configurationService.removeLayer(hubItem).then();
+    this.configurationService.removeLayer(hubItem).then(() => this.getConfiguration());
   }
 
   /**
@@ -91,7 +91,6 @@ export class HubPageComponent implements OnInit {
     return !isInConfiguration;
   }
 
-
   filterItems() {
     this.hubItems = [];
     this.filter.start = 1;
@@ -105,5 +104,11 @@ export class HubPageComponent implements OnInit {
 
   drop($event: CdkDragDrop<LayerConfig[], any>) {
     this.addLayerToConfiguration($event.item.data);
+  }
+
+  private getConfiguration() {
+    this.configurationService.getConfiguration().then((config) => {
+      this.configuration = config;
+    });
   }
 }

@@ -24,14 +24,13 @@ import CameraProperties = __esri.CameraProperties;
   styleUrls: ["./arcgis-map.component.scss"]
 })
 export class ArcgisMapComponent implements OnInit {
+  @Output() query: EventEmitter<QueriedFeatures[]> = new EventEmitter<QueriedFeatures[]>();
+  view!: SceneView;
   @ViewChild(SketchQueryWidgetComponent) private sketchWidget!: SketchQueryWidgetComponent;
   @ViewChild("measurementWidgetsContainer") private measurementWidgetsContainer!: ElementRef<HTMLDivElement>;
   @ViewChild("distanceMeasurement") private distanceMeasurement!: ElementRef<HTMLDivElement>;
   @ViewChild("surfaceMeasurement") private surfaceMeasurement!: ElementRef<HTMLDivElement>;
-  @Output() query: EventEmitter<QueriedFeatures[]> = new EventEmitter<QueriedFeatures[]>();
-
   private map!: WebScene;
-  view!: SceneView;
   private activeHighlight: __esri.Handle | undefined;
   private configuration!: SystemConfiguration;
   private readonly cinameticModeEnabled = false;
@@ -46,6 +45,51 @@ export class ArcgisMapComponent implements OnInit {
 
   ngOnInit(): void {
     this.initialize().then();
+  }
+
+  /**
+   * Zoom and highlight the selected feature
+   * @param {__esri.Graphic} graphic
+   */
+  highlightAndZoomTo(graphic: __esri.Graphic) {
+    // If the layer the graphic is in is hidden, show it
+    if (!graphic.layer.visible) {
+      graphic.layer.visible = true;
+    }
+
+    // Go to the graphic
+    this.view.goTo({
+      target: graphic.geometry,
+      scale: 100
+    }).then();
+    // Highlight it with the configured highlight options in the view
+    this.view.whenLayerView(graphic.layer as FeatureLayer).then((layerView: FeatureLayerView) => {
+      if (this.activeHighlight) {
+        this.activeHighlight.remove();
+      }
+      this.activeHighlight = layerView.highlight(graphic);
+    });
+  }
+
+  onFeatureGridFilterChange($event: __esri.Graphic[], layer: FeatureLayer | SceneLayer) {
+    this.sketchWidget.onExternalFilterChange($event, layer);
+  }
+
+  clearMeasurements(type: "distance" | "surface") {
+    this.uiBuilder.clearMeasurements(type);
+  }
+
+  onKeyDown($event: KeyboardEvent) {
+    switch ($event.code) {
+      case"KeyF":
+        this.uiBuilder.toggleFullscreen();
+        break;
+      case"KeyP":
+        this.cinematicMode(true).then();
+        break;
+      default:
+        console.log("Ignoring key press", $event.code);
+    }
   }
 
   /**
@@ -155,38 +199,6 @@ export class ArcgisMapComponent implements OnInit {
     this.map.ground.opacity = 0.4;
   }
 
-  /**
-   * Zoom and highlight the selected feature
-   * @param {__esri.Graphic} graphic
-   */
-  highlightAndZoomTo(graphic: __esri.Graphic) {
-    // If the layer the graphic is in is hidden, show it
-    if (!graphic.layer.visible) {
-      graphic.layer.visible = true;
-    }
-
-    // Go to the graphic
-    this.view.goTo({
-      target: graphic.geometry,
-      scale: 100
-    }).then();
-    // Highlight it with the configured highlight options in the view
-    this.view.whenLayerView(graphic.layer as FeatureLayer).then((layerView: FeatureLayerView) => {
-      if (this.activeHighlight) {
-        this.activeHighlight.remove();
-      }
-      this.activeHighlight = layerView.highlight(graphic);
-    });
-  }
-
-  onFeatureGridFilterChange($event: __esri.Graphic[], layer: FeatureLayer | SceneLayer) {
-    this.sketchWidget.onExternalFilterChange($event, layer);
-  }
-
-  clearMeasurements(type: "distance" | "surface") {
-    this.uiBuilder.clearMeasurements(type);
-  }
-
   private async cinematicMode(skipInitialWait: boolean = false) {
     if (!skipInitialWait) {
       await this.wait(20000);
@@ -261,18 +273,5 @@ export class ArcgisMapComponent implements OnInit {
 
   private wait(milliseconds: number) {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
-  }
-
-  onKeyDown($event: KeyboardEvent) {
-    switch ($event.code) {
-      case"KeyF":
-        this.uiBuilder.toggleFullscreen();
-        break;
-      case"KeyP":
-        this.cinematicMode(true).then();
-        break;
-      default:
-        console.log("Ignoring key press", $event.code);
-    }
   }
 }

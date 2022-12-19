@@ -1,4 +1,4 @@
-import {CustomFeatureLayer, QueriedFeatures} from '@infra-viewer/interfaces';
+import { CustomFeatureLayer, QueriedFeatures } from "@infra-viewer/interfaces";
 
 export abstract class Strategy {
   protected view: __esri.SceneView;

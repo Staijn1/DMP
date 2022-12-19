@@ -1,6 +1,5 @@
-import {Component} from '@angular/core';
-import {environment} from '../../../environments/environment';
-import {AuthenticationService} from '../../services/authentication/authentication.service';
+import { Component } from "@angular/core";
+import { AuthenticationService } from "../../services/authentication/authentication.service";
 import {
   faAreaChart,
   faCog,
@@ -9,13 +8,13 @@ import {
   faRulerCombined,
   faSearchLocation,
   faStore
-} from '@fortawesome/free-solid-svg-icons';
-import {facShadeCast} from '../../utils/CustomIcons';
+} from "@fortawesome/free-solid-svg-icons";
+import { facShadeCast } from "../../utils/CustomIcons";
 
 @Component({
-  selector: 'app-welcome-page',
-  templateUrl: './welcome-page.component.html',
-  styleUrls: ['./welcome-page.component.scss'],
+  selector: "app-welcome-page",
+  templateUrl: "./welcome-page.component.html",
+  styleUrls: ["./welcome-page.component.scss"]
 })
 export class WelcomePageComponent {
   icon3D = faCube;

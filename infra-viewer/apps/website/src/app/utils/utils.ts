@@ -1,8 +1,8 @@
-import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
-import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import PopupTemplate from '@arcgis/core/PopupTemplate';
-import Field from '@arcgis/core/layers/support/Field';
-import {QueriedFeatures, SystemConfigurationLayerTypes} from '@infra-viewer/interfaces';
+import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import PopupTemplate from "@arcgis/core/PopupTemplate";
+import Field from "@arcgis/core/layers/support/Field";
+import { QueriedFeatures, SystemConfigurationLayerTypes } from "@infra-viewer/interfaces";
 
 /**
  * Create an HTML table from an object
@@ -11,23 +11,23 @@ import {QueriedFeatures, SystemConfigurationLayerTypes} from '@infra-viewer/inte
  */
 export const createTablePopup = (layer: GeoJSONLayer | FeatureLayer): PopupTemplate => {
   if (!layer.fields) {
-    return new PopupTemplate({content: 'No fields to show'});
+    return new PopupTemplate({ content: "No fields to show" });
   }
-  const table = document.createElement('table');
-  table.classList.add('esri-widget__table');
+  const table = document.createElement("table");
+  table.classList.add("esri-widget__table");
 
   const rows = layer.fields.map((field: Field) => {
     // Print all the key names for the field
 
-    const tr = document.createElement('tr');
-    const td1 = document.createElement('td');
-    const td2 = document.createElement('td');
+    const tr = document.createElement("tr");
+    const td1 = document.createElement("td");
+    const td2 = document.createElement("td");
 
-    td1.classList.add('esri-feature__field-header');
+    td1.classList.add("esri-feature__field-header");
     // td1.classList.add('uk-text-capitalize');
     // td2.classList.add('uk-text-capitalize');
 
-    td1.innerText = (field.alias || field.name).replace(/_/g, ' ');
+    td1.innerText = (field.alias || field.name).replace(/_/g, " ");
     td2.innerText = `{${field.name}}`;
     tr.appendChild(td1);
     tr.appendChild(td2);
@@ -39,8 +39,8 @@ export const createTablePopup = (layer: GeoJSONLayer | FeatureLayer): PopupTempl
   return new PopupTemplate({
     title: layer.title,
     content: table.outerHTML
-  })
-}
+  });
+};
 
 /**
  * Create a feature layer based on the configuration of a featurelayer, but only showing specific graphics.
@@ -58,24 +58,24 @@ export const createFeatureLayerFromFeatureLayer = (result: QueriedFeatures) => {
       renderer: result.layer.renderer,
       objectIdField: result.layer.objectIdField,
       fields: result.layer.fields,
-      elevationInfo: result.layer.elevationInfo,
+      elevationInfo: result.layer.elevationInfo
     }
   );
-}
+};
 
 export const getTypeForHubItem = (hubItem: { type: string, name?: string, title?: string }): SystemConfigurationLayerTypes => {
-  const title = hubItem.name || hubItem.title || '';
+  const title = hubItem.name || hubItem.title || "";
 
   // An elevation layer is a type of image service, but not all image services are elevation layers
   // This is a work around to make sure we don't add elevation layers to the map, because they need to be added to the ground
-  if (title.toUpperCase().includes('ELEVATION')) return 'elevation';
+  if (title.toUpperCase().includes("ELEVATION")) return "elevation";
 
   switch (hubItem.type) {
-    case 'Scene Service':
-      return 'scene';
-    case 'Map Service':
-      return 'map-image'
+    case "Scene Service":
+      return "scene";
+    case "Map Service":
+      return "map-image";
     default:
-      return 'feature';
+      return "feature";
   }
-}
+};
