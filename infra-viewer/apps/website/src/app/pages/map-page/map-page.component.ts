@@ -1,19 +1,19 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
-import {QueriedFeatures} from '@infra-viewer/interfaces';
-import {ArcgisMapComponent} from '../../shared/components/arcgis-map/arcgis-map.component';
-import UIkit from 'uikit';
-import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import SceneLayer from '@arcgis/core/layers/SceneLayer';
+import { Component, ElementRef, ViewChild } from "@angular/core";
+import { QueriedFeatures } from "@infra-viewer/interfaces";
+import { ArcgisMapComponent } from "../../shared/components/arcgis-map/arcgis-map.component";
+import UIkit from "uikit";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import SceneLayer from "@arcgis/core/layers/SceneLayer";
 
 
 @Component({
-  selector: 'app-map-page',
-  templateUrl: './map-page.component.html',
-  styleUrls: ['./map-page.component.scss'],
+  selector: "app-map-page",
+  templateUrl: "./map-page.component.html",
+  styleUrls: ["./map-page.component.scss"]
 })
 export class MapPageComponent {
   @ViewChild(ArcgisMapComponent) map!: ArcgisMapComponent;
-  @ViewChild('switcher') switcher!: ElementRef;
+  @ViewChild("switcher") switcher!: ElementRef;
 
   _results: QueriedFeatures[] = [];
 

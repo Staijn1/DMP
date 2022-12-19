@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  api: 'http://localhost:3333/api',
+  api: "http://localhost:3333/api",
   hmr: false,
-  portalURL: 'https://geo.arnhem.nl/portal'
+  portalURL: "https://geo.arnhem.nl/portal"
 };
 
 /*

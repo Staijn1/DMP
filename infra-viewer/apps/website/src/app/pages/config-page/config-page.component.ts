@@ -1,26 +1,30 @@
-import {Component, OnDestroy, ViewChild} from '@angular/core';
-import {ConfigurationService} from '../../services/configuration/configuration.service';
-import {NgForm} from '@angular/forms';
-import {LayerConfig, SystemConfiguration} from '@infra-viewer/interfaces';
-import UIkit from 'uikit';
-import {swipeLeftAnimation} from '@infra-viewer/ui';
-import {LayerEditorComponent} from '../../shared/components/layer-editor/layer-editor.component';
+import { Component, OnDestroy, ViewChild } from "@angular/core";
+import { ConfigurationService } from "../../services/configuration/configuration.service";
+import { NgForm } from "@angular/forms";
+import { LayerConfig, SystemConfiguration } from "@infra-viewer/interfaces";
+import UIkit from "uikit";
+import { swipeLeftAnimation } from "@infra-viewer/ui";
+import { LayerEditorComponent } from "../../shared/components/layer-editor/layer-editor.component";
+import { HubService } from "../../services/hub/hub.service";
 import FeatureLayerProperties = __esri.FeatureLayerProperties;
-import {HubService} from '../../services/hub/hub.service';
 
 
 @Component({
-  selector: 'app-config-page',
+  selector: "app-config-page",
   animations: [swipeLeftAnimation],
-  templateUrl: './config-page.component.html',
-  styleUrls: ['./config-page.component.scss'],
+  templateUrl: "./config-page.component.html",
+  styleUrls: ["./config-page.component.scss"]
 })
 export class ConfigPageComponent implements OnDestroy {
   @ViewChild(LayerEditorComponent) editor!: LayerEditorComponent;
-  @ViewChild('form') form!: NgForm;
+  @ViewChild("form") form!: NgForm;
   selectedLayer: LayerConfig | undefined;
   configuration!: SystemConfiguration;
   private configurationBackup!: SystemConfiguration;
+
+  constructor(private readonly configService: ConfigurationService, private readonly hubService: HubService) {
+    this.getInformation();
+  }
 
   get configurationString() {
     return JSON.stringify(this.configuration, null, 2);
@@ -30,12 +34,8 @@ export class ConfigPageComponent implements OnDestroy {
     try {
       this.configuration = JSON.parse(value);
     } catch (e) {
-      this.form.controls['advancedConfiguration'].setErrors({json: true});
+      this.form.controls["advancedConfiguration"].setErrors({ json: true });
     }
-  }
-
-  constructor(private readonly configService: ConfigurationService, private readonly hubService: HubService) {
-    this.getInformation();
   }
 
   getInformation() {
@@ -49,7 +49,7 @@ export class ConfigPageComponent implements OnDestroy {
   onConfigurationSubmit(configuration: SystemConfiguration) {
     this.configService.setConfiguration(configuration).then(() => {
       this.editor.close();
-      this.getInformation()
+      this.getInformation();
     });
   }
 
@@ -84,7 +84,7 @@ export class ConfigPageComponent implements OnDestroy {
 
   deleteLayer(layer: FeatureLayerProperties) {
     // Create a UIKit dialog to confirm the deletion
-    UIkit.modal.confirm('Are you sure you want to delete this layer?').then(() => {
+    UIkit.modal.confirm("Are you sure you want to delete this layer?").then(() => {
       // Remove the layer from the configuration
       this.configuration.layers = this.configuration.layers.filter((l: LayerConfig) => l.url !== layer.url);
       // Save the configuration
@@ -97,7 +97,7 @@ export class ConfigPageComponent implements OnDestroy {
   toggleLayerVisibility(layer: LayerConfig) {
     layer.visible = layer.visible === undefined ? true : layer.visible;
     layer.visible = !layer.visible;
-    this.onLayerConfigSave(layer)
+    this.onLayerConfigSave(layer);
   }
 
   ngOnDestroy(): void {

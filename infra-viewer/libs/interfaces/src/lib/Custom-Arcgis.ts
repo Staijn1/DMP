@@ -1,14 +1,14 @@
-import FL from '@arcgis/core/layers/FeatureLayer';
-import Query from '@arcgis/core/rest/support/Query';
-import SpatialReference from '@arcgis/core/geometry/SpatialReference';
-import Extent from '@arcgis/core/geometry/Extent';
-import Field from '@arcgis/core/layers/support/Field';
+import FL from "@arcgis/core/layers/FeatureLayer";
+import Query from "@arcgis/core/rest/support/Query";
+import SpatialReference from "@arcgis/core/geometry/SpatialReference";
+import Extent from "@arcgis/core/geometry/Extent";
+import Field from "@arcgis/core/layers/support/Field";
 
 export interface CustomFeatureLayer extends FL {
   affects?: { id: string, strategy: string }[];
 }
 
-export type SpatialRelationship = Query['spatialRelationship']
+export type SpatialRelationship = Query["spatialRelationship"]
 
 
 export interface HubItem {

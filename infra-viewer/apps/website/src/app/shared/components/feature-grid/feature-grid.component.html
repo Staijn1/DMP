@@ -1,11 +1,11 @@
 <ag-grid-angular
-  class="ag-theme-alpine grid-container"
+  (filterChanged)="onFilterChanged($event)"
+  (gridReady)="onGridReady($event)"
+  [animateRows]="true"
   [columnDefs]="columnDefs"
   [defaultColDef]="defaultColDef"
+  [gridOptions]="gridOptions"
   [rowData]="rowData"
   [rowSelection]="'multiple'"
-  [animateRows]="true"
-  [gridOptions]="gridOptions"
-  (gridReady)="onGridReady($event)"
-  (filterChanged)="onFilterChanged($event)"
+  class="ag-theme-alpine grid-container"
 ></ag-grid-angular>

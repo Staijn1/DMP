@@ -1,7 +1,7 @@
-import SceneLayerProperties from '@arcgis/core/layers/SceneLayer';
-import FeatureLayerProperties from '@arcgis/core/layers/FeatureLayer';
-import SceneView from '@arcgis/core/views/SceneView';
-import SimpleRenderer from '@arcgis/core/renderers/SimpleRenderer';
+import SceneLayerProperties from "@arcgis/core/layers/SceneLayer";
+import FeatureLayerProperties from "@arcgis/core/layers/FeatureLayer";
+import SceneView from "@arcgis/core/views/SceneView";
+import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import CameraProperties = __esri.CameraProperties;
 import MapImageLayerProperties = __esri.MapImageLayerProperties;
 import SceneViewEnvironment = __esri.SceneViewEnvironment;
@@ -11,7 +11,7 @@ export class SystemConfiguration {
   layers!: LayerConfig[];
   view!: {
     camera: CameraProperties;
-    qualityProfile: Pick<SceneView, 'qualityProfile'>
+    qualityProfile: Pick<SceneView, "qualityProfile">
     environment: SceneViewEnvironment
   };
 }
@@ -19,14 +19,14 @@ export class SystemConfiguration {
 export type LayerConfig =
   CustomLayerConfig<SceneLayerProperties>
   | CustomLayerConfig<FeatureLayerProperties>
-  | CustomLayerConfig<MapImageLayerProperties & { type: 'map-image' }>;
+  | CustomLayerConfig<MapImageLayerProperties & { type: "map-image" }>;
 
 export type SystemConfigurationLayerTypes =
-  'scene'
-  | 'feature'
-  | 'geoJSON'
-  | 'elevation'
-  | 'map-image'
+  "scene"
+  | "feature"
+  | "geoJSON"
+  | "elevation"
+  | "map-image"
 
 export type DeepWritable<T> = { -readonly [P in keyof T]: DeepWritable<T[P]> };
 
