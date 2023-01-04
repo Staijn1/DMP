@@ -41,7 +41,8 @@ export class LayerEditorComponent {
    */
   startEditing(selectedLayer: LayerConfig, serviceInfo: ServiceInfo) {
     this.selectedLayer = undefined;
-    this.rootLayerConfig = selectedLayer;
+    const serviceInfoLayer = serviceInfo.layers ? serviceInfo.layers[0] : serviceInfo;
+    this.rootLayerConfig = {...this.createDefaultConfig(serviceInfoLayer as ServiceInfoLayer ), ...selectedLayer};
     // Insert the selected layer config in the first position of the layers array in the service info
     this.serviceInfo = serviceInfo;
     if (!this.rootLayerConfig) return;
@@ -74,7 +75,6 @@ export class LayerEditorComponent {
       // We can only enable popups (by default) for non map-image layers
       if (this.rootLayerConfig.popupEnabled === undefined) this.rootLayerConfig.popupEnabled = true;
     }
-
     if (!this.selectedLayer) this.selectedLayer = this.rootLayerConfig;
     UIkit.modal(this.modal.nativeElement).show();
   }
