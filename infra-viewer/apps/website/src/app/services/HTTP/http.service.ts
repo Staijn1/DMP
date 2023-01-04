@@ -1,20 +1,11 @@
-import {Injectable} from '@angular/core';
-import {Message, MessageService} from '../message-service/message.service';
+import { Injectable } from "@angular/core";
+import { Message, MessageService } from "../message-service/message.service";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root"
 })
 export class HTTPService {
   constructor(private readonly messageService: MessageService) {
-  }
-
-  /**
-   * Handle the error from the api and map it to an error we can show
-   * @param {any} err
-   * @private
-   */
-  private handleError(err: string | any): Message {
-    return this.messageService.setMessage(err)
   }
 
   /**
@@ -38,7 +29,16 @@ export class HTTPService {
       }
       return data;
     } catch (e) {
-      throw this.handleError(e)
+      throw this.handleError(e);
     }
+  }
+
+  /**
+   * Handle the error from the api and map it to an error we can show
+   * @param {any} err
+   * @private
+   */
+  private handleError(err: string | any): Message {
+    return this.messageService.setMessage(err);
   }
 }

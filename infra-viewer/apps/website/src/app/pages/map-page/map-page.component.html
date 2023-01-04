@@ -19,7 +19,7 @@
         </div>
       </li>
     </ul>
-    <ul class="uk-switcher" #switcher>
+    <ul #switcher class="uk-switcher">
       <li *ngFor="let result of results">
         <ng-template *ngTemplateOutlet="layerResult; context: {result: result} "></ng-template>
       </li>
@@ -28,7 +28,7 @@
 </div>
 
 <ng-template #layerResult let-result="result">
-  <div data-aos="fade-up" class="uk-card uk-card-default uk-card-body">
+  <div class="uk-card uk-card-default uk-card-body" data-aos="fade-up">
     <h3 class="uk-card-title">{{result.layer.title}}</h3>
     <app-feature-grid (filterChanged)="onGridFilterChange($event, result.layer)" [input]="result"
                       [map]="map"></app-feature-grid>

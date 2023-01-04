@@ -1,11 +1,11 @@
-import { NgModule, isDevMode } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { isDevMode, NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
 
-import { AppComponent } from './main/app.component';
-import { RouterModule } from '@angular/router';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import { AppComponent } from "./main/app.component";
+import { RouterModule } from "@angular/router";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { ServiceWorkerModule } from "@angular/service-worker";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 @NgModule({
   declarations: [AppComponent],
@@ -15,62 +15,63 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
     RouterModule.forRoot(
       [
         {
-          path: '',
-          redirectTo: 'home',
-          pathMatch: 'full',
+          path: "",
+          redirectTo: "home",
+          pathMatch: "full"
         },
         {
-          path: 'home',
+          path: "home",
           loadChildren: () =>
-            import('./pages/welcome/welcome-page.module').then(
+            import("./pages/welcome/welcome-page.module").then(
               (m) => m.WelcomePageModule
-            ),
+            )
         },
         {
-          path: 'map',
+          path: "map",
           loadChildren: () =>
-            import('./pages/map-page/map-page.module').then(
+            import("./pages/map-page/map-page.module").then(
               (m) => m.MapPageModule
-            ),
+            )
         },
         {
-          path: 'config',
+          path: "config",
           loadChildren: () =>
-            import('./pages/config-page/config-page.module').then(
+            import("./pages/config-page/config-page.module").then(
               (m) => m.ConfigPageModule
-            ),
+            )
         },
         {
-          path: 'login',
+          path: "login",
           loadChildren: () =>
-            import('./pages/login-page/login-page.module').then(
+            import("./pages/login-page/login-page.module").then(
               (m) => m.LoginPageModule
-            ),
+            )
         },
         {
-          path: 'hub',
+          path: "hub",
           loadChildren: () =>
-            import('./pages/hub-page/hub-page.module').then(
+            import("./pages/hub-page/hub-page.module").then(
               (m) => m.HubPageModule
-            ),
+            )
         },
         {
-          path: '**',
-          redirectTo: 'home',
-          pathMatch: 'full',
+          path: "**",
+          redirectTo: "home",
+          pathMatch: "full"
         }
       ],
-      {initialNavigation: 'enabledBlocking'}
+      { initialNavigation: "enabledBlocking" }
     ),
-    ServiceWorkerModule.register('ngsw-worker.js', {
+    ServiceWorkerModule.register("ngsw-worker.js", {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
       // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
+      registrationStrategy: "registerWhenStable:30000"
     }),
-    FontAwesomeModule,
+    FontAwesomeModule
   ],
   providers: [],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}

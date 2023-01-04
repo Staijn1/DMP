@@ -1,17 +1,17 @@
-import {Injectable} from '@angular/core';
-import Collection from '@arcgis/core/core/Collection';
-import GroupLayer from '@arcgis/core/layers/GroupLayer';
-import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import {CustomFeatureLayer} from '@infra-viewer/interfaces';
-import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
-import {createFeatureLayerFromFeatureLayer} from '../../utils/utils';
-import {Strategy} from '../../shared/components/arcgis-map/strategies/Strategy';
-import {RuleStrategy} from '../../shared/components/arcgis-map/strategies/300RuleStrategy';
-import {EnergyLabelStrategy} from '../../shared/components/arcgis-map/strategies/EnergyLabelStrategy';
-import {StorageService} from "../storage/storage.service";
+import { Injectable } from "@angular/core";
+import Collection from "@arcgis/core/core/Collection";
+import GroupLayer from "@arcgis/core/layers/GroupLayer";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import { CustomFeatureLayer } from "@infra-viewer/interfaces";
+import FeatureSet from "@arcgis/core/rest/support/FeatureSet";
+import { createFeatureLayerFromFeatureLayer } from "../../utils/utils";
+import { Strategy } from "../../shared/components/arcgis-map/strategies/Strategy";
+import { RuleStrategy } from "../../shared/components/arcgis-map/strategies/300RuleStrategy";
+import { EnergyLabelStrategy } from "../../shared/components/arcgis-map/strategies/EnergyLabelStrategy";
+import { StorageService } from "../storage/storage.service";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class MapEventHandlerService {
   private queryResultGroupLayer!: GroupLayer;
@@ -22,22 +22,22 @@ export class MapEventHandlerService {
   registerEvents(view: __esri.SceneView) {
     // Find layers starting with id editable and add the edits event
     view.map.layers
-      .filter(layer => layer.id.startsWith('editable'))
+      .filter(layer => layer.id.startsWith("editable"))
       .forEach((layer) => {
         if (layer instanceof FeatureLayer) {
-          layer.on('edits', (event) => this.onLayerEdited(event, view, layer));
+          layer.on("edits", (event) => this.onLayerEdited(event, view, layer));
         }
       });
 
     // When changing the camera, save it's new position in session storage so we can restore it when the page loads again
-    view.watch('camera', (camera) => {
-      this.storageService.store('camera', camera);
+    view.watch("camera", (camera) => {
+      this.storageService.store("camera", camera);
     });
 
-    view.watch('updating', (isUpdating) => {
+    view.watch("updating", (isUpdating) => {
       // Set the cursor to a loading indicator when the view is updating
-      view.container.style.cursor = isUpdating ? 'progress' : 'default';
-    })
+      view.container.style.cursor = isUpdating ? "progress" : "default";
+    });
   }
 
   /**
@@ -55,7 +55,7 @@ export class MapEventHandlerService {
     view.map.remove(this.queryResultGroupLayer);
     const featureSet = new FeatureSet();
     featureSet.features = $event;
-    const newFeatureLayer = createFeatureLayerFromFeatureLayer({featureSet: featureSet, layer: layer as FeatureLayer})
+    const newFeatureLayer = createFeatureLayerFromFeatureLayer({ featureSet: featureSet, layer: layer as FeatureLayer });
     // Replace the source of the feature layer with the filtered features
     this.queryResultGroupLayer.add(newFeatureLayer);
 
@@ -74,8 +74,8 @@ export class MapEventHandlerService {
    */
   onLayerEdited(event: __esri.FeatureLayerEditsEvent, view: __esri.SceneView, editedLayer: CustomFeatureLayer) {
     const strategyMap = new Map<string, Strategy>([
-      ['300Rule', new RuleStrategy(view)],
-      ['energielabels', new EnergyLabelStrategy(view)]
+      ["300Rule", new RuleStrategy(view)],
+      ["energielabels", new EnergyLabelStrategy(view)]
     ]);
 
     if (!editedLayer.affects) return;
@@ -96,11 +96,11 @@ export class MapEventHandlerService {
         // The edited layer contains an array of layers that it affects, with a strategy for each
         const strategy = strategyMap.get(editedLayer.affects?.find(a => a.id == affectedLayer.id)?.strategy as string);
         if (strategy) {
-          promises.push(strategy.execute(event, {featureSet: editedFeatures, layer: editedLayer}, affectedLayer));
+          promises.push(strategy.execute(event, { featureSet: editedFeatures, layer: editedLayer }, affectedLayer));
         }
         affectedLayer.visible = false;
       }
       return Promise.all(promises);
-    }).then(() => console.log('Executed strategies'));
+    }).then(() => console.log("Executed strategies"));
   }
 }

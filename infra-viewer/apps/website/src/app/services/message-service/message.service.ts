@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from "@angular/core";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class MessageService {
   private _messages: Message[] = [];
@@ -14,16 +14,16 @@ export class MessageService {
    * @returns {Message}
    */
   public setMessage(error: Error): Message {
-    const mappedError = this.mapError(error)
-    this._messages.push(mappedError)
+    const mappedError = this.mapError(error);
+    this._messages.push(mappedError);
     setTimeout(() => {
-      this._messages.shift()
-    }, 5000)
+      this._messages.shift();
+    }, 5000);
     return mappedError;
   }
 
   public getMessages(): Message[] {
-    return this._messages
+    return this._messages;
   }
 
   /**
@@ -34,9 +34,9 @@ export class MessageService {
    */
   private mapError(message: Error | Message): Message {
     if (message instanceof Message) {
-      return message
+      return message;
     }
-    return new Message('error', message.message)
+    return new Message("error", message.message);
   }
 }
 
@@ -45,7 +45,7 @@ export class MessageService {
  */
 export class Message extends Error {
   constructor(
-    public severity: 'error' | 'warning' | 'info' | 'success',
+    public severity: "error" | "warning" | "info" | "success",
     message: string,
     public action?: () => void
   ) {

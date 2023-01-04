@@ -6,7 +6,7 @@
 
 
 // On a phone or tablet, disable text selection
-@media screen and (max-width: $breakpoint-small-max){
+@media screen and (max-width: $breakpoint-small-max) {
   html {
     user-select: none;
   }

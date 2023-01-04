@@ -1,8 +1,8 @@
-import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
-import {CustomFeatureLayer, QueriedFeatures} from '@infra-viewer/interfaces';
-import FeatureSet from '@arcgis/core/rest/support/FeatureSet';
-import {Strategy} from './Strategy';
-import {createFeatureLayerFromFeatureLayer} from '../../../../utils/utils';
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import { CustomFeatureLayer, QueriedFeatures } from "@infra-viewer/interfaces";
+import FeatureSet from "@arcgis/core/rest/support/FeatureSet";
+import { Strategy } from "./Strategy";
+import { createFeatureLayerFromFeatureLayer } from "../../../../utils/utils";
 
 /**
  * Strategy that is used to update the energy label layer when a tree is edited
@@ -38,10 +38,10 @@ export class EnergyLabelStrategy extends Strategy {
     for (const tree of editedFeatures.featureSet.features) {
       const query = energyLabelsLayer.createQuery();
       query.geometry = tree.geometry;
-      query.outFields = ['*'];
+      query.outFields = ["*"];
       query.returnGeometry = true;
       query.distance = 20;
-      query.units = 'meters';
+      query.units = "meters";
       promises.push(energyLabelsLayer.queryFeatures(query));
     }
     const results = await Promise.all(promises);
@@ -59,7 +59,7 @@ export class EnergyLabelStrategy extends Strategy {
     // Update the energy labels
     energyLabels.features.forEach((energyLabel) => {
         // Increase the energy label by one
-        energyLabel.attributes.Meest_voorkomende_label = 'A'
+        energyLabel.attributes.Meest_voorkomende_label = "A";
       }
     );
 
@@ -69,13 +69,13 @@ export class EnergyLabelStrategy extends Strategy {
       if (!EnergyLabelStrategy.displayLayer) {
         EnergyLabelStrategy.displayLayer = createFeatureLayerFromFeatureLayer({
           featureSet: energyLabels,
-          layer: energyLabelsLayer,
+          layer: energyLabelsLayer
         });
-        EnergyLabelStrategy.displayLayer.title = EnergyLabelStrategy.displayLayer.title + ' (aangepast)';
+        EnergyLabelStrategy.displayLayer.title = EnergyLabelStrategy.displayLayer.title + " (aangepast)";
         this.view.map.add(EnergyLabelStrategy.displayLayer);
       } else {
         // If the display layer does exist, update it by appending the new graphics
-        await EnergyLabelStrategy.displayLayer.applyEdits({addFeatures: energyLabels.features});
+        await EnergyLabelStrategy.displayLayer.applyEdits({ addFeatures: energyLabels.features });
         EnergyLabelStrategy.displayLayer.refresh();
       }
     }

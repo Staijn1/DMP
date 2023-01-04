@@ -1,20 +1,27 @@
-import {Injectable} from '@angular/core';
-import esriId from '@arcgis/core/identity/IdentityManager';
-import {Router} from '@angular/router';
-import {environment} from '../../../environments/environment';
+import { Injectable } from "@angular/core";
+import esriId from "@arcgis/core/identity/IdentityManager";
+import { Router } from "@angular/router";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class AuthenticationService {
-  private readonly appId = 'jpL480B69UHL0NWO';
+  private readonly appId = "jpL480B69UHL0NWO";
   private readonly portalURL = environment.portalURL;
-  private readonly portalSharingUrl = this.portalURL + '/sharing/';
+  private readonly portalSharingUrl = this.portalURL + "/sharing/";
+
+  constructor(private router: Router) {
+  }
+
   private _token!: string;
 
+  get token(): string {
+    return this._token;
+  }
 
   get isLoggedIn(): boolean {
-    const credential = sessionStorage.getItem('credential');
+    const credential = sessionStorage.getItem("credential");
 
     if (!credential) return false;
 
@@ -27,19 +34,12 @@ export class AuthenticationService {
     }
   }
 
-  get token(): string {
-    return this._token;
-  }
-
-  constructor(private router: Router) {
-  }
-
   /**
    * Redirect the user to the Arcgis Enterprise login portal
    */
   login() {
     const redirectUri = this.getRedirectUrl();
-    window.location.href = this.portalSharingUrl + 'oauth2/authorize?client_id=' + this.appId + '&response_type=token&redirect_uri=' + redirectUri;
+    window.location.href = this.portalSharingUrl + "oauth2/authorize?client_id=" + this.appId + "&response_type=token&redirect_uri=" + redirectUri;
   }
 
   /**
@@ -47,23 +47,13 @@ export class AuthenticationService {
    */
   finishLogin() {
     // Get the token from the url, it is in the format #access_token=token&expires_in=3600&token_type=Bearer
-    const token = window.location.hash.split('&')[0].split('=')[1];
-    const expiration = window.location.hash.split('&')[1].split('=')[1];
+    const token = window.location.hash.split("&")[0].split("=")[1];
+    const expiration = window.location.hash.split("&")[1].split("=")[1];
     this.registerToken(token, expiration);
     esriId.getCredential(this.portalSharingUrl).then((credential) => {
-      sessionStorage.setItem('credential', JSON.stringify(credential));
-      return this.router.navigateByUrl('/map');
-    }).catch(e => console.error(e))
-  }
-
-  private registerToken(token: string, expiration: string) {
-    this._token = token;
-    esriId.registerToken({
-      server: this.portalSharingUrl,
-      token: token,
-      expires: isNaN(Number(expiration)) ? new Date().getTime() + (3600 * 1000) : Number(expiration)
-    });
-    esriId.checkSignInStatus(this.portalSharingUrl).then().catch(e => this.login());
+      sessionStorage.setItem("credential", JSON.stringify(credential));
+      return this.router.navigateByUrl("/map");
+    }).catch(e => console.error(e));
   }
 
   /**
@@ -76,5 +66,15 @@ export class AuthenticationService {
   getRedirectUrl(): string {
     const currentUrl = window.location.href;
     return currentUrl.replace(/\/[^/]*$/, "/login");
+  }
+
+  private registerToken(token: string, expiration: string) {
+    this._token = token;
+    esriId.registerToken({
+      server: this.portalSharingUrl,
+      token: token,
+      expires: isNaN(Number(expiration)) ? new Date().getTime() + (3600 * 1000) : Number(expiration)
+    });
+    esriId.checkSignInStatus(this.portalSharingUrl).then().catch(e => this.login());
   }
 }

@@ -1,42 +1,42 @@
-<div id="infoDiv" #infoDiv class="esri-widget">
-  <b>Filter by geometry</b><br/><br/>
-  <br/>Draw a geometry to filter by:
+<div #infoDiv class="esri-widget" id="infoDiv">
+  <b>Filter by geometry</b><br /><br />
+  <br />Draw a geometry to filter by:
   <div class="geometry-options">
     <button
+      (click)="geometryButtonsClickHandler($event)"
       class="esri-widget--button esri-icon-map-pin geometry-button"
       id="point-geometry-button"
-      value="point"
       title="Filter by point"
-      (click)="geometryButtonsClickHandler($event)"
+      value="point"
     ></button>
     <button
+      (click)="geometryButtonsClickHandler($event)"
       class="esri-widget--button esri-icon-polyline geometry-button"
       id="line-geometry-button"
-      value="polyline"
       title="Filter by line"
-      (click)="geometryButtonsClickHandler($event)"
+      value="polyline"
     ></button>
     <button
+      (click)="geometryButtonsClickHandler($event)"
       class="esri-widget--button esri-icon-polygon geometry-button"
       id="polygon-geometry-button"
-      value="polygon"
       title="Filter by polygon"
-      (click)="geometryButtonsClickHandler($event)"
+      value="polygon"
     ></button>
   </div>
-  <br/>
+  <br />
   <label for="relationship-select">Spatial relationship:</label>
-  <select id="relationship-select" class="options uk-select" [(ngModel)]="selectedSpatialRelationship"
-          (change)="queryByClientsideFilter()">
+  <select (change)="queryByClientsideFilter()" [(ngModel)]="selectedSpatialRelationship" class="options uk-select"
+          id="relationship-select">
     <!--    Create an option for all possible spatial relationships-->
     <option *ngFor="let relationship of spatialRelationships" [ngValue]="relationship">{{relationship}}</option>
   </select
-  ><br/><br/>
+  ><br /><br />
   <label for="bufferSlider">Set a geometry buffer size:</label>
-  <ngx-slider id="bufferSlider" [options]="sliderConfig" [(value)]="bufferSize" (userChange)="onSliderUserChange()"
-              (userChangeEnd)="onSliderUserChangeEnd()"></ngx-slider>
-  <br/><br/>
-  <button class="esri-button" id="clearFilter" type="button" (click)="clearFilter()">
+  <ngx-slider (userChange)="onSliderUserChange()" (userChangeEnd)="onSliderUserChangeEnd()" [(value)]="bufferSize" [options]="sliderConfig"
+              id="bufferSlider"></ngx-slider>
+  <br /><br />
+  <button (click)="clearFilter()" class="esri-button" id="clearFilter" type="button">
     Clear filter
   </button>
 </div>

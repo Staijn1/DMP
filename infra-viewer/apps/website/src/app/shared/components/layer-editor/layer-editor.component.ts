@@ -1,21 +1,26 @@
-import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
-import {LayerConfig, ServiceInfo, ServiceInfoLayer, SystemConfiguration} from '@infra-viewer/interfaces';
-import UIkit from 'uikit';
-import {getTypeForHubItem} from '../../../utils/utils';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from "@angular/core";
+import { LayerConfig, ServiceInfo, ServiceInfoLayer, SystemConfiguration } from "@infra-viewer/interfaces";
+import UIkit from "uikit";
+import { getTypeForHubItem } from "../../../utils/utils";
 
 @Component({
-  selector: 'app-layer-editor',
-  templateUrl: './layer-editor.component.html',
-  styleUrls: ['./layer-editor.component.scss'],
+  selector: "app-layer-editor",
+  templateUrl: "./layer-editor.component.html",
+  styleUrls: ["./layer-editor.component.scss"]
 })
 export class LayerEditorComponent {
-  @ViewChild('modal') modal!: ElementRef<HTMLDivElement>
+  @ViewChild("modal") modal!: ElementRef<HTMLDivElement>;
   @Output() save: EventEmitter<LayerConfig> = new EventEmitter<LayerConfig>();
   @Input() rootLayerConfig!: LayerConfig | undefined;
   @Input() configuration!: SystemConfiguration;
   serviceInfo!: ServiceInfo;
   selectedSublayerIndex = 0;
   selectedLayer: LayerConfig | undefined;
+
+  get layersWithoutChildren() {
+    if (!this.serviceInfo.layers) return [];
+    return this.serviceInfo.layers.filter(layer => !layer.subLayerIds);
+  }
 
   /**
    * Emit the save event when the user wants to save
@@ -47,10 +52,10 @@ export class LayerEditorComponent {
     // If the layer is a map-image layer, there are most likely sublayers
     // Select the first sublayer by default. If the sublayer is already in the sublayers array, use that one
     // If the sublayers array (holding overrides) does not exist at all, create it.
-    if (this.rootLayerConfig.type === 'map-image') {
+    if (this.rootLayerConfig.type === "map-image") {
       // Create the sublayers array where we store overrides for sublayers
       if (!this.rootLayerConfig.sublayers) {
-        this.rootLayerConfig.sublayers = []
+        this.rootLayerConfig.sublayers = [];
       }
 
       if (this.rootLayerConfig.sublayers.length > 1) {
@@ -91,7 +96,7 @@ export class LayerEditorComponent {
    */
   selectSublayer(serviceInfoLayer: ServiceInfoLayer) {
     // Make the compiler aware that only map-image layers come through this function
-    if (this.rootLayerConfig?.type !== 'map-image') return;
+    if (this.rootLayerConfig?.type !== "map-image") return;
 
     this.saveSublayer();
     // Select the new selected layer
@@ -112,7 +117,7 @@ export class LayerEditorComponent {
    * @private
    */
   private saveSublayer() {
-    if (this.rootLayerConfig?.type !== 'map-image' || !this.selectedLayer) return;
+    if (this.rootLayerConfig?.type !== "map-image" || !this.selectedLayer) return;
     if (!this.rootLayerConfig.sublayers) this.rootLayerConfig.sublayers = [];
 
     // Save the old selected layer
@@ -129,15 +134,10 @@ export class LayerEditorComponent {
       type: getTypeForHubItem(serviceInfoLayer),
       id: serviceInfoLayer.id,
       elevationInfo: {
-        mode: 'on-the-ground',
-        unit: 'meters',
-        offset: 0,
+        mode: "on-the-ground",
+        unit: "meters",
+        offset: 0
       }
-    } as LayerConfig
-  }
-
-  get layersWithoutChildren() {
-    if (!this.serviceInfo.layers) return [];
-    return this.serviceInfo.layers.filter(layer => !layer.subLayerIds);
+    } as LayerConfig;
   }
 }

@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from "@angular/core";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class StorageService {
   /**
@@ -12,7 +12,7 @@ export class StorageService {
    * @param storage
    */
   store(key: string, payload: string | object, storage: Storage = sessionStorage) {
-    if (typeof payload === 'object') {
+    if (typeof payload === "object") {
       payload = JSON.stringify(payload);
     }
     storage.setItem(key, payload);
