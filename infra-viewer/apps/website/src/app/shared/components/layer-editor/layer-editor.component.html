@@ -118,7 +118,7 @@
             </div>
           </div>
           <ng-container
-            *ngIf="selectedLayer.type !== 'scene' && !selectedLayer.elevationInfo.featureExpressionInfo; else tooAdvancedElevationInfo">
+            *ngIf="(selectedLayer.type !== 'scene' && !selectedLayer.elevationInfo?.featureExpressionInfo) || selectedLayer.type === 'scene'; else tooAdvancedElevationInfo">
             <div *ngIf="selectedLayer.elevationInfo.mode !== 'on-the-ground'">
               <label class="uk-form-label" for="offset">Offset</label>
               <div class="uk-form-controls">
