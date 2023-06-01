@@ -14,6 +14,11 @@ export class SystemConfiguration {
     qualityProfile: Pick<SceneView, "qualityProfile">
     environment: SceneViewEnvironment
   };
+  authorization!: {
+    requireAuthorization: boolean,
+    portalUrl: string,
+    portalSharingUrl: string
+  };
 }
 
 export type LayerConfig =

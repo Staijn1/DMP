@@ -53,8 +53,13 @@ export class AppComponent {
     AOS.init();
 
     this.checkForUpdate();
+
     // Load the configuration
-    this.configurationService.getConfiguration().then();
+    this.configurationService.getConfiguration().then(config => {
+      if (!config.authorization.requireAuthorization) {
+        this.menuItems.forEach(item => item.requiresLogin = false);
+      }
+    });
     // Subscribe to all route changes and check if the user is logged in
     // If not, and the route is not /, redirect to /
     this.router.events.subscribe((val) => {
@@ -62,9 +67,14 @@ export class AppComponent {
         this.isLoggedIn = this.authService.isLoggedIn;
         if (this.authService.isLoggedIn) return;
 
-        if (val.url !== "/home" && !val.url.includes("/login")) {
-          this.router.navigateByUrl("/home").then();
-        }
+        // Get the configuration and if authorization is not required, do not check if you are logged in
+        this.configurationService.getConfiguration().then(config => {
+          if (!config.authorization.requireAuthorization) return;
+          if (val.url !== "/home" && !val.url.includes("/login")) {
+            this.router.navigateByUrl("/home").then();
+          }
+        });
+
       }
     });
   }
