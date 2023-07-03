@@ -285,5 +285,10 @@
     "spatialReference": {
       "wkid": 28992
     }
+  },
+  "authorization": {
+    "requireAuthorization": false,
+    "portalUrl": "https://geo.arnhem.nl/portal/",
+    "portalSharingUrl": "https://geo.arnhem.nl/portal/sharing/"
   }
 }
